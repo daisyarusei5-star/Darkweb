@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+/>
+
+<meta
+  name="theme-color"
+  content="#05070b"
 />
 
 <title>DARK WEB — Digital Store</title>
@@ -25,11 +28,21 @@ html{
 body{
   margin:0;
   font-family:
+    Inter,
     Arial,
     Helvetica,
     sans-serif;
-  background:#050505;
-  color:#fff;
+
+  background:
+    radial-gradient(
+      circle at top,
+      #111827 0,
+      #05070b 45%,
+      #020305 100%
+    );
+
+  color:#f7f7f7;
+  min-height:100vh;
 }
 
 button,
@@ -43,72 +56,104 @@ button{
   cursor:pointer;
 }
 
-.hidden{
-  display:none !important;
+a{
+  color:inherit;
+  text-decoration:none;
 }
 
-/* ======================================================
-   HEADER
-====================================================== */
+/* =========================
+HEADER
+========================= */
 
 header{
   position:sticky;
   top:0;
   z-index:1000;
 
+  background:
+    rgba(3,5,9,.92);
+
+  backdrop-filter:
+    blur(18px);
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.08);
+}
+
+.header-inner{
+  max-width:1200px;
+  margin:auto;
+
+  min-height:72px;
+
+  padding:
+    12px 18px;
+
   display:flex;
   align-items:center;
   justify-content:space-between;
-
-  padding:14px 20px;
-
-  background:
-    rgba(5,5,5,.96);
-
-  border-bottom:
-    1px solid #222;
-
-  backdrop-filter:
-    blur(10px);
+  gap:15px;
 }
 
 .logo{
+  font-weight:1000;
   font-size:22px;
-  font-weight:900;
   letter-spacing:2px;
 }
 
-.logo span{
-  color:#00ff88;
+.logo small{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+  letter-spacing:2px;
+  opacity:.55;
 }
 
-.nav{
+nav{
   display:flex;
-  gap:8px;
+  align-items:center;
+  gap:7px;
   flex-wrap:wrap;
+  justify-content:flex-end;
 }
 
-.nav button{
-  border:1px solid #333;
-  background:#111;
+.nav-btn{
+  border:1px solid
+    rgba(255,255,255,.08);
+
+  background:
+    rgba(255,255,255,.04);
+
   color:#fff;
-  padding:9px 13px;
-  border-radius:8px;
+
+  padding:
+    9px 12px;
+
+  border-radius:10px;
+
+  font-size:13px;
+  font-weight:800;
 }
 
-.nav button:hover{
-  border-color:#00ff88;
-  color:#00ff88;
+.nav-btn:hover{
+  background:
+    rgba(255,255,255,.1);
 }
 
-/* ======================================================
-   MAIN
-====================================================== */
+.nav-btn.primary{
+  background:#fff;
+  color:#000;
+}
 
-main{
+/* =========================
+LAYOUT
+========================= */
+
+.container{
   max-width:1200px;
   margin:auto;
-  padding:25px 16px 80px;
+  padding:25px 16px 70px;
 }
 
 .page{
@@ -119,629 +164,1284 @@ main{
   display:block;
 }
 
-/* ======================================================
-   HERO
-====================================================== */
+/* =========================
+HERO
+========================= */
 
 .hero{
-  padding:50px 10px;
-  text-align:center;
+  padding:
+    45px 0 25px;
+}
+
+.hero-card{
+  border:
+    1px solid
+    rgba(255,255,255,.1);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.08),
+      rgba(255,255,255,.025)
+    );
+
+  border-radius:25px;
+
+  padding:
+    35px;
+
+  box-shadow:
+    0 25px 80px
+    rgba(0,0,0,.35);
 }
 
 .hero h1{
-  font-size:
-    clamp(38px,8vw,76px);
-
   margin:0;
 
-  letter-spacing:5px;
-}
+  font-size:
+    clamp(35px,8vw,72px);
 
-.hero h1 span{
-  color:#00ff88;
+  line-height:.95;
+
+  letter-spacing:-3px;
 }
 
 .hero p{
-  color:#aaa;
   max-width:700px;
-  margin:20px auto;
+
+  color:#aab2c0;
+
   line-height:1.7;
+
+  margin:
+    20px 0 0;
 }
 
-.powered{
-  color:#00ff88;
-  font-weight:bold;
-  letter-spacing:2px;
+.hero-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:25px;
 }
 
-/* ======================================================
-   STORE
-====================================================== */
+/* =========================
+BUTTONS
+========================= */
+
+.btn{
+  border:0;
+
+  border-radius:12px;
+
+  padding:
+    12px 16px;
+
+  font-weight:900;
+
+  background:
+    rgba(255,255,255,.09);
+
+  color:#fff;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+.btn.primary{
+  background:#fff;
+  color:#000;
+}
+
+.btn.success{
+  background:#19c37d;
+  color:#03130d;
+}
+
+.btn.danger{
+  background:#ff4d67;
+  color:#fff;
+}
+
+.btn.blue{
+  background:#267cff;
+  color:#fff;
+}
+
+/* =========================
+SECTION
+========================= */
 
 .section-title{
-  margin:25px 0;
-  font-size:28px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+
+  margin:
+    35px 0 15px;
 }
 
-.products{
+.section-title h2{
+  margin:0;
+  font-size:23px;
+}
+
+/* =========================
+PRODUCT GRID
+========================= */
+
+.product-grid{
   display:grid;
+
   grid-template-columns:
     repeat(
       auto-fit,
-      minmax(
-        230px,
-        1fr
-      )
+      minmax(230px,1fr)
     );
+
   gap:18px;
 }
 
 .product{
-  background:#0d0d0d;
-  border:1px solid #222;
-  border-radius:15px;
   overflow:hidden;
+
+  background:
+    rgba(255,255,255,.045);
+
+  border:
+    1px solid
+    rgba(255,255,255,.09);
+
+  border-radius:20px;
+
   transition:.2s;
 }
 
 .product:hover{
-  transform:translateY(-3px);
-  border-color:#00ff88;
+  transform:
+    translateY(-4px);
+
+  border-color:
+    rgba(255,255,255,.2);
 }
 
 .product-image{
   width:100%;
-  height:190px;
+  height:180px;
   object-fit:cover;
-  background:#151515;
+  display:block;
+  background:#0c1017;
+}
+
+.product-image.placeholder{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:#596273;
+  font-size:42px;
 }
 
 .product-body{
-  padding:16px;
+  padding:17px;
 }
 
-.product h3{
-  margin-top:0;
+.product-name{
+  font-weight:1000;
+  font-size:18px;
 }
 
-.product p{
-  color:#aaa;
-  min-height:45px;
-  line-height:1.5;
+.product-desc{
+  color:#9da6b5;
+  line-height:1.55;
+  font-size:13px;
+  min-height:40px;
+  margin:9px 0;
+}
+
+.price-row{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:10px;
+
+  margin-top:14px;
 }
 
 .price{
-  font-size:21px;
-  font-weight:bold;
-  color:#00ff88;
-  margin:12px 0;
+  font-size:22px;
+  font-weight:1000;
 }
 
-.crypto-price{
-  color:#aaa;
-  font-size:14px;
+.crypto{
+  color:#929aaa;
+  font-size:11px;
 }
 
-/* ======================================================
-   BUTTONS
-====================================================== */
+/* =========================
+CARDS
+========================= */
 
-.btn{
-  width:100%;
-  border:0;
-  padding:12px;
-  border-radius:9px;
-  background:#00ff88;
-  color:#000;
-  font-weight:bold;
-}
+.card{
+  background:
+    rgba(255,255,255,.045);
 
-.btn:hover{
-  filter:brightness(1.1);
-}
+  border:
+    1px solid
+    rgba(255,255,255,.08);
 
-.btn.secondary{
-  background:#1b1b1b;
-  color:#fff;
-  border:1px solid #333;
-}
+  border-radius:18px;
 
-.btn.danger{
-  background:#ff3333;
-  color:#fff;
-}
+  padding:18px;
 
-.btn + .btn{
-  margin-top:8px;
-}
-
-/* ======================================================
-   AUTH
-====================================================== */
-
-.auth-box{
-  max-width:430px;
-  margin:50px auto;
-  background:#0d0d0d;
-  border:1px solid #222;
-  padding:25px;
-  border-radius:15px;
-}
-
-.auth-box h2{
-  text-align:center;
-}
-
-.auth-switch{
-  text-align:center;
-  margin-top:15px;
-  color:#aaa;
-}
-
-.auth-switch button{
-  background:none;
-  border:0;
-  color:#00ff88;
-}
-
-/* ======================================================
-   FORMS
-====================================================== */
-
-.form-group{
   margin-bottom:15px;
 }
 
-.form-group label{
-  display:block;
-  margin-bottom:7px;
-  color:#aaa;
+.card h3{
+  margin-top:0;
+}
+
+/* =========================
+FORMS
+========================= */
+
+.form-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0,1fr)
+    );
+
+  gap:12px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.field.full{
+  grid-column:
+    1 / -1;
+}
+
+.field label{
+  color:#aab2c0;
+  font-size:12px;
+  font-weight:800;
 }
 
 input,
 textarea,
 select{
   width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #333;
-  background:#090909;
+
+  background:
+    #090c12;
+
   color:#fff;
+
+  border:
+    1px solid
+    rgba(255,255,255,.1);
+
+  border-radius:11px;
+
+  padding:12px;
+
   outline:none;
 }
 
 input:focus,
 textarea:focus,
 select:focus{
-  border-color:#00ff88;
+  border-color:
+    rgba(255,255,255,.4);
 }
 
 textarea{
-  min-height:110px;
+  min-height:100px;
   resize:vertical;
 }
 
-/* ======================================================
-   ORDERS
-====================================================== */
+/* =========================
+AUTH
+========================= */
 
-.orders{
-  display:grid;
-  gap:15px;
+.auth-wrap{
+  max-width:500px;
+  margin:45px auto;
 }
 
-.order{
-  background:#0d0d0d;
-  border:1px solid #222;
-  padding:18px;
-  border-radius:12px;
+.auth-card{
+  background:
+    rgba(255,255,255,.05);
+
+  border:
+    1px solid
+    rgba(255,255,255,.1);
+
+  border-radius:22px;
+
+  padding:25px;
+}
+
+.auth-card h1{
+  margin-top:0;
+}
+
+.auth-switch{
+  margin-top:15px;
+  text-align:center;
+  color:#9ba4b4;
+  font-size:13px;
+}
+
+.auth-switch button{
+  background:none;
+  border:0;
+  color:#fff;
+  font-weight:900;
+}
+
+/* =========================
+ORDER
+========================= */
+
+.order-card{
+  position:relative;
 }
 
 .order-top{
   display:flex;
   justify-content:space-between;
-  gap:10px;
+  gap:15px;
   flex-wrap:wrap;
 }
 
 .order-number{
-  color:#00ff88;
-  font-weight:bold;
+  font-weight:1000;
+  letter-spacing:.5px;
 }
 
 .status{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  background:#222;
-  font-size:12px;
+  display:inline-flex;
+  align-items:center;
+
+  padding:
+    6px 9px;
+
+  border-radius:999px;
+
+  font-size:11px;
+  font-weight:1000;
+
+  background:
+    rgba(255,255,255,.08);
 }
 
 .status.paid,
 .status.delivered{
-  color:#00ff88;
+  background:
+    rgba(25,195,125,.15);
+
+  color:#49e59e;
 }
 
-.status.pending,
-.status.verification_pending{
-  color:#ffd84d;
+.status.pending{
+  color:#ffc857;
 }
 
 .status.failed,
-.status.rejected,
 .status.cancelled{
-  color:#ff5555;
+  color:#ff7184;
 }
 
-/* ======================================================
-   ADMIN
-====================================================== */
+.order-product{
+  margin:
+    16px 0 10px;
 
-.admin-grid{
+  font-size:18px;
+  font-weight:1000;
+}
+
+.order-meta{
   display:grid;
+
   grid-template-columns:
-    minmax(280px,380px)
-    1fr;
-  gap:20px;
+    repeat(
+      auto-fit,
+      minmax(130px,1fr)
+    );
+
+  gap:10px;
+
+  color:#9fa8b7;
+  font-size:12px;
 }
 
-.panel{
-  background:#0d0d0d;
-  border:1px solid #222;
-  border-radius:15px;
+.order-meta strong{
+  display:block;
+  color:#fff;
+  margin-top:4px;
+}
+
+/* =========================
+ACCOUNT
+========================= */
+
+.account-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(220px,1fr)
+    );
+
+  gap:15px;
+}
+
+.account-box{
+  background:
+    rgba(255,255,255,.045);
+
+  border:
+    1px solid
+    rgba(255,255,255,.08);
+
+  border-radius:17px;
+
   padding:20px;
 }
 
-.panel h3{
-  margin-top:0;
+.account-icon{
+  font-size:28px;
+  margin-bottom:10px;
 }
 
-.admin-products,
-.admin-orders{
+/* =========================
+SUPPORT
+========================= */
+
+.support{
   display:grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(240px,1fr)
+    );
+
+  gap:15px;
+}
+
+.support-box{
+  padding:25px;
+
+  border-radius:20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.08),
+      rgba(255,255,255,.03)
+    );
+
+  border:
+    1px solid
+    rgba(255,255,255,.1);
+}
+
+.whatsapp{
+  background:#25d366;
+  color:#001f0c;
+}
+
+/* =========================
+ADMIN
+========================= */
+
+.admin-stats{
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(150px,1fr)
+    );
+
   gap:12px;
 }
 
-.admin-card{
-  border:1px solid #282828;
-  padding:14px;
-  border-radius:10px;
-  background:#111;
+.stat{
+  background:
+    rgba(255,255,255,.05);
+
+  border:
+    1px solid
+    rgba(255,255,255,.08);
+
+  border-radius:17px;
+
+  padding:18px;
 }
 
-.admin-card img{
-  width:90px;
-  height:70px;
-  object-fit:cover;
-  border-radius:8px;
+.stat-number{
+  font-size:28px;
+  font-weight:1000;
 }
 
-/* ======================================================
-   MODAL
-====================================================== */
+.stat-label{
+  color:#8f98a7;
+  font-size:12px;
+  margin-top:5px;
+}
 
-.modal{
-  position:fixed;
-  inset:0;
-  z-index:2000;
+/* =========================
+TABLE
+========================= */
 
-  display:none;
-  align-items:center;
-  justify-content:center;
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+
+th,
+td{
+  text-align:left;
+  padding:12px;
+  border-bottom:
+    1px solid
+    rgba(255,255,255,.07);
+  font-size:12px;
+}
+
+th{
+  color:#8e98a8;
+  font-size:11px;
+  text-transform:uppercase;
+}
+
+/* =========================
+ADMIN TABS
+========================= */
+
+.admin-tabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:5px;
+}
+
+.admin-tab{
+  white-space:nowrap;
+
+  border:1px solid
+    rgba(255,255,255,.08);
 
   background:
-    rgba(0,0,0,.82);
+    rgba(255,255,255,.04);
 
-  padding:15px;
+  color:#fff;
+
+  border-radius:10px;
+
+  padding:10px 13px;
+
+  font-weight:900;
+  font-size:12px;
 }
 
-.modal.show{
+.admin-tab.active{
+  background:#fff;
+  color:#000;
+}
+
+/* =========================
+MODAL
+========================= */
+
+.modal{
+  display:none;
+
+  position:fixed;
+  inset:0;
+
+  z-index:3000;
+
+  background:
+    rgba(0,0,0,.72);
+
+  padding:18px;
+
+  overflow:auto;
+}
+
+.modal.active{
   display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .modal-box{
   width:100%;
-  max-width:520px;
-  max-height:92vh;
-  overflow:auto;
+  max-width:550px;
 
-  background:#0d0d0d;
-  border:1px solid #333;
-  border-radius:15px;
+  background:#0a0e15;
+
+  border:
+    1px solid
+    rgba(255,255,255,.12);
+
+  border-radius:22px;
 
   padding:22px;
+
+  box-shadow:
+    0 30px 100px
+    rgba(0,0,0,.55);
 }
 
-.modal-header{
+.modal-head{
   display:flex;
   justify-content:space-between;
+  gap:10px;
   align-items:center;
 }
 
+.modal-head h2{
+  margin:0;
+}
+
 .close{
+  background:
+    rgba(255,255,255,.08);
+
   border:0;
-  background:#222;
+
   color:#fff;
+
   width:35px;
   height:35px;
-  border-radius:50%;
-}
 
-/* ======================================================
-   PAYMENT
-====================================================== */
-
-.payment-box{
-  margin-top:15px;
-  padding:15px;
-  border:1px solid #292929;
   border-radius:10px;
-  background:#090909;
 }
 
-.wallet{
-  word-break:break-all;
-  color:#00ff88;
-  padding:10px;
-  background:#111;
-  border-radius:7px;
+/* =========================
+EMPTY
+========================= */
+
+.empty{
+  text-align:center;
+  padding:45px 15px;
+  color:#727c8d;
 }
 
-.notice{
-  background:#171717;
-  border-left:3px solid #00ff88;
-  padding:12px;
-  color:#aaa;
-  line-height:1.5;
-}
+/* =========================
+TOAST
+========================= */
 
-/* ======================================================
-   TOAST
-====================================================== */
-
-#toast{
+.toast{
   position:fixed;
-  bottom:20px;
+
   left:50%;
-  transform:translateX(-50%);
+  bottom:20px;
+
+  transform:
+    translate(-50%,120px);
 
   z-index:5000;
 
-  background:#00ff88;
+  background:#fff;
   color:#000;
 
-  padding:12px 18px;
-  border-radius:8px;
+  padding:
+    13px 18px;
 
-  font-weight:bold;
+  border-radius:12px;
 
-  display:none;
+  font-weight:900;
+  font-size:13px;
 
-  max-width:
-    calc(100% - 30px);
+  box-shadow:
+    0 15px 50px
+    rgba(0,0,0,.4);
 
+  transition:.25s;
+}
+
+.toast.show{
+  transform:
+    translate(-50%,0);
+}
+
+/* =========================
+FOOTER
+========================= */
+
+footer{
   text-align:center;
+
+  border-top:
+    1px solid
+    rgba(255,255,255,.08);
+
+  padding:
+    25px 15px 45px;
+
+  color:#697383;
+
+  font-size:11px;
 }
 
-#toast.show{
-  display:block;
+footer strong{
+  color:#fff;
 }
 
-/* ======================================================
-   MOBILE
-====================================================== */
+/* =========================
+MOBILE
+========================= */
 
 @media(max-width:700px){
 
-  header{
+  .header-inner{
     align-items:flex-start;
-    gap:10px;
     flex-direction:column;
   }
 
-  .nav{
+  nav{
     width:100%;
+    justify-content:flex-start;
+    overflow-x:auto;
+    padding-bottom:3px;
   }
 
-  .nav button{
-    flex:1;
+  .hero-card{
+    padding:25px 20px;
   }
 
-  .admin-grid{
+  .hero h1{
+    font-size:45px;
+  }
+
+  .form-grid{
     grid-template-columns:1fr;
   }
 
-  .hero{
-    padding:35px 5px;
+  .field.full{
+    grid-column:auto;
   }
 
-  main{
-    padding-top:10px;
+  .container{
+    padding:
+      15px 12px 50px;
   }
 }
 
 </style>
-
 </head>
 
 <body>
 
 <header>
 
-  <div class="logo">
-    DARK <span>WEB</span>
-  </div>
+  <div class="header-inner">
 
-  <nav class="nav">
-
-    <button
+    <div
+      class="logo"
       onclick="showPage('store')"
+      style="cursor:pointer"
     >
-      STORE
-    </button>
+      DARK WEB
+      <small>
+        POWERED BY DARK WEB
+      </small>
+    </div>
 
-    <button
-      id="ordersNav"
-      class="hidden"
-      onclick="showPage('orders')"
-    >
-      ORDERS
-    </button>
+    <nav id="mainNav">
 
-    <button
-      id="adminNav"
-      class="hidden"
-      onclick="showPage('admin')"
-    >
-      ADMIN
-    </button>
+      <button
+        class="nav-btn"
+        onclick="showPage('store')"
+      >
+        STORE
+      </button>
 
-    <button
-      id="authNav"
-      onclick="showPage('auth')"
-    >
-      LOGIN
-    </button>
+      <button
+        class="nav-btn"
+        id="ordersNav"
+        style="display:none"
+        onclick="showPage('orders')"
+      >
+        MY ORDERS
+      </button>
 
-    <button
-      id="logoutBtn"
-      class="hidden"
-      onclick="logout()"
-    >
-      LOGOUT
-    </button>
+      <button
+        class="nav-btn"
+        id="supportNav"
+        onclick="showPage('support')"
+      >
+        HELP / CHAT
+      </button>
 
-  </nav>
+      <button
+        class="nav-btn"
+        id="accountNav"
+        style="display:none"
+        onclick="showPage('account')"
+      >
+        ACCOUNT
+      </button>
+
+      <button
+        class="nav-btn"
+        id="adminNav"
+        style="display:none"
+        onclick="showPage('admin')"
+      >
+        ADMIN
+      </button>
+
+      <button
+        class="nav-btn primary"
+        id="loginNav"
+        onclick="showPage('auth')"
+      >
+        LOGIN
+      </button>
+
+      <button
+        class="nav-btn"
+        id="logoutNav"
+        style="display:none"
+        onclick="logout()"
+      >
+        LOGOUT
+      </button>
+
+    </nav>
+
+  </div>
 
 </header>
 
-<main>
+
+<main class="container">
 
 <!-- =====================================================
-     STORE
+STORE
 ===================================================== -->
 
 <section
-  id="storePage"
+  id="page-store"
   class="page active"
 >
 
   <div class="hero">
 
-    <h1>
-      DARK <span>WEB</span>
-    </h1>
-
-    <p>
-      Premium digital products delivered
-      securely after payment.
-    </p>
-
-    <div class="powered">
-      POWERED BY DARK WEB
-    </div>
-
-  </div>
-
-  <h2 class="section-title">
-    Digital Products
-  </h2>
-
-  <div
-    id="products"
-    class="products"
-  ></div>
-
-</section>
-
-<!-- =====================================================
-     AUTH
-===================================================== -->
-
-<section
-  id="authPage"
-  class="page"
->
-
-  <div class="auth-box">
-
-    <h2 id="authTitle">
-      LOGIN
-    </h2>
-
-    <form
-      id="authForm"
-      onsubmit="submitAuth(event)"
-    >
+    <div class="hero-card">
 
       <div
-        id="nameGroup"
-        class="form-group hidden"
+        style="
+          color:#9ca6b7;
+          font-weight:900;
+          font-size:12px;
+          letter-spacing:2px;
+        "
+      >
+        DIGITAL PRODUCTS STORE
+      </div>
+
+      <h1>
+        DARK WEB
+      </h1>
+
+      <p>
+        Premium digital products,
+        instant delivery and secure
+        payment options.
+      </p>
+
+      <div class="hero-actions">
+
+        <button
+          class="btn primary"
+          onclick="scrollToProducts()"
+        >
+          EXPLORE PRODUCTS
+        </button>
+
+        <button
+          class="btn"
+          onclick="showPage('support')"
+        >
+          💬 GET HELP
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="section-title"
+    id="productsSection"
+  >
+
+    <h2>
+      Featured Products
+    </h2>
+
+    <button
+      class="btn"
+      onclick="loadProducts()"
+    >
+      ↻ Refresh
+    </button>
+
+  </div>
+
+
+  <div
+    id="productGrid"
+    class="product-grid"
+  ></div>
+
+</section>
+
+
+<!-- =====================================================
+AUTH
+===================================================== -->
+
+<section
+  id="page-auth"
+  class="page"
+>
+
+  <div class="auth-wrap">
+
+    <div class="auth-card">
+
+      <div
+        style="
+          color:#8f99aa;
+          font-size:11px;
+          font-weight:900;
+          letter-spacing:2px;
+        "
+      >
+        DARK WEB ACCOUNT
+      </div>
+
+      <h1 id="authTitle">
+        Login
+      </h1>
+
+      <p
+        id="authSubtitle"
+        style="
+          color:#8f99aa;
+          font-size:13px;
+        "
+      >
+        Login to manage your orders.
+      </p>
+
+      <form
+        id="authForm"
+        onsubmit="submitAuth(event)"
       >
 
-        <label>
-          Full Name
-        </label>
+        <div
+          class="field"
+          id="nameField"
+          style="display:none"
+        >
+          <label>
+            FULL NAME
+          </label>
 
-        <input
-          id="name"
-          type="text"
-          autocomplete="name"
-        />
+          <input
+            id="name"
+            autocomplete="name"
+          />
+        </div>
+
+        <div
+          class="field"
+          style="margin-top:12px"
+        >
+          <label>
+            EMAIL
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <div
+          class="field"
+          style="margin-top:12px"
+        >
+          <label>
+            PASSWORD
+          </label>
+
+          <input
+            id="password"
+            type="password"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+
+        <button
+          class="btn primary"
+          style="
+            width:100%;
+            margin-top:18px;
+          "
+          type="submit"
+        >
+          <span id="authSubmit">
+            LOGIN
+          </span>
+        </button>
+
+      </form>
+
+      <div class="auth-switch">
+
+        <span id="authSwitchText">
+          Don't have an account?
+        </span>
+
+        <button
+          onclick="toggleAuth()"
+          id="authSwitchButton"
+        >
+          Register
+        </button>
 
       </div>
 
-      <div class="form-group">
+    </div>
 
-        <label>
-          Email
-        </label>
+  </div>
 
-        <input
-          id="email"
-          type="email"
-          required
-          autocomplete="email"
-        />
+</section>
 
+
+<!-- =====================================================
+ORDERS
+===================================================== -->
+
+<section
+  id="page-orders"
+  class="page"
+>
+
+  <div class="section-title">
+
+    <div>
+      <h2>
+        My Orders
+      </h2>
+
+      <div
+        style="
+          color:#7f8999;
+          font-size:12px;
+          margin-top:4px;
+        "
+      >
+        Track your purchases and delivery.
+      </div>
+    </div>
+
+    <button
+      class="btn"
+      onclick="loadMyOrders()"
+    >
+      ↻ Refresh
+    </button>
+
+  </div>
+
+  <div
+    id="ordersList"
+  ></div>
+
+</section>
+
+
+<!-- =====================================================
+ACCOUNT
+===================================================== -->
+
+<section
+  id="page-account"
+  class="page"
+>
+
+  <div class="section-title">
+
+    <h2>
+      My Account
+    </h2>
+
+  </div>
+
+  <div
+    id="accountContent"
+  ></div>
+
+</section>
+
+
+<!-- =====================================================
+SUPPORT
+===================================================== -->
+
+<section
+  id="page-support"
+  class="page"
+>
+
+  <div class="section-title">
+
+    <div>
+      <h2>
+        Help & Support
+      </h2>
+
+      <div
+        style="
+          color:#7f8999;
+          font-size:12px;
+        "
+      >
+        We're here to help with your order.
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="support">
+
+    <div class="support-box">
+
+      <div
+        style="font-size:35px"
+      >
+        💬
       </div>
 
-      <div class="form-group">
+      <h2>
+        WhatsApp Support
+      </h2>
 
-        <label>
-          Password
-        </label>
-
-        <input
-          id="password"
-          type="password"
-          required
-          autocomplete="current-password"
-        />
-
-      </div>
+      <p
+        style="
+          color:#9ca6b7;
+          line-height:1.6;
+        "
+      >
+        Need help with payment,
+        delivery or your order?
+        Contact our support team.
+      </p>
 
       <button
-        id="authSubmit"
-        class="btn"
-        type="submit"
+        class="btn whatsapp"
+        onclick="openWhatsApp()"
       >
-        LOGIN
+        CHAT ON WHATSAPP
       </button>
 
-    </form>
+    </div>
 
-    <div class="auth-switch">
 
-      <span id="authQuestion">
-        Don't have an account?
-      </span>
+    <div class="support-box">
+
+      <div
+        style="font-size:35px"
+      >
+        📦
+      </div>
+
+      <h2>
+        Order Help
+      </h2>
+
+      <p
+        style="
+          color:#9ca6b7;
+          line-height:1.6;
+        "
+      >
+        Send your order number
+        when contacting support
+        so we can help you faster.
+      </p>
 
       <button
-        onclick="toggleAuth()"
-        id="authToggle"
+        class="btn"
+        onclick="showPage('orders')"
       >
-        REGISTER
+        VIEW MY ORDERS
+      </button>
+
+    </div>
+
+
+    <div class="support-box">
+
+      <div
+        style="font-size:35px"
+      >
+        💳
+      </div>
+
+      <h2>
+        Payment Help
+      </h2>
+
+      <p
+        style="
+          color:#9ca6b7;
+          line-height:1.6;
+        "
+      >
+        M-Pesa payments are
+        confirmed by the system.
+        Binance payments require
+        transaction verification.
+      </p>
+
+      <button
+        class="btn"
+        onclick="openWhatsApp('I need help with payment.')"
+      >
+        PAYMENT SUPPORT
       </button>
 
     </div>
@@ -750,137 +1450,302 @@ textarea{
 
 </section>
 
+
 <!-- =====================================================
-     ORDERS
+ADMIN
 ===================================================== -->
 
 <section
-  id="ordersPage"
+  id="page-admin"
   class="page"
 >
 
-  <h2 class="section-title">
-    MY ORDERS
-  </h2>
+  <div class="section-title">
+
+    <div>
+
+      <h2>
+        Admin Dashboard
+      </h2>
+
+      <div
+        style="
+          color:#7f8999;
+          font-size:12px;
+        "
+      >
+        DARK WEB STORE CONTROL CENTER
+      </div>
+
+    </div>
+
+    <button
+      class="btn"
+      onclick="loadAdmin()"
+    >
+      ↻ Refresh
+    </button>
+
+  </div>
+
+
+  <!-- STATS -->
 
   <div
-    id="orders"
-    class="orders"
+    class="admin-stats"
+    id="adminStats"
   ></div>
 
-</section>
 
-<!-- =====================================================
-     ADMIN
-===================================================== -->
+  <!-- TABS -->
 
-<section
-  id="adminPage"
-  class="page"
->
+  <div
+    class="admin-tabs"
+    style="margin-top:20px"
+  >
 
-  <h2 class="section-title">
-    ADMIN PANEL
-  </h2>
+    <button
+      class="admin-tab active"
+      onclick="adminTab('dashboard',this)"
+    >
+      📊 DASHBOARD
+    </button>
 
-  <div class="admin-grid">
+    <button
+      class="admin-tab"
+      onclick="adminTab('users',this)"
+    >
+      👥 USERS
+    </button>
 
-    <!-- ADD PRODUCT -->
+    <button
+      class="admin-tab"
+      onclick="adminTab('orders',this)"
+    >
+      🛒 ORDERS
+    </button>
 
-    <div class="panel">
+    <button
+      class="admin-tab"
+      onclick="adminTab('products',this)"
+    >
+      📦 PRODUCTS
+    </button>
+
+    <button
+      class="admin-tab"
+      onclick="adminTab('payments',this)"
+    >
+      💳 PAYMENTS
+    </button>
+
+  </div>
+
+
+  <!-- DASHBOARD -->
+
+  <div
+    id="admin-dashboard"
+    class="admin-section"
+    style="margin-top:20px"
+  >
+
+    <div class="card">
 
       <h3>
-        ADD PRODUCT
+        Store Overview
+      </h3>
+
+      <p
+        style="
+          color:#8f99a9;
+          line-height:1.7;
+        "
+      >
+        Use the tabs above to manage
+        customers, orders, products
+        and payments.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- USERS -->
+
+  <div
+    id="admin-users"
+    class="admin-section"
+    style="
+      display:none;
+      margin-top:20px
+    "
+  >
+
+    <div class="card">
+
+      <div class="section-title">
+        <h3>
+          👥 Registered Users
+        </h3>
+
+        <button
+          class="btn"
+          onclick="loadAdminUsers()"
+        >
+          Refresh
+        </button>
+      </div>
+
+      <div
+        id="adminUsers"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ORDERS -->
+
+  <div
+    id="admin-orders"
+    class="admin-section"
+    style="
+      display:none;
+      margin-top:20px
+    "
+  >
+
+    <div class="card">
+
+      <div class="section-title">
+        <h3>
+          🛒 Customer Orders
+        </h3>
+
+        <button
+          class="btn"
+          onclick="loadAdminOrders()"
+        >
+          Refresh
+        </button>
+      </div>
+
+      <div
+        id="adminOrders"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- PRODUCTS -->
+
+  <div
+    id="admin-products"
+    class="admin-section"
+    style="
+      display:none;
+      margin-top:20px
+    "
+  >
+
+    <div class="card">
+
+      <h3>
+        ➕ Add Digital Product
       </h3>
 
       <form
         id="productForm"
-        onsubmit="addProduct(event)"
+        onsubmit="createProduct(event)"
       >
 
-        <div class="form-group">
+        <div class="form-grid">
 
-          <label>
-            Product Name
-          </label>
+          <div class="field">
+            <label>
+              PRODUCT NAME
+            </label>
 
-          <input
-            id="productName"
-            required
-          />
+            <input
+              id="productName"
+              required
+            />
+          </div>
 
-        </div>
+          <div class="field">
+            <label>
+              KSH PRICE
+            </label>
 
-        <div class="form-group">
+            <input
+              id="productPrice"
+              type="number"
+              min="1"
+              step="0.01"
+              required
+            />
+          </div>
 
-          <label>
-            KSh Price
-          </label>
+          <div class="field">
+            <label>
+              USDT PRICE
+            </label>
 
-          <input
-            id="productPrice"
-            type="number"
-            min="0"
-            step="0.01"
-            required
-          />
+            <input
+              id="productCrypto"
+              type="number"
+              min="0"
+              step="0.01"
+            />
+          </div>
 
-        </div>
+          <div class="field">
+            <label>
+              PRODUCT IMAGE
+            </label>
 
-        <div class="form-group">
+            <input
+              id="productImage"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+            />
+          </div>
 
-          <label>
-            Binance / USDT Price
-          </label>
+          <div
+            class="field full"
+          >
+            <label>
+              DESCRIPTION
+            </label>
 
-          <input
-            id="productBinance"
-            placeholder="Example: 5 USDT"
-          />
+            <textarea
+              id="productDescription"
+            ></textarea>
+          </div>
 
-        </div>
+          <div
+            class="field full"
+          >
+            <label>
+              DIGITAL DELIVERY CONTENT
+            </label>
 
-        <div class="form-group">
-
-          <label>
-            Description
-          </label>
-
-          <textarea
-            id="productDescription"
-          ></textarea>
-
-        </div>
-
-        <div class="form-group">
-
-          <label>
-            Delivery Content
-          </label>
-
-          <textarea
-            id="deliveryContent"
-            placeholder="Content delivered to customer after payment."
-          ></textarea>
-
-        </div>
-
-        <div class="form-group">
-
-          <label>
-            Product Image
-          </label>
-
-          <input
-            id="productImage"
-            type="file"
-            accept="image/*"
-          />
+            <textarea
+              id="deliveryContent"
+              placeholder="Download link, license key, instructions, etc."
+            ></textarea>
+          </div>
 
         </div>
 
         <button
-          class="btn"
+          class="btn primary"
+          style="margin-top:15px"
           type="submit"
         >
           ADD PRODUCT
@@ -890,37 +1755,57 @@ textarea{
 
     </div>
 
-    <!-- ADMIN DATA -->
 
-    <div>
+    <div class="card">
 
-      <div class="panel">
+      <h3>
+        📦 Manage Products
+      </h3>
 
-        <h3>
-          PRODUCTS
-        </h3>
+      <div
+        id="adminProducts"
+      ></div>
 
-        <div
-          id="adminProducts"
-          class="admin-products"
-        ></div>
+    </div>
 
-      </div>
+  </div>
 
-      <br>
 
-      <div class="panel">
+  <!-- PAYMENTS -->
 
-        <h3>
-          ORDERS
-        </h3>
+  <div
+    id="admin-payments"
+    class="admin-section"
+    style="
+      display:none;
+      margin-top:20px
+    "
+  >
 
-        <div
-          id="adminOrders"
-          class="admin-orders"
-        ></div>
+    <div class="card">
 
-      </div>
+      <h3>
+        💳 Payment Management
+      </h3>
+
+      <p
+        style="
+          color:#8f99a9;
+          line-height:1.7;
+        "
+      >
+        M-Pesa payments are confirmed
+        through the Daraja callback.
+        Binance payments can be reviewed
+        and verified manually here.
+      </p>
+
+      <button
+        class="btn"
+        onclick="adminTab('orders')"
+      >
+        VIEW PAYMENT ORDERS
+      </button>
 
     </div>
 
@@ -930,8 +1815,33 @@ textarea{
 
 </main>
 
+
+<footer>
+
+  <strong>
+    DARK WEB
+  </strong>
+
+  &nbsp;•&nbsp;
+
+  POWERED BY DARK WEB
+
+  <br><br>
+
+  Digital products store •
+  Secure checkout •
+  Customer support
+
+  <br><br>
+
+  Support:
+  +254 781 601 410
+
+</footer>
+
+
 <!-- =====================================================
-     CHECKOUT MODAL
+CHECKOUT MODAL
 ===================================================== -->
 
 <div
@@ -941,10 +1851,10 @@ textarea{
 
   <div class="modal-box">
 
-    <div class="modal-header">
+    <div class="modal-head">
 
       <h2>
-        CHECKOUT
+        Checkout
       </h2>
 
       <button
@@ -956,77 +1866,154 @@ textarea{
 
     </div>
 
-    <div id="checkoutProduct"></div>
+    <div
+      id="checkoutProduct"
+      style="margin:15px 0"
+    ></div>
 
-    <hr>
+    <form
+      onsubmit="submitCheckout(event)"
+    >
 
-    <div class="form-group">
+      <div class="field">
+        <label>
+          DELIVERY EMAIL / CONTACT
+        </label>
 
-      <label>
-        Delivery Email / Target
-      </label>
+        <input
+          id="deliveryTarget"
+          required
+          placeholder="your@email.com"
+        />
+      </div>
 
-      <input
-        id="deliveryTarget"
-        placeholder="Email or delivery destination"
-      />
-
-    </div>
-
-    <div class="form-group">
-
-      <label>
-        Phone
-      </label>
-
-      <input
-        id="customerPhone"
-        placeholder="07XXXXXXXX"
-      />
-
-    </div>
-
-    <div class="form-group">
-
-      <label>
-        Payment Method
-      </label>
-
-      <select
-        id="paymentMethod"
-        onchange="paymentMethodChanged()"
+      <div
+        class="field"
+        style="margin-top:12px"
       >
 
-        <option value="mpesa">
-          M-Pesa
-        </option>
+        <label>
+          PHONE NUMBER
+        </label>
 
-        <option value="binance">
-          Binance / USDT
-        </option>
+        <input
+          id="checkoutPhone"
+          placeholder="2547XXXXXXXX"
+        />
 
-      </select>
+      </div>
+
+      <div
+        class="field"
+        style="margin-top:12px"
+      >
+
+        <label>
+          PAYMENT METHOD
+        </label>
+
+        <select
+          id="paymentMethod"
+          onchange="paymentMethodChanged()"
+        >
+
+          <option value="mpesa">
+            M-Pesa
+          </option>
+
+          <option value="binance">
+            Binance / USDT
+          </option>
+
+        </select>
+
+      </div>
+
+      <button
+        class="btn primary"
+        type="submit"
+        style="
+          width:100%;
+          margin-top:18px
+        "
+      >
+        CONTINUE PAYMENT
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+BINANCE MODAL
+===================================================== -->
+
+<div
+  id="binanceModal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <div class="modal-head">
+
+      <h2>
+        Binance / USDT
+      </h2>
+
+      <button
+        class="close"
+        onclick="closeModal('binanceModal')"
+      >
+        ×
+      </button>
 
     </div>
 
     <div
-      id="paymentInstructions"
-      class="payment-box"
+      id="binanceInfo"
+      style="
+        margin-top:15px;
+      "
     ></div>
 
-    <button
-      class="btn"
-      onclick="createOrder()"
+    <div
+      class="field"
+      style="margin-top:15px"
     >
-      CONTINUE PAYMENT
+
+      <label>
+        TRANSACTION HASH / TXID
+      </label>
+
+      <input
+        id="binanceTxid"
+        placeholder="Enter your transaction hash"
+      />
+
+    </div>
+
+    <button
+      class="btn primary"
+      style="
+        width:100%;
+        margin-top:15px
+      "
+      onclick="submitBinanceTxid()"
+    >
+      SUBMIT TRANSACTION
     </button>
 
   </div>
 
 </div>
 
+
 <!-- =====================================================
-     ORDER MODAL
+ORDER DETAILS MODAL
 ===================================================== -->
 
 <div
@@ -1036,10 +2023,10 @@ textarea{
 
   <div class="modal-box">
 
-    <div class="modal-header">
+    <div class="modal-head">
 
       <h2>
-        ORDER
+        Order Details
       </h2>
 
       <button
@@ -1053,23 +2040,37 @@ textarea{
 
     <div
       id="orderDetails"
+      style="margin-top:15px"
     ></div>
 
   </div>
 
 </div>
 
+
 <!-- =====================================================
-     TOAST
+TOAST
 ===================================================== -->
 
-<div id="toast"></div>
+<div
+  id="toast"
+  class="toast"
+></div>
+
 
 <script>
 
-/* ======================================================
-   STATE
-====================================================== */
+/* =========================================================
+CONFIG
+========================================================= */
+
+const SUPPORT_WHATSAPP =
+  "254781601410";
+
+
+/* =========================================================
+STATE
+========================================================= */
 
 let currentUser = null;
 
@@ -1079,65 +2080,71 @@ let selectedProduct = null;
 
 let currentOrder = null;
 
-/* ======================================================
-   API
-====================================================== */
+
+/* =========================================================
+API
+========================================================= */
 
 async function api(
   url,
   options = {}
 ){
 
+  const config = {
+    credentials:"include",
+    ...options
+  };
+
+  if(
+    config.body &&
+    !(config.body instanceof FormData)
+  ){
+
+    config.headers = {
+      "Content-Type":
+        "application/json",
+
+      ...(config.headers || {})
+    };
+
+  }
+
   const response =
     await fetch(
       url,
-      {
-        credentials:
-          "include",
-
-        ...options,
-
-        headers:{
-          ...(options.body instanceof FormData
-            ? {}
-            : {
-                "Content-Type":
-                  "application/json"
-              }),
-
-          ...(options.headers || {})
-        }
-      }
+      config
     );
 
-  let data;
+  let data = {};
 
   try{
     data =
       await response.json();
   }catch{
-    data = {
-      success:false,
-      message:
-        "Invalid server response."
-    };
+    data = {};
   }
 
   if(
-    !response.ok &&
-    !data.message
+    response.status === 401
   ){
 
-    data.message =
-      "Request failed.";
+    if(
+      url !== "/api/login" &&
+      url !== "/api/register"
+    ){
+
+      currentUser = null;
+      updateNav();
+    }
   }
 
   return data;
 }
 
-/* ======================================================
-   TOAST
-====================================================== */
+
+/* =========================================================
+TOAST
+========================================================= */
 
 function alertUser(
   message
@@ -1161,222 +2168,240 @@ function alertUser(
         "show"
       );
     },
-    3000
+    2800
   );
 }
 
-/* ======================================================
-   PAGE NAVIGATION
-====================================================== */
+
+/* =========================================================
+ESCAPE HTML
+========================================================= */
+
+function escapeHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+}
+
+
+/* =========================================================
+PAGE
+========================================================= */
 
 function showPage(
   page
 ){
 
-  const pages = [
-    "store",
-    "auth",
-    "orders",
-    "admin"
-  ];
-
-  pages.forEach(
-    name => {
-
-      const element =
-        document.getElementById(
-          name + "Page"
-        );
-
-      if(element){
-
-        element.classList.toggle(
-          "active",
-          name === page
-        );
-      }
-    }
-  );
-
   if(
-    page === "orders"
+    page === "orders" &&
+    !currentUser
   ){
 
-    if(!currentUser){
+    alertUser(
+      "Please login to view your orders."
+    );
 
-      showPage("auth");
-      return;
-    }
-
-    loadOrders();
+    page = "auth";
   }
 
   if(
-    page === "admin"
+    page === "account" &&
+    !currentUser
   ){
 
-    if(
+    alertUser(
+      "Please login first."
+    );
+
+    page = "auth";
+  }
+
+  if(
+    page === "admin" &&
+    (
       !currentUser ||
       Number(
         currentUser.is_admin
       ) !== 1
-    ){
+    )
+  ){
 
-      showPage("auth");
-      return;
-    }
+    alertUser(
+      "Admin access required."
+    );
 
-    loadAdminProducts();
-    loadAdminOrders();
+    page = "auth";
   }
 
-  window.scrollTo(
-    0,
-    0
-  );
+  document
+    .querySelectorAll(
+      ".page"
+    )
+    .forEach(
+      p =>
+        p.classList.remove(
+          "active"
+        )
+    );
+
+  const target =
+    document.getElementById(
+      "page-" + page
+    );
+
+  if(target){
+    target.classList.add(
+      "active"
+    );
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+  if(page === "store"){
+    loadProducts();
+  }
+
+  if(page === "orders"){
+    loadMyOrders();
+  }
+
+  if(page === "account"){
+    loadAccount();
+  }
+
+  if(page === "admin"){
+    loadAdmin();
+  }
 }
 
-/* ======================================================
-   NAVIGATION UPDATE
-====================================================== */
+
+/* =========================================================
+NAV
+========================================================= */
 
 function updateNav(){
 
-  const adminNav =
-    document.getElementById(
-      "adminNav"
-    );
+  const logged =
+    !!currentUser;
 
-  const ordersNav =
-    document.getElementById(
-      "ordersNav"
-    );
+  document.getElementById(
+    "ordersNav"
+  ).style.display =
+    logged
+      ? "inline-block"
+      : "none";
 
-  const authNav =
-    document.getElementById(
-      "authNav"
-    );
+  document.getElementById(
+    "accountNav"
+  ).style.display =
+    logged
+      ? "inline-block"
+      : "none";
 
-  const logoutBtn =
-    document.getElementById(
-      "logoutBtn"
-    );
+  document.getElementById(
+    "logoutNav"
+  ).style.display =
+    logged
+      ? "inline-block"
+      : "none";
 
-  if(currentUser){
+  document.getElementById(
+    "loginNav"
+  ).style.display =
+    logged
+      ? "none"
+      : "inline-block";
 
-    ordersNav.classList.remove(
-      "hidden"
-    );
-
-    logoutBtn.classList.remove(
-      "hidden"
-    );
-
-    authNav.classList.add(
-      "hidden"
-    );
-
-    if(
-      Number(
-        currentUser.is_admin
-      ) === 1
-    ){
-
-      adminNav.classList.remove(
-        "hidden"
-      );
-
-    }else{
-
-      adminNav.classList.add(
-        "hidden"
-      );
-    }
-
-  }else{
-
-    ordersNav.classList.add(
-      "hidden"
-    );
-
-    adminNav.classList.add(
-      "hidden"
-    );
-
-    logoutBtn.classList.add(
-      "hidden"
-    );
-
-    authNav.classList.remove(
-      "hidden"
-    );
-  }
+  document.getElementById(
+    "adminNav"
+  ).style.display =
+    logged &&
+    Number(
+      currentUser.is_admin
+    ) === 1
+      ? "inline-block"
+      : "none";
 }
 
-/* ======================================================
-   AUTH TOGGLE
-====================================================== */
+
+/* =========================================================
+AUTH
+========================================================= */
 
 function toggleAuth(){
 
   authRegister =
     !authRegister;
 
-  document
-    .getElementById(
-      "authTitle"
-    )
-    .textContent =
-      authRegister
-        ? "REGISTER"
-        : "LOGIN";
+  document.getElementById(
+    "nameField"
+  ).style.display =
+    authRegister
+      ? "flex"
+      : "none";
 
-  document
-    .getElementById(
-      "authSubmit"
-    )
-    .textContent =
-      authRegister
-        ? "CREATE ACCOUNT"
-        : "LOGIN";
+  document.getElementById(
+    "authTitle"
+  ).textContent =
+    authRegister
+      ? "Create Account"
+      : "Login";
 
-  document
-    .getElementById(
-      "nameGroup"
-    )
-    .classList.toggle(
-      "hidden",
-      !authRegister
-    );
+  document.getElementById(
+    "authSubtitle"
+  ).textContent =
+    authRegister
+      ? "Create your DARK WEB customer account."
+      : "Login to manage your orders.";
 
-  document
-    .getElementById(
-      "name"
-    ).required =
-      authRegister;
+  document.getElementById(
+    "authSubmit"
+  ).textContent =
+    authRegister
+      ? "CREATE ACCOUNT"
+      : "LOGIN";
 
-  document
-    .getElementById(
-      "authQuestion"
-    )
-    .textContent =
-      authRegister
-        ? "Already have an account?"
-        : "Don't have an account?";
+  document.getElementById(
+    "authSwitchText"
+  ).textContent =
+    authRegister
+      ? "Already have an account?"
+      : "Don't have an account?";
 
-  document
-    .getElementById(
-      "authToggle"
-    )
-    .textContent =
-      authRegister
-        ? "LOGIN"
-        : "REGISTER";
+  document.getElementById(
+    "authSwitchButton"
+  ).textContent =
+    authRegister
+      ? "Login"
+      : "Register";
 }
 
-/* ======================================================
-   LOGIN / REGISTER
-====================================================== */
 
 async function submitAuth(
   event
@@ -1385,27 +2410,19 @@ async function submitAuth(
   event.preventDefault();
 
   const name =
-    document
-      .getElementById(
-        "name"
-      )
-      .value
-      .trim();
+    document.getElementById(
+      "name"
+    ).value.trim();
 
   const email =
-    document
-      .getElementById(
-        "email"
-      )
-      .value
-      .trim();
+    document.getElementById(
+      "email"
+    ).value.trim();
 
   const password =
-    document
-      .getElementById(
-        "password"
-      )
-      .value;
+    document.getElementById(
+      "password"
+    ).value;
 
   const endpoint =
     authRegister
@@ -1436,7 +2453,9 @@ async function submitAuth(
       }
     );
 
-  if(!data.success){
+  if(
+    !data.success
+  ){
 
     alertUser(
       data.message ||
@@ -1451,16 +2470,16 @@ async function submitAuth(
 
   updateNav();
 
+  document
+    .getElementById(
+      "authForm"
+    )
+    .reset();
+
   alertUser(
     "Welcome, " +
     currentUser.name
   );
-
-  /*
-     IMPORTANT:
-     ADMIN -> ADMIN PANEL
-     CUSTOMER -> STORE
-  */
 
   if(
     Number(
@@ -1477,26 +2496,11 @@ async function submitAuth(
     showPage(
       "store"
     );
+
   }
 
-  document
-    .getElementById(
-      "authForm"
-    )
-    .reset();
-
-  if(authRegister){
-
-    authRegister =
-      false;
-
-    toggleAuth();
-  }
 }
 
-/* ======================================================
-   LOGOUT
-====================================================== */
 
 async function logout(){
 
@@ -1507,90 +2511,71 @@ async function logout(){
     }
   );
 
-  currentUser =
-    null;
+  currentUser = null;
 
   updateNav();
+
+  alertUser(
+    "You have been logged out."
+  );
 
   showPage(
     "store"
   );
-
-  alertUser(
-    "Logged out."
-  );
 }
 
-/* ======================================================
-   LOAD PRODUCTS
-====================================================== */
+
+/* =========================================================
+PRODUCTS
+========================================================= */
 
 async function loadProducts(){
+
+  const grid =
+    document.getElementById(
+      "productGrid"
+    );
+
+  grid.innerHTML =
+    `<div class="empty">
+      Loading products...
+    </div>`;
 
   const data =
     await api(
       "/api/products"
     );
 
-  const container =
-    document.getElementById(
-      "products"
-    );
-
-  if(!data.success){
-
-    container.innerHTML =
-      "<p>Could not load products.</p>";
-
-    return;
-  }
-
   if(
-    !data.products.length
+    !data.success ||
+    !data.products?.length
   ){
 
-    container.innerHTML =
-      `
-        <div class="notice">
-          No products available yet.
-        </div>
-      `;
+    grid.innerHTML =
+      `<div class="empty">
+        No products available yet.
+      </div>`;
 
     return;
   }
 
-  container.innerHTML =
+  grid.innerHTML =
     data.products
       .map(
         product => {
 
           const image =
             product.image_url
-              ? `
-                <img
-                  class="product-image"
-                  src="${escapeHtml(
-                    product.image_url
-                  )}"
-                  alt="${escapeHtml(
-                    product.name
-                  )}"
-                >
-              `
-              : `
-                <div
-                  class="product-image"
-                  style="
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    color:#00ff88;
-                    font-size:30px;
-                  "
-                >
-                  DARK WEB
-                </div>
-              `;
+              ? `<img
+                   class="product-image"
+                   src="${escapeHtml(product.image_url)}"
+                   alt="${escapeHtml(product.name)}"
+                 >`
+              : `<div
+                   class="product-image placeholder"
+                 >
+                   ◈
+                 </div>`;
 
           return `
             <div class="product">
@@ -1599,46 +2584,51 @@ async function loadProducts(){
 
               <div class="product-body">
 
-                <h3>
-                  ${escapeHtml(
-                    product.name
-                  )}
-                </h3>
-
-                <p>
-                  ${escapeHtml(
-                    product.description ||
-                    ""
-                  )}
-                </p>
-
-                <div class="price">
-                  KSh ${Number(
-                    product.price_kes ||
-                    0
-                  ).toLocaleString()}
+                <div class="product-name">
+                  ${escapeHtml(product.name)}
                 </div>
 
-                ${
-                  product.binance_price
-                    ? `
-                      <div class="crypto-price">
-                        ${escapeHtml(
-                          product.binance_price
-                        )}
-                      </div>
-                    `
-                    : ""
-                }
+                <div class="product-desc">
+                  ${escapeHtml(
+                    product.description ||
+                    "Premium digital product."
+                  )}
+                </div>
 
-                <br>
+                <div class="price-row">
 
-                <button
-                  class="btn"
-                  onclick="openCheckout(${product.id})"
-                >
-                  BUY NOW
-                </button>
+                  <div>
+
+                    <div class="price">
+                      KSh ${Number(
+                        product.price_kes
+                      ).toLocaleString()}
+                    </div>
+
+                    ${
+                      Number(
+                        product.binance_price
+                      ) > 0
+                      ? `
+                        <div class="crypto">
+                          ≈ ${Number(
+                            product.binance_price
+                          )} USDT
+                        </div>
+                      `
+                      : ""
+                    }
+
+                  </div>
+
+                  <button
+                    class="btn primary"
+                    onclick="buyProduct(${product.id})"
+                  >
+                    BUY NOW
+                  </button>
+
+                </div>
 
               </div>
 
@@ -1649,22 +2639,19 @@ async function loadProducts(){
       .join("");
 }
 
-/* ======================================================
-   OPEN CHECKOUT
-====================================================== */
 
-async function openCheckout(
-  productId
+async function buyProduct(
+  id
 ){
 
   if(!currentUser){
 
-    showPage(
-      "auth"
+    alertUser(
+      "Login or register before buying."
     );
 
-    alertUser(
-      "Please login before buying."
+    showPage(
+      "auth"
     );
 
     return;
@@ -1675,153 +2662,79 @@ async function openCheckout(
       "/api/products"
     );
 
-  if(!data.success){
+  const product =
+    data.products?.find(
+      p =>
+        Number(p.id) ===
+        Number(id)
+    );
+
+  if(!product){
+
+    alertUser(
+      "Product not found."
+    );
+
     return;
   }
 
   selectedProduct =
-    data.products.find(
-      p =>
-        Number(p.id) ===
-        Number(productId)
-    );
+    product;
 
-  if(!selectedProduct){
-    alertUser(
-      "Product not found."
-    );
-    return;
-  }
+  document.getElementById(
+    "checkoutProduct"
+  ).innerHTML = `
+    <div class="card">
 
-  document
-    .getElementById(
-      "checkoutProduct"
-    )
-    .innerHTML =
-      `
-        <h3>
-          ${escapeHtml(
-            selectedProduct.name
-          )}
-        </h3>
+      <strong>
+        ${escapeHtml(product.name)}
+      </strong>
 
-        <div class="price">
-          KSh ${Number(
-            selectedProduct.price_kes
-          ).toLocaleString()}
-        </div>
-      `;
+      <div
+        style="
+          color:#9da6b6;
+          margin-top:6px;
+          font-size:13px;
+        "
+      >
+        KSh ${Number(
+          product.price_kes
+        ).toLocaleString()}
 
-  document
-    .getElementById(
-      "deliveryTarget"
-    )
-    .value =
-      currentUser.email;
+        ${
+          Number(
+            product.binance_price
+          ) > 0
+          ? ` • ${Number(
+              product.binance_price
+            )} USDT`
+          : ""
+        }
+      </div>
 
-  document
-    .getElementById(
-      "customerPhone"
-    )
-    .value = "";
+    </div>
+  `;
 
-  document
-    .getElementById(
-      "paymentMethod"
-    )
-    .value =
-      "mpesa";
+  document.getElementById(
+    "deliveryTarget"
+  ).value =
+    currentUser.email;
 
-  paymentMethodChanged();
-
-  document
-    .getElementById(
-      "checkoutModal"
-    )
-    .classList.add(
-      "show"
-    );
+  openModal(
+    "checkoutModal"
+  );
 }
 
-/* ======================================================
-   PAYMENT METHOD
-====================================================== */
 
-async function paymentMethodChanged(){
+/* =========================================================
+CHECKOUT
+========================================================= */
 
-  const method =
-    document
-      .getElementById(
-        "paymentMethod"
-      )
-      .value;
+async function submitCheckout(
+  event
+){
 
-  const box =
-    document
-      .getElementById(
-        "paymentInstructions"
-      );
-
-  if(
-    method === "mpesa"
-  ){
-
-    box.innerHTML =
-      `
-        <div class="notice">
-          Enter your M-Pesa phone number.
-          After continuing, an STK Push will
-          be sent to your phone.
-        </div>
-      `;
-
-  }else{
-
-    const data =
-      await api(
-        "/api/payment/binance"
-      );
-
-    box.innerHTML =
-      `
-        <div class="notice">
-          Send the exact USDT amount shown below
-          to the configured wallet, then submit
-          your transaction hash.
-        </div>
-
-        <br>
-
-        <strong>
-          Network:
-        </strong>
-
-        ${escapeHtml(
-          data.network ||
-          "TRC20"
-        )}
-
-        <br><br>
-
-        <strong>
-          Wallet:
-        </strong>
-
-        <div class="wallet">
-          ${escapeHtml(
-            data.wallet ||
-            "Wallet not configured yet."
-          )}
-        </div>
-      `;
-  }
-}
-
-/* ======================================================
-   CREATE ORDER
-====================================================== */
-
-async function createOrder(){
+  event.preventDefault();
 
   if(!selectedProduct){
 
@@ -1833,55 +2746,25 @@ async function createOrder(){
   }
 
   const deliveryTarget =
-    document
-      .getElementById(
-        "deliveryTarget"
-      )
-      .value
-      .trim();
+    document.getElementById(
+      "deliveryTarget"
+    ).value.trim();
 
   const phone =
-    document
-      .getElementById(
-        "customerPhone"
-      )
-      .value
-      .trim();
+    document.getElementById(
+      "checkoutPhone"
+    ).value.trim();
 
   const paymentMethod =
-    document
-      .getElementById(
-        "paymentMethod"
-      )
-      .value;
-
-  if(!deliveryTarget){
-
-    alertUser(
-      "Enter delivery email/target."
-    );
-
-    return;
-  }
-
-  if(
-    paymentMethod === "mpesa" &&
-    !phone
-  ){
-
-    alertUser(
-      "Enter your M-Pesa phone number."
-    );
-
-    return;
-  }
+    document.getElementById(
+      "paymentMethod"
+    ).value;
 
   const data =
     await api(
       "/api/orders",
       {
         method:"POST",
-
         body:
           JSON.stringify({
             product_id:
@@ -1890,13 +2773,13 @@ async function createOrder(){
             payment_method:
               paymentMethod,
 
-            delivery_method:
-              "email",
-
             delivery_target:
               deliveryTarget,
 
-            phone
+            phone,
+
+            delivery_method:
+              "email"
           })
       }
     );
@@ -1914,46 +2797,61 @@ async function createOrder(){
   currentOrder =
     data.order;
 
+  closeModal(
+    "checkoutModal"
+  );
+
   if(
-    paymentMethod === "mpesa"
+    paymentMethod ===
+    "mpesa"
   ){
 
-    await startMpesaPayment();
+    await startMpesa(
+      currentOrder
+    );
 
   }else{
 
-    closeModal(
-      "checkoutModal"
+    await showBinance(
+      currentOrder
     );
 
-    showBinanceInstructions();
   }
 }
 
-/* ======================================================
-   M-PESA PAYMENT
-====================================================== */
 
-async function startMpesaPayment(){
+/* =========================================================
+MPESA
+========================================================= */
+
+async function startMpesa(
+  order
+){
 
   const phone =
-    document
-      .getElementById(
-        "customerPhone"
-      )
-      .value
-      .trim();
+    document.getElementById(
+      "checkoutPhone"
+    ).value.trim();
+
+  if(!phone){
+
+    alertUser(
+      "Enter your M-Pesa phone number."
+    );
+
+    return;
+  }
 
   const data =
     await api(
-      "/api/orders/" +
-      currentOrder.id +
-      "/mpesa",
+      "/api/mpesa/stk",
       {
         method:"POST",
-
         body:
           JSON.stringify({
+            order_id:
+              order.id,
+
             phone
           })
       }
@@ -1963,118 +2861,144 @@ async function startMpesaPayment(){
 
     alertUser(
       data.message ||
-      "M-Pesa payment failed."
+      "M-Pesa could not start."
     );
 
     return;
   }
 
-  closeModal(
-    "checkoutModal"
-  );
-
   alertUser(
-    "M-Pesa STK Push sent. Complete payment on your phone."
+    data.message ||
+    "Check your phone for the M-Pesa prompt."
   );
 
-  setTimeout(
-    () => {
-      showOrder(
-        currentOrder.id
-      );
-    },
-    1500
+  showPage(
+    "orders"
   );
 }
 
-/* ======================================================
-   BINANCE
-====================================================== */
 
-function showBinanceInstructions(){
+/* =========================================================
+BINANCE
+========================================================= */
 
-  const modal =
-    document.getElementById(
-      "orderModal"
+async function showBinance(
+  order
+){
+
+  const data =
+    await api(
+      "/api/binance-info"
     );
 
-  const details =
-    document.getElementById(
-      "orderDetails"
-    );
+  document.getElementById(
+    "binanceInfo"
+  ).innerHTML = `
 
-  details.innerHTML =
-    `
-      <div class="notice">
+    <div class="card">
 
-        <strong>
-          Order:
-        </strong>
+      <div
+        style="
+          color:#9ca6b6;
+          font-size:11px;
+          font-weight:900;
+        "
+      >
+        SEND EXACT PAYMENT
+      </div>
 
-        ${escapeHtml(
-          currentOrder.order_number
-        )}
+      <div
+        style="
+          font-size:26px;
+          font-weight:1000;
+          margin:8px 0;
+        "
+      >
+        ${Number(
+          order.amount_crypto
+        )} USDT
+      </div>
 
-        <br><br>
-
-        Send:
-
+      <div
+        style="
+          color:#8e98a8;
+          font-size:12px;
+        "
+      >
+        Network:
         <strong>
           ${escapeHtml(
-            currentOrder.amount_crypto ||
-            "the exact USDT amount"
+            data.network ||
+            "TRC20"
           )}
         </strong>
-
-        <br><br>
-
-        After payment, enter your
-        transaction hash below.
-
       </div>
 
-      <br>
-
-      <div class="form-group">
-
-        <label>
-          Binance Transaction Hash
-        </label>
-
-        <input
-          id="binanceTxid"
-          placeholder="Paste TXID / transaction hash"
-        >
-
-      </div>
-
-      <button
-        class="btn"
-        onclick="submitBinanceTxid()"
+      <div
+        style="
+          margin-top:12px;
+          padding:12px;
+          border-radius:10px;
+          background:#05070b;
+          word-break:break-all;
+          font-size:12px;
+        "
       >
-        SUBMIT TRANSACTION
-      </button>
-    `;
+        ${escapeHtml(
+          data.address ||
+          "Wallet address not configured."
+        )}
+      </div>
 
-  modal.classList.add(
-    "show"
+      <div
+        style="
+          color:#8f99aa;
+          font-size:11px;
+          margin-top:10px;
+          line-height:1.6;
+        "
+      >
+        After sending the payment,
+        enter your transaction hash below.
+        An admin will verify it.
+      </div>
+
+    </div>
+
+  `;
+
+  document.getElementById(
+    "binanceTxid"
+  ).value = "";
+
+  openModal(
+    "binanceModal"
   );
 }
+
 
 async function submitBinanceTxid(){
 
-  const txid =
-    document
-      .getElementById(
-        "binanceTxid"
-      )
-      .value
-      .trim();
-
-  if(!txid){
+  if(!currentOrder){
 
     alertUser(
-      "Enter the transaction hash."
+      "Order not found."
+    );
+
+    return;
+  }
+
+  const txid =
+    document.getElementById(
+      "binanceTxid"
+    ).value.trim();
+
+  if(
+    txid.length < 8
+  ){
+
+    alertUser(
+      "Enter your transaction hash."
     );
 
     return;
@@ -2082,12 +3006,9 @@ async function submitBinanceTxid(){
 
   const data =
     await api(
-      "/api/orders/" +
-      currentOrder.id +
-      "/binance",
+      `/api/orders/${currentOrder.id}/binance-txid`,
       {
         method:"POST",
-
         body:
           JSON.stringify({
             txid
@@ -2106,76 +3027,98 @@ async function submitBinanceTxid(){
   }
 
   closeModal(
-    "orderModal"
+    "binanceModal"
   );
 
   alertUser(
-    "Transaction submitted for verification."
+    "Payment submitted for verification."
   );
 
-  loadOrders();
+  showPage(
+    "orders"
+  );
 }
 
-/* ======================================================
-   LOAD CUSTOMER ORDERS
-====================================================== */
 
-async function loadOrders(){
+/* =========================================================
+ORDERS
+========================================================= */
 
-  const container =
+async function loadMyOrders(){
+
+  if(!currentUser)
+    return;
+
+  const box =
     document.getElementById(
-      "orders"
+      "ordersList"
     );
 
-  if(!currentUser){
-
-    container.innerHTML =
-      "<p>Please login.</p>";
-
-    return;
-  }
+  box.innerHTML =
+    `<div class="empty">
+      Loading your orders...
+    </div>`;
 
   const data =
     await api(
-      "/api/orders"
+      "/api/my-orders"
     );
 
-  if(!data.success){
-
-    container.innerHTML =
-      `
-        <div class="notice">
-          ${escapeHtml(
-            data.message ||
-            "Could not load orders."
-          )}
-        </div>
-      `;
-
-    return;
-  }
-
   if(
-    !data.orders.length
+    !data.success ||
+    !data.orders?.length
   ){
 
-    container.innerHTML =
-      `
-        <div class="notice">
-          You don't have any orders yet.
+    box.innerHTML =
+      `<div class="empty">
+
+        <div
+          style="
+            font-size:40px;
+            margin-bottom:10px;
+          "
+        >
+          🛒
         </div>
-      `;
+
+        You have no orders yet.
+
+        <br><br>
+
+        <button
+          class="btn primary"
+          onclick="showPage('store')"
+        >
+          SHOP NOW
+        </button>
+
+      </div>`;
 
     return;
   }
 
-  container.innerHTML =
+  box.innerHTML =
     data.orders
       .map(
         order => {
 
+          const paymentClass =
+            order.payment_status ===
+            "paid"
+              ? "paid"
+              : order.payment_status ===
+                "failed"
+                ? "failed"
+                : "pending";
+
+          const deliveryClass =
+            order.delivery_status ===
+            "delivered"
+              ? "delivered"
+              : "";
+
           return `
-            <div class="order">
+            <div class="card order-card">
 
               <div class="order-top">
 
@@ -2187,10 +3130,15 @@ async function loadOrders(){
                     )}
                   </div>
 
-                  <div>
-                    ${escapeHtml(
-                      order.product_name ||
-                      "Product"
+                  <div
+                    style="
+                      color:#727c8c;
+                      font-size:11px;
+                      margin-top:4px;
+                    "
+                  >
+                    ${formatDate(
+                      order.created_at
                     )}
                   </div>
 
@@ -2198,46 +3146,138 @@ async function loadOrders(){
 
                 <div>
 
-                  <span class="status ${
-                    escapeHtml(
-                      order.payment_status
-                    )
-                  }">
-
+                  <span
+                    class="status ${paymentClass}"
+                  >
+                    PAYMENT:
                     ${escapeHtml(
                       order.payment_status
                     )}
+                  </span>
 
+                  <span
+                    class="status ${deliveryClass}"
+                    style="margin-left:5px"
+                  >
+                    DELIVERY:
+                    ${escapeHtml(
+                      order.delivery_status
+                    )}
                   </span>
 
                 </div>
 
               </div>
 
-              <br>
 
-              <div>
-                Payment:
+              <div class="order-product">
+
                 ${escapeHtml(
-                  order.payment_method
+                  order.product_name ||
+                  "Digital Product"
                 )}
+
               </div>
 
-              <div>
-                Delivery:
-                ${escapeHtml(
-                  order.delivery_status
-                )}
+
+              <div class="order-meta">
+
+                <div>
+                  AMOUNT
+                  <strong>
+                    KSh ${Number(
+                      order.amount_kes
+                    ).toLocaleString()}
+                  </strong>
+                </div>
+
+                <div>
+                  PAYMENT
+                  <strong>
+                    ${escapeHtml(
+                      order.payment_method
+                    ).toUpperCase()}
+                  </strong>
+                </div>
+
+                <div>
+                  DELIVERY
+                  <strong>
+                    ${escapeHtml(
+                      order.delivery_target
+                    )}
+                  </strong>
+                </div>
+
               </div>
 
-              <br>
 
-              <button
-                class="btn secondary"
-                onclick="showOrder(${order.id})"
+              ${
+                order.delivery_notes
+                ? `
+                  <div
+                    style="
+                      margin-top:14px;
+                      padding:12px;
+                      border-radius:10px;
+                      background:
+                        rgba(255,255,255,.04);
+                      color:#aab2c0;
+                      font-size:12px;
+                    "
+                  >
+                    <strong>
+                      Delivery note:
+                    </strong>
+                    ${escapeHtml(
+                      order.delivery_notes
+                    )}
+                  </div>
+                `
+                : ""
+              }
+
+
+              <div
+                style="
+                  display:flex;
+                  gap:8px;
+                  flex-wrap:wrap;
+                  margin-top:16px;
+                "
               >
-                VIEW ORDER
-              </button>
+
+                <button
+                  class="btn"
+                  onclick="viewOrder(${order.id})"
+                >
+                  VIEW ORDER
+                </button>
+
+                ${
+                  order.payment_method ===
+                    "binance" &&
+                  order.payment_status !==
+                    "paid"
+                  ? `
+                    <button
+                      class="btn blue"
+                      onclick="continueBinance(${order.id})"
+                    >
+                      SUBMIT TXID
+                    </button>
+                  `
+                  : ""
+                }
+
+                <button
+                  class="btn"
+                  onclick="openWhatsApp('Hello DARK WEB Support, I need help with order ${escapeHtml(order.order_number)}.')"
+                >
+                  💬 SUPPORT
+                </button>
+
+              </div>
 
             </div>
           `;
@@ -2246,18 +3286,14 @@ async function loadOrders(){
       .join("");
 }
 
-/* ======================================================
-   SHOW ORDER
-====================================================== */
 
-async function showOrder(
+async function viewOrder(
   id
 ){
 
   const data =
     await api(
-      "/api/orders/" +
-      id
+      `/api/orders/${id}`
     );
 
   if(!data.success){
@@ -2270,433 +3306,625 @@ async function showOrder(
     return;
   }
 
+  const order =
+    data.order;
+
+  currentOrder =
+    order;
+
+  document.getElementById(
+    "orderDetails"
+  ).innerHTML = `
+
+    <div class="card">
+
+      <div
+        style="
+          color:#8d97a7;
+          font-size:11px;
+        "
+      >
+        ORDER NUMBER
+      </div>
+
+      <div
+        style="
+          font-size:20px;
+          font-weight:1000;
+          margin-top:5px;
+        "
+      >
+        ${escapeHtml(
+          order.order_number
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>
+        ${escapeHtml(
+          order.product_name
+        )}
+      </h3>
+
+      <div
+        style="
+          color:#a0a9b8;
+          line-height:1.6;
+          font-size:13px;
+        "
+      >
+        ${escapeHtml(
+          order.product_description ||
+          ""
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="order-meta">
+
+        <div>
+          PAYMENT
+          <strong>
+            ${escapeHtml(
+              order.payment_status
+            )}
+          </strong>
+        </div>
+
+        <div>
+          DELIVERY
+          <strong>
+            ${escapeHtml(
+              order.delivery_status
+            )}
+          </strong>
+        </div>
+
+        <div>
+          METHOD
+          <strong>
+            ${escapeHtml(
+              order.payment_method
+            ).toUpperCase()}
+          </strong>
+        </div>
+
+        <div>
+          AMOUNT
+          <strong>
+            KSh ${Number(
+              order.amount_kes
+            ).toLocaleString()}
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    ${
+      order.delivery_status ===
+        "delivered" &&
+      order.delivery_content
+      ? `
+        <div
+          class="card"
+          style="
+            border-color:
+              rgba(25,195,125,.3);
+          "
+        >
+
+          <h3>
+            🔑 Your Digital Delivery
+          </h3>
+
+          <div
+            style="
+              white-space:pre-wrap;
+              word-break:break-word;
+              line-height:1.7;
+              color:#dce2ea;
+            "
+          >
+            ${escapeHtml(
+              order.delivery_content
+            )}
+          </div>
+
+        </div>
+      `
+      : ""
+    }
+
+  `;
+
+  openModal(
+    "orderModal"
+  );
+}
+
+
+async function continueBinance(
+  id
+){
+
+  const data =
+    await api(
+      `/api/orders/${id}`
+    );
+
+  if(!data.success){
+
+    alertUser(
+      "Order not found."
+    );
+
+    return;
+  }
+
   currentOrder =
     data.order;
 
-  document
-    .getElementById(
-      "orderDetails"
-    )
-    .innerHTML =
-      `
+  showBinance(
+    currentOrder
+  );
+}
+
+
+/* =========================================================
+ACCOUNT
+========================================================= */
+
+async function loadAccount(){
+
+  if(!currentUser)
+    return;
+
+  const data =
+    await api(
+      "/api/account"
+    );
+
+  if(!data.success)
+    return;
+
+  const user =
+    data.user;
+
+  document.getElementById(
+    "accountContent"
+  ).innerHTML = `
+
+    <div class="account-grid">
+
+      <div class="account-box">
+
+        <div class="account-icon">
+          👤
+        </div>
+
+        <div
+          style="
+            color:#7f8999;
+            font-size:11px;
+          "
+        >
+          NAME
+        </div>
+
         <h3>
           ${escapeHtml(
-            data.order.product_name
+            user.name
           )}
         </h3>
 
-        <div class="notice">
+      </div>
 
-          <strong>
-            Order:
-          </strong>
 
-          ${escapeHtml(
-            data.order.order_number
-          )}
+      <div class="account-box">
 
-          <br><br>
-
-          Payment:
-          ${escapeHtml(
-            data.order.payment_status
-          )}
-
-          <br>
-
-          Delivery:
-          ${escapeHtml(
-            data.order.delivery_status
-          )}
-
+        <div class="account-icon">
+          ✉️
         </div>
 
-        ${
-          data.order.payment_method ===
-          "binance" &&
-          data.order.payment_status !==
-          "paid"
-            ? `
-              <br>
+        <div
+          style="
+            color:#7f8999;
+            font-size:11px;
+          "
+        >
+          EMAIL
+        </div>
 
-              <div class="form-group">
+        <h3>
+          ${escapeHtml(
+            user.email
+          )}
+        </h3>
 
-                <label>
-                  Binance Transaction Hash
-                </label>
+      </div>
 
-                <input
-                  id="binanceTxid"
-                  value="${escapeHtml(
-                    data.order.binance_txid ||
-                    ""
-                  )}"
-                  placeholder="Paste TXID"
-                >
 
-              </div>
+      <div class="account-box">
 
-              <button
-                class="btn"
-                onclick="submitBinanceTxid()"
-              >
-                SUBMIT TXID
-              </button>
-            `
-            : ""
-        }
+        <div class="account-icon">
+          🛒
+        </div>
 
-        ${
-          data.order.payment_status ===
-          "paid"
-            ? `
-              <br>
+        <h3>
+          My Orders
+        </h3>
 
-              <div class="notice">
+        <p
+          style="
+            color:#8993a3;
+            font-size:13px;
+          "
+        >
+          View and track all your purchases.
+        </p>
 
-                Payment confirmed.
+        <button
+          class="btn primary"
+          onclick="showPage('orders')"
+        >
+          VIEW ORDERS
+        </button>
 
-                <br><br>
+      </div>
 
-                Delivery status:
-                <strong>
-                  ${escapeHtml(
-                    data.order.delivery_status
-                  )}
-                </strong>
 
-              </div>
-            `
-            : ""
-        }
-      `;
+      <div class="account-box">
 
-  document
-    .getElementById(
-      "orderModal"
-    )
-    .classList.add(
-      "show"
-    );
+        <div class="account-icon">
+          💬
+        </div>
+
+        <h3>
+          Support
+        </h3>
+
+        <p
+          style="
+            color:#8993a3;
+            font-size:13px;
+          "
+        >
+          Contact DARK WEB support.
+        </p>
+
+        <button
+          class="btn whatsapp"
+          onclick="openWhatsApp()"
+        >
+          WHATSAPP
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
 }
 
-/* ======================================================
-   ADMIN PRODUCTS
-====================================================== */
 
-async function loadAdminProducts(){
+/* =========================================================
+ADMIN
+========================================================= */
 
-  const container =
+async function loadAdmin(){
+
+  if(
+    !currentUser ||
+    Number(
+      currentUser.is_admin
+    ) !== 1
+  ){
+    return;
+  }
+
+  await Promise.all([
+    loadAdminStats(),
+    loadAdminUsers(),
+    loadAdminOrders(),
+    loadAdminProducts()
+  ]);
+}
+
+
+async function loadAdminStats(){
+
+  const data =
+    await api(
+      "/api/admin/stats"
+    );
+
+  if(!data.success)
+    return;
+
+  const s =
+    data.stats;
+
+  document.getElementById(
+    "adminStats"
+  ).innerHTML = `
+
+    <div class="stat">
+
+      <div class="stat-number">
+        ${s.users}
+      </div>
+
+      <div class="stat-label">
+        CUSTOMERS
+      </div>
+
+    </div>
+
+    <div class="stat">
+
+      <div class="stat-number">
+        ${s.orders}
+      </div>
+
+      <div class="stat-label">
+        ORDERS
+      </div>
+
+    </div>
+
+    <div class="stat">
+
+      <div class="stat-number">
+        ${s.products}
+      </div>
+
+      <div class="stat-label">
+        ACTIVE PRODUCTS
+      </div>
+
+    </div>
+
+    <div class="stat">
+
+      <div class="stat-number">
+        ${s.paid}
+      </div>
+
+      <div class="stat-label">
+        PAID ORDERS
+      </div>
+
+    </div>
+
+    <div class="stat">
+
+      <div class="stat-number">
+        KSh ${Number(
+          s.revenue
+        ).toLocaleString()}
+      </div>
+
+      <div class="stat-label">
+        PAID REVENUE
+      </div>
+
+    </div>
+
+  `;
+}
+
+
+/* =========================================================
+ADMIN TABS
+========================================================= */
+
+function adminTab(
+  tab,
+  button
+){
+
+  document
+    .querySelectorAll(
+      ".admin-tab"
+    )
+    .forEach(
+      b =>
+        b.classList.remove(
+          "active"
+        )
+    );
+
+  if(button){
+    button.classList.add(
+      "active"
+    );
+  }
+
+  document
+    .querySelectorAll(
+      ".admin-section"
+    )
+    .forEach(
+      section => {
+        section.style.display =
+          "none";
+      }
+    );
+
+  const target =
     document.getElementById(
-      "adminProducts"
+      "admin-" + tab
     );
+
+  if(target){
+    target.style.display =
+      "block";
+  }
+
+  if(tab === "users")
+    loadAdminUsers();
+
+  if(tab === "orders")
+    loadAdminOrders();
+
+  if(tab === "products")
+    loadAdminProducts();
+}
+
+
+/* =========================================================
+ADMIN USERS
+========================================================= */
+
+async function loadAdminUsers(){
+
+  const box =
+    document.getElementById(
+      "adminUsers"
+    );
+
+  if(!box)
+    return;
 
   const data =
     await api(
-      "/api/admin/products"
+      "/api/admin/users"
     );
 
   if(!data.success){
 
-    container.innerHTML =
-      `
-        <div class="notice">
-          ${escapeHtml(
-            data.message ||
-            "Admin access required."
-          )}
-        </div>
-      `;
+    box.innerHTML =
+      `<div class="empty">
+        Unable to load users.
+      </div>`;
 
     return;
   }
 
-  if(
-    !data.products.length
-  ){
+  if(!data.users.length){
 
-    container.innerHTML =
-      `
-        <div class="notice">
-          No products yet.
-        </div>
-      `;
+    box.innerHTML =
+      `<div class="empty">
+        No users registered.
+      </div>`;
 
     return;
   }
 
-  container.innerHTML =
-    data.products
-      .map(
-        product => {
+  box.innerHTML = `
 
-          return `
-            <div class="admin-card">
+    <div class="table-wrap">
 
-              <div style="
-                display:flex;
-                gap:12px;
-                align-items:center;
-              ">
+      <table>
 
-                ${
-                  product.image_url
-                    ? `
-                      <img
-                        src="${escapeHtml(
-                          product.image_url
-                        )}"
-                      >
-                    `
-                    : ""
-                }
+        <thead>
 
-                <div>
+          <tr>
 
-                  <strong>
+            <th>
+              ID
+            </th>
+
+            <th>
+              Customer
+            </th>
+
+            <th>
+              Email
+            </th>
+
+            <th>
+              Type
+            </th>
+
+            <th>
+              Registered
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${data.users
+            .map(
+              user => `
+                <tr>
+
+                  <td>
+                    #${user.id}
+                  </td>
+
+                  <td>
+                    <strong>
+                      ${escapeHtml(
+                        user.name
+                      )}
+                    </strong>
+                  </td>
+
+                  <td>
                     ${escapeHtml(
-                      product.name
+                      user.email
                     )}
-                  </strong>
+                  </td>
 
-                  <br>
+                  <td>
+                    ${
+                      Number(
+                        user.is_admin
+                      ) === 1
+                      ? "ADMIN"
+                      : "CUSTOMER"
+                    }
+                  </td>
 
-                  KSh ${Number(
-                    product.price_kes
-                  ).toLocaleString()}
+                  <td>
+                    ${formatDate(
+                      user.created_at
+                    )}
+                  </td>
 
-                  <br>
+                </tr>
+              `
+            )
+            .join("")}
 
-                  Status:
-                  ${
-                    product.active
-                      ? "ACTIVE"
-                      : "HIDDEN"
-                  }
+        </tbody>
 
-                </div>
+      </table>
 
-              </div>
+    </div>
 
-              <br>
-
-              <button
-                class="btn secondary"
-                onclick="toggleProduct(${product.id})"
-              >
-                ${
-                  product.active
-                    ? "HIDE PRODUCT"
-                    : "ACTIVATE PRODUCT"
-                }
-              </button>
-
-              <button
-                class="btn danger"
-                onclick="deleteProduct(${product.id})"
-              >
-                DELETE
-              </button>
-
-            </div>
-          `;
-        }
-      )
-      .join("");
+  `;
 }
 
-/* ======================================================
-   ADD PRODUCT
-====================================================== */
 
-async function addProduct(
-  event
-){
-
-  event.preventDefault();
-
-  const formData =
-    new FormData();
-
-  formData.append(
-    "name",
-    document
-      .getElementById(
-        "productName"
-      )
-      .value
-  );
-
-  formData.append(
-    "price_kes",
-    document
-      .getElementById(
-        "productPrice"
-      )
-      .value
-  );
-
-  formData.append(
-    "binance_price",
-    document
-      .getElementById(
-        "productBinance"
-      )
-      .value
-  );
-
-  formData.append(
-    "description",
-    document
-      .getElementById(
-        "productDescription"
-      )
-      .value
-  );
-
-  formData.append(
-    "delivery_content",
-    document
-      .getElementById(
-        "deliveryContent"
-      )
-      .value
-  );
-
-  const image =
-    document
-      .getElementById(
-        "productImage"
-      )
-      .files[0];
-
-  if(image){
-
-    formData.append(
-      "image",
-      image
-    );
-  }
-
-  const data =
-    await api(
-      "/api/admin/products",
-      {
-        method:"POST",
-        body:
-          formData
-      }
-    );
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Could not add product."
-    );
-
-    return;
-  }
-
-  document
-    .getElementById(
-      "productForm"
-    )
-    .reset();
-
-  alertUser(
-    "Product added."
-  );
-
-  loadAdminProducts();
-  loadProducts();
-}
-
-/* ======================================================
-   TOGGLE PRODUCT
-====================================================== */
-
-async function toggleProduct(
-  id
-){
-
-  const data =
-    await api(
-      "/api/admin/products/" +
-      id +
-      "/toggle",
-      {
-        method:"POST"
-      }
-    );
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Could not update product."
-    );
-
-    return;
-  }
-
-  loadAdminProducts();
-  loadProducts();
-}
-
-/* ======================================================
-   DELETE PRODUCT
-====================================================== */
-
-async function deleteProduct(
-  id
-){
-
-  if(
-    !confirm(
-      "Delete this product?"
-    )
-  ){
-    return;
-  }
-
-  const data =
-    await api(
-      "/api/admin/products/" +
-      id,
-      {
-        method:"DELETE"
-      }
-    );
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Could not delete product."
-    );
-
-    return;
-  }
-
-  alertUser(
-    "Product deleted."
-  );
-
-  loadAdminProducts();
-  loadProducts();
-}
-
-/* ======================================================
-   ADMIN ORDERS
-====================================================== */
+/* =========================================================
+ADMIN ORDERS
+========================================================= */
 
 async function loadAdminOrders(){
 
-  const container =
+  const box =
     document.getElementById(
       "adminOrders"
     );
+
+  if(!box)
+    return;
 
   const data =
     await api(
@@ -2705,203 +3933,230 @@ async function loadAdminOrders(){
 
   if(!data.success){
 
-    container.innerHTML =
-      `
-        <div class="notice">
-          ${escapeHtml(
-            data.message ||
-            "Could not load orders."
-          )}
-        </div>
-      `;
+    box.innerHTML =
+      `<div class="empty">
+        Unable to load orders.
+      </div>`;
 
     return;
   }
 
-  if(
-    !data.orders.length
-  ){
+  if(!data.orders.length){
 
-    container.innerHTML =
-      `
-        <div class="notice">
-          No orders yet.
-        </div>
-      `;
+    box.innerHTML =
+      `<div class="empty">
+        No orders yet.
+      </div>`;
 
     return;
   }
 
-  container.innerHTML =
+  box.innerHTML =
     data.orders
       .map(
-        order => {
+        order => `
 
-          return `
-            <div class="admin-card">
+          <div class="card">
 
-              <strong>
-                ${escapeHtml(
-                  order.order_number
-                )}
-              </strong>
+            <div class="order-top">
 
-              <br><br>
+              <div>
+
+                <div class="order-number">
+                  ${escapeHtml(
+                    order.order_number
+                  )}
+                </div>
+
+                <div
+                  style="
+                    color:#8993a2;
+                    font-size:12px;
+                    margin-top:4px;
+                  "
+                >
+                  ${escapeHtml(
+                    order.customer_name ||
+                    "Customer"
+                  )}
+                  •
+                  ${escapeHtml(
+                    order.customer_email ||
+                    ""
+                  )}
+                </div>
+
+              </div>
+
+              <div
+                style="
+                  font-weight:1000;
+                "
+              >
+                KSh ${Number(
+                  order.amount_kes
+                ).toLocaleString()}
+              </div>
+
+            </div>
+
+
+            <div
+              style="
+                margin-top:12px;
+                color:#a5aebb;
+                font-size:13px;
+              "
+            >
 
               Product:
-              ${escapeHtml(
-                order.product_name ||
-                ""
-              )}
-
-              <br>
-
-              Customer:
-              ${escapeHtml(
-                order.customer_name ||
-                ""
-              )}
-
-              <br>
-
-              Email:
-              ${escapeHtml(
-                order.customer_email ||
-                ""
-              )}
+              <strong>
+                ${escapeHtml(
+                  order.product_name ||
+                  "Product"
+                )}
+              </strong>
 
               <br>
 
               Payment:
-              ${escapeHtml(
-                order.payment_method
-              )}
+              <strong>
+                ${escapeHtml(
+                  order.payment_method
+                ).toUpperCase()}
+              </strong>
 
               <br>
 
-              Payment Status:
+              Payment status:
               <strong>
                 ${escapeHtml(
                   order.payment_status
                 )}
               </strong>
 
-              ${
-                order.binance_txid
-                  ? `
-                    <br><br>
-
-                    TXID:
-
-                    <div class="wallet">
-                      ${escapeHtml(
-                        order.binance_txid
-                      )}
-                    </div>
-
-                    ${
-                      order.payment_status !==
-                      "paid"
-                        ? `
-                          <br>
-
-                          <button
-                            class="btn"
-                            onclick="verifyBinance(${order.id},true)"
-                          >
-                            APPROVE BINANCE
-                          </button>
-
-                          <button
-                            class="btn danger"
-                            onclick="verifyBinance(${order.id},false)"
-                          >
-                            REJECT BINANCE
-                          </button>
-                        `
-                        : ""
-                    }
-                  `
-                  : ""
-              }
-
-              <br><br>
+              <br>
 
               Delivery:
-              ${escapeHtml(
-                order.delivery_status
-              )}
+              <strong>
+                ${escapeHtml(
+                  order.delivery_status
+                )}
+              </strong>
 
-              <br><br>
+              ${
+                order.binance_txid
+                ? `
+                  <br>
+                  TXID:
+                  <span
+                    style="
+                      word-break:break-all;
+                    "
+                  >
+                    ${escapeHtml(
+                      order.binance_txid
+                    )}
+                  </span>
+                `
+                : ""
+              }
 
-              <select
-                id="delivery-${order.id}"
-              >
+            </div>
 
-                <option value="pending">
-                  Pending
-                </option>
 
-                <option value="processing">
-                  Processing
-                </option>
+            <div
+              style="
+                display:flex;
+                gap:8px;
+                flex-wrap:wrap;
+                margin-top:15px;
+              "
+            >
 
-                <option value="delivered">
-                  Delivered
-                </option>
+              ${
+                order.payment_status !==
+                  "paid"
+                ? `
+                  <button
+                    class="btn success"
+                    onclick="markPaymentPaid(${order.id})"
+                  >
+                    ✓ MARK PAID
+                  </button>
+                `
+                : ""
+              }
 
-                <option value="cancelled">
-                  Cancelled
-                </option>
 
-              </select>
+              ${
+                order.payment_method ===
+                  "binance" &&
+                order.binance_txid &&
+                !Number(
+                  order.binance_verified
+                )
+                ? `
+                  <button
+                    class="btn blue"
+                    onclick="verifyBinance(${order.id})"
+                  >
+                    VERIFY BINANCE
+                  </button>
+                `
+                : ""
+              }
 
-              <br><br>
-
-              <textarea
-                id="notes-${order.id}"
-                placeholder="Delivery notes"
-              >${escapeHtml(
-                order.delivery_notes ||
-                ""
-              )}</textarea>
-
-              <br>
 
               <button
                 class="btn"
-                onclick="updateDelivery(${order.id})"
+                onclick="setDelivery(${order.id},'processing')"
               >
-                UPDATE DELIVERY
+                PROCESSING
+              </button>
+
+
+              <button
+                class="btn success"
+                onclick="setDelivery(${order.id},'delivered')"
+              >
+                ✓ DELIVERED
+              </button>
+
+
+              <button
+                class="btn danger"
+                onclick="setDelivery(${order.id},'cancelled')"
+              >
+                CANCEL
               </button>
 
             </div>
-          `;
-        }
+
+          </div>
+
+        `
       )
       .join("");
 }
 
-/* ======================================================
-   VERIFY BINANCE
-====================================================== */
 
-async function verifyBinance(
-  id,
-  approved
+/* =========================================================
+ADMIN PAYMENT
+========================================================= */
+
+async function markPaymentPaid(
+  id
 ){
 
   const data =
     await api(
-      "/api/admin/orders/" +
-      id +
-      "/binance-verify",
+      `/api/admin/orders/${id}/payment`,
       {
         method:"POST",
-
         body:
           JSON.stringify({
-            approved
+            status:"paid"
           })
       }
     );
@@ -2917,43 +4172,74 @@ async function verifyBinance(
   }
 
   alertUser(
-    approved
-      ? "Payment approved."
-      : "Payment rejected."
+    "Payment marked as paid."
   );
 
   loadAdminOrders();
+  loadAdminStats();
 }
 
-/* ======================================================
-   DELIVERY
-====================================================== */
 
-async function updateDelivery(
+async function verifyBinance(
   id
 ){
 
-  const status =
-    document
-      .getElementById(
-        "delivery-" +
-        id
-      )
-      .value;
-
-  const notes =
-    document
-      .getElementById(
-        "notes-" +
-        id
-      )
-      .value;
+  if(
+    !confirm(
+      "Have you verified the Binance transaction and amount?"
+    )
+  ){
+    return;
+  }
 
   const data =
     await api(
-      "/api/admin/orders/" +
-      id +
-      "/delivery",
+      `/api/admin/orders/${id}/verify-binance`,
+      {
+        method:"POST"
+      }
+    );
+
+  if(!data.success){
+
+    alertUser(
+      data.message ||
+      "Verification failed."
+    );
+
+    return;
+  }
+
+  alertUser(
+    "Binance payment verified."
+  );
+
+  loadAdminOrders();
+  loadAdminStats();
+}
+
+
+async function setDelivery(
+  id,
+  status
+){
+
+  let notes = "";
+
+  if(
+    status ===
+    "delivered"
+  ){
+
+    notes =
+      prompt(
+        "Optional delivery note:"
+      ) || "";
+  }
+
+  const data =
+    await api(
+      `/api/admin/orders/${id}/delivery`,
       {
         method:"POST",
 
@@ -2982,22 +4268,366 @@ async function updateDelivery(
   loadAdminOrders();
 }
 
-/* ======================================================
-   MODALS
-====================================================== */
+
+/* =========================================================
+ADMIN PRODUCTS
+========================================================= */
+
+async function createProduct(
+  event
+){
+
+  event.preventDefault();
+
+  const form =
+    new FormData();
+
+  form.append(
+    "name",
+    document.getElementById(
+      "productName"
+    ).value.trim()
+  );
+
+  form.append(
+    "price_kes",
+    document.getElementById(
+      "productPrice"
+    ).value
+  );
+
+  form.append(
+    "binance_price",
+    document.getElementById(
+      "productCrypto"
+    ).value || "0"
+  );
+
+  form.append(
+    "description",
+    document.getElementById(
+      "productDescription"
+    ).value
+  );
+
+  form.append(
+    "delivery_content",
+    document.getElementById(
+      "deliveryContent"
+    ).value
+  );
+
+  const image =
+    document.getElementById(
+      "productImage"
+    ).files[0];
+
+  if(image){
+    form.append(
+      "image",
+      image
+    );
+  }
+
+  const data =
+    await api(
+      "/api/admin/products",
+      {
+        method:"POST",
+        body:form
+      }
+    );
+
+  if(!data.success){
+
+    alertUser(
+      data.message ||
+      "Could not create product."
+    );
+
+    return;
+  }
+
+  document
+    .getElementById(
+      "productForm"
+    )
+    .reset();
+
+  alertUser(
+    "Product added successfully."
+  );
+
+  loadAdminProducts();
+  loadAdminStats();
+}
+
+
+async function loadAdminProducts(){
+
+  const box =
+    document.getElementById(
+      "adminProducts"
+    );
+
+  if(!box)
+    return;
+
+  const data =
+    await api(
+      "/api/admin/products"
+    );
+
+  if(!data.success){
+
+    box.innerHTML =
+      `<div class="empty">
+        Unable to load products.
+      </div>`;
+
+    return;
+  }
+
+  if(!data.products.length){
+
+    box.innerHTML =
+      `<div class="empty">
+        No products yet.
+      </div>`;
+
+    return;
+  }
+
+  box.innerHTML =
+    data.products
+      .map(
+        product => `
+
+          <div class="card">
+
+            <div
+              style="
+                display:flex;
+                justify-content:space-between;
+                gap:12px;
+                flex-wrap:wrap;
+              "
+            >
+
+              <div>
+
+                <div
+                  style="
+                    font-size:17px;
+                    font-weight:1000;
+                  "
+                >
+                  ${escapeHtml(
+                    product.name
+                  )}
+                </div>
+
+                <div
+                  style="
+                    color:#8c96a5;
+                    font-size:12px;
+                    margin-top:5px;
+                  "
+                >
+                  KSh ${Number(
+                    product.price_kes
+                  ).toLocaleString()}
+
+                  ${
+                    Number(
+                      product.binance_price
+                    ) > 0
+                    ? ` • ${Number(
+                        product.binance_price
+                      )} USDT`
+                    : ""
+                  }
+                </div>
+
+              </div>
+
+              <span
+                class="status ${
+                  product.active
+                    ? "paid"
+                    : "failed"
+                }"
+              >
+                ${
+                  product.active
+                    ? "ACTIVE"
+                    : "HIDDEN"
+                }
+              </span>
+
+            </div>
+
+
+            <div
+              style="
+                display:flex;
+                gap:8px;
+                flex-wrap:wrap;
+                margin-top:14px;
+              "
+            >
+
+              <button
+                class="btn"
+                onclick="toggleProduct(${product.id})"
+              >
+                ${
+                  product.active
+                    ? "HIDE"
+                    : "ACTIVATE"
+                }
+              </button>
+
+              <button
+                class="btn danger"
+                onclick="deleteProduct(${product.id})"
+              >
+                DELETE
+              </button>
+
+            </div>
+
+          </div>
+
+        `
+      )
+      .join("");
+}
+
+
+async function toggleProduct(
+  id
+){
+
+  const data =
+    await api(
+      `/api/admin/products/${id}/toggle`,
+      {
+        method:"POST"
+      }
+    );
+
+  if(!data.success){
+
+    alertUser(
+      data.message ||
+      "Could not update product."
+    );
+
+    return;
+  }
+
+  loadAdminProducts();
+}
+
+
+async function deleteProduct(
+  id
+){
+
+  if(
+    !confirm(
+      "Delete this product?"
+    )
+  ){
+    return;
+  }
+
+  const data =
+    await api(
+      `/api/admin/products/${id}`,
+      {
+        method:"DELETE"
+      }
+    );
+
+  if(!data.success){
+
+    alertUser(
+      data.message ||
+      "Could not delete product."
+    );
+
+    return;
+  }
+
+  alertUser(
+    "Product deleted."
+  );
+
+  loadAdminProducts();
+  loadAdminStats();
+}
+
+
+/* =========================================================
+WHATSAPP
+========================================================= */
+
+function openWhatsApp(
+  customMessage
+){
+
+  const message =
+    customMessage ||
+    (
+      currentUser
+      ? `Hello DARK WEB Support, my name is ${currentUser.name}. I need help with my order.`
+      : `Hello DARK WEB Support, I need help.`
+    );
+
+  const url =
+    "https://wa.me/" +
+    SUPPORT_WHATSAPP +
+    "?text=" +
+    encodeURIComponent(
+      message
+    );
+
+  window.open(
+    url,
+    "_blank"
+  );
+}
+
+
+/* =========================================================
+MODALS
+========================================================= */
+
+function openModal(
+  id
+){
+
+  document
+    .getElementById(id)
+    .classList.add(
+      "active"
+    );
+}
+
 
 function closeModal(
   id
 ){
 
   document
-    .getElementById(
-      id
-    )
+    .getElementById(id)
     .classList.remove(
-      "show"
+      "active"
     );
 }
+
 
 document
   .querySelectorAll(
@@ -3016,114 +4646,133 @@ document
           ){
 
             modal.classList.remove(
-              "show"
+              "active"
             );
+
           }
+
         }
       );
+
     }
   );
 
-/* ======================================================
-   ESCAPE HTML
-====================================================== */
 
-function escapeHtml(
-  value
-){
+/* =========================================================
+PAYMENT METHOD
+========================================================= */
 
-  return String(
-    value ?? ""
-  )
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-}
+function paymentMethodChanged(){
 
-/* ======================================================
-   INIT
-====================================================== */
+  const method =
+    document.getElementById(
+      "paymentMethod"
+    ).value;
 
-async function init(){
-
-  const data =
-    await api(
-      "/api/me"
+  const phone =
+    document.getElementById(
+      "checkoutPhone"
     );
 
   if(
-    data.success &&
-    data.user
+    method === "mpesa"
   ){
 
-    currentUser =
-      data.user;
-
-    updateNav();
-
-    /*
-      If an already logged-in admin
-      refreshes the page, keep them
-      on the admin panel.
-    */
-
-    if(
-      Number(
-        currentUser.is_admin
-      ) === 1
-    ){
-
-      showPage(
-        "admin"
-      );
-
-    }else{
-
-      showPage(
-        "store"
-      );
-    }
+    phone.placeholder =
+      "2547XXXXXXXX";
 
   }else{
 
-    currentUser =
-      null;
-
-    updateNav();
-
-    showPage(
-      "store"
-    );
+    phone.placeholder =
+      "Optional";
   }
+}
+
+
+/* =========================================================
+DATE
+========================================================= */
+
+function formatDate(
+  value
+){
+
+  if(!value)
+    return "-";
+
+  const date =
+    new Date(
+      value
+    );
+
+  if(
+    Number.isNaN(
+      date.getTime()
+    )
+  ){
+    return value;
+  }
+
+  return date.toLocaleString();
+}
+
+
+/* =========================================================
+SCROLL
+========================================================= */
+
+function scrollToProducts(){
+
+  document
+    .getElementById(
+      "productsSection"
+    )
+    .scrollIntoView({
+      behavior:"smooth"
+    });
+}
+
+
+/* =========================================================
+INIT
+========================================================= */
+
+async function init(){
+
+  try{
+
+    const data =
+      await api(
+        "/api/me"
+      );
+
+    if(
+      data.success &&
+      data.user
+    ){
+
+      currentUser =
+        data.user;
+
+    }
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+  updateNav();
 
   loadProducts();
 }
 
-/* ======================================================
-   START
-====================================================== */
 
 init();
 
 </script>
 
 </body>
-
-      </html>
+        </html>
