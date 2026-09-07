@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 
 <meta
   name="viewport"
-  content="width=device-width, initial-scale=1.0"
+  content="width=device-width,initial-scale=1.0"
 >
 
-<title>DARK WEB — Digital Store</title>
+<title>DARK WEB STORE</title>
 
 <style>
 
@@ -18,35 +16,20 @@
   box-sizing:border-box;
 }
 
-:root{
-  --bg:#05060a;
-  --panel:#0c1018;
-  --panel2:#111725;
-  --border:#20283a;
-  --text:#f5f7fb;
-  --muted:#8993a8;
-  --purple:#8b5cf6;
-  --cyan:#06b6d4;
-  --green:#22c55e;
-  --red:#ef4444;
-  --yellow:#f59e0b;
-}
-
 body{
   margin:0;
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(139,92,246,.18),
-      transparent 35%
-    ),
-    var(--bg);
-  color:var(--text);
   font-family:
-    Inter,
     Arial,
     Helvetica,
     sans-serif;
+  background:
+    radial-gradient(
+      circle at top,
+      #17112b 0,
+      #07080d 45%,
+      #030407 100%
+    );
+  color:#fff;
   min-height:100vh;
 }
 
@@ -65,1217 +48,1003 @@ button{
   display:none!important;
 }
 
-/* =====================================================
-   AUTH
-===================================================== */
+/* HEADER */
 
-#authPage{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-
-.auth-card{
-  width:100%;
-  max-width:430px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(17,23,37,.98),
-      rgba(7,9,15,.98)
-    );
-  border:1px solid var(--border);
-  border-radius:26px;
-  padding:30px;
-  box-shadow:
-    0 25px 80px rgba(0,0,0,.45);
-}
-
-.logo{
-  text-align:center;
-  margin-bottom:25px;
-}
-
-.logo h1{
-  margin:0;
-  font-size:34px;
-  letter-spacing:4px;
-  background:
-    linear-gradient(
-      90deg,
-      var(--purple),
-      var(--cyan)
-    );
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-}
-
-.logo p{
-  margin:8px 0 0;
-  color:var(--muted);
-  font-size:12px;
-  letter-spacing:2px;
-}
-
-.auth-tabs{
-  display:flex;
-  gap:8px;
-  margin-bottom:20px;
-}
-
-.auth-tabs button{
-  flex:1;
-  border:1px solid var(--border);
-  background:transparent;
-  color:var(--muted);
-  padding:12px;
-  border-radius:12px;
-}
-
-.auth-tabs button.active{
-  background:
-    linear-gradient(
-      90deg,
-      var(--purple),
-      var(--cyan)
-    );
-  color:white;
-  border-color:transparent;
-}
-
-/* =====================================================
-   FORMS
-===================================================== */
-
-.form-group{
-  margin-bottom:15px;
-}
-
-.form-group label{
-  display:block;
-  margin-bottom:7px;
-  color:#c5ccda;
-  font-size:13px;
-}
-
-input,
-textarea,
-select{
-  width:100%;
-  border:1px solid var(--border);
-  background:#080b12;
-  color:white;
-  padding:13px 14px;
-  border-radius:12px;
-  outline:none;
-}
-
-input:focus,
-textarea:focus,
-select:focus{
-  border-color:var(--purple);
-  box-shadow:
-    0 0 0 3px rgba(139,92,246,.1);
-}
-
-textarea{
-  min-height:100px;
-  resize:vertical;
-}
-
-.primary-btn{
-  width:100%;
-  border:0;
-  color:white;
-  padding:14px;
-  border-radius:13px;
-  font-weight:800;
-  background:
-    linear-gradient(
-      90deg,
-      var(--purple),
-      var(--cyan)
-    );
-}
-
-.secondary-btn{
-  border:1px solid var(--border);
-  background:#101521;
-  color:white;
-  padding:11px 14px;
-  border-radius:10px;
-}
-
-.danger-btn{
-  border:0;
-  background:#3a1115;
-  color:#ff8d96;
-  padding:10px 13px;
-  border-radius:10px;
-}
-
-.success-btn{
-  border:0;
-  background:#0c2a19;
-  color:#5df38b;
-  padding:10px 13px;
-  border-radius:10px;
-}
-
-/* =====================================================
-   APP
-===================================================== */
-
-#appPage{
-  min-height:100vh;
-}
-
-nav{
+header{
   position:sticky;
   top:0;
-  z-index:20;
+  z-index:100;
   background:
-    rgba(5,6,10,.88);
+    rgba(5,6,12,.92);
   backdrop-filter:blur(15px);
-  border-bottom:1px solid var(--border);
+  border-bottom:
+    1px solid #27203c;
 }
 
-.nav-inner{
-  max-width:1250px;
+.nav{
+  max-width:1200px;
   margin:auto;
   padding:15px 20px;
   display:flex;
   align-items:center;
+  justify-content:space-between;
   gap:15px;
 }
 
-.nav-logo{
+.logo{
+  font-size:22px;
   font-weight:900;
-  letter-spacing:3px;
-  font-size:20px;
-  margin-right:auto;
+  letter-spacing:2px;
 }
 
-.nav-links{
+.logo span{
+  background:
+    linear-gradient(
+      90deg,
+      #b66cff,
+      #00e5ff
+    );
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.nav-buttons{
   display:flex;
-  gap:7px;
+  gap:8px;
+  flex-wrap:wrap;
 }
 
-.nav-links button{
-  border:1px solid transparent;
-  background:transparent;
-  color:#9da7b9;
-  padding:9px 12px;
-  border-radius:9px;
-}
-
-.nav-links button.active,
-.nav-links button:hover{
-  color:white;
-  background:#111725;
-  border-color:var(--border);
-}
-
-.user-chip{
-  border:1px solid var(--border);
-  background:#0c1018;
-  padding:8px 11px;
+.nav button{
+  border:1px solid #33294d;
+  background:#11101a;
+  color:#fff;
+  padding:9px 13px;
   border-radius:10px;
-  font-size:12px;
 }
 
-/* =====================================================
-   MAIN
-===================================================== */
+.nav button:hover{
+  border-color:#9d5cff;
+}
+
+/* MAIN */
 
 main{
-  max-width:1250px;
+  max-width:1200px;
   margin:auto;
-  padding:30px 20px 80px;
+  padding:30px 18px 80px;
 }
 
 .hero{
-  padding:30px;
-  border:1px solid var(--border);
-  border-radius:24px;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(139,92,246,.12),
-      rgba(6,182,212,.06)
-    );
-  margin-bottom:28px;
+  padding:35px 0;
 }
 
-.hero h2{
-  margin:0 0 8px;
-  font-size:32px;
+.hero h1{
+  font-size:
+    clamp(34px,7vw,72px);
+  margin:0;
+  line-height:1;
+}
+
+.hero h1 span{
+  color:#a866ff;
 }
 
 .hero p{
-  color:var(--muted);
-  margin:0;
+  color:#aaa7b8;
+  max-width:650px;
+  font-size:17px;
+  line-height:1.6;
 }
 
-/* =====================================================
-   PRODUCT GRID
-===================================================== */
+/* CARDS */
 
-.product-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(220px,1fr)
-    );
-  gap:18px;
-}
-
-.product-card{
-  overflow:hidden;
-  border:1px solid var(--border);
+.card{
   background:
     linear-gradient(
       145deg,
-      #0e131e,
-      #080b11
+      rgba(25,22,39,.96),
+      rgba(9,10,16,.96)
     );
+  border:1px solid #29233b;
   border-radius:20px;
-  transition:.2s;
+  padding:20px;
+  box-shadow:
+    0 15px 50px
+    rgba(0,0,0,.25);
 }
 
-.product-card:hover{
-  transform:translateY(-3px);
-  border-color:#39445d;
+.section-title{
+  margin:
+    10px 0 18px;
+  font-size:25px;
+}
+
+/* PRODUCTS */
+
+.products{
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+}
+
+.product{
+  overflow:hidden;
+  padding:0;
 }
 
 .product-image{
   width:100%;
   height:190px;
   object-fit:cover;
-  background:
-    radial-gradient(
-      circle,
-      #22283a,
-      #080b11
-    );
   display:block;
+  background:#101019;
 }
 
-.product-image.empty{
+.product-image.no-image{
   display:flex;
   align-items:center;
   justify-content:center;
-  color:#586177;
+  color:#716c80;
   font-size:45px;
 }
 
 .product-body{
-  padding:17px;
+  padding:18px;
 }
 
-.product-body h3{
-  margin:0 0 7px;
+.product h3{
+  margin:
+    0 0 8px;
 }
 
-.product-description{
-  color:var(--muted);
-  font-size:13px;
-  min-height:40px;
+.description{
+  color:#aaa7b8;
+  min-height:45px;
+  line-height:1.45;
 }
 
-.price-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:15px 0;
-}
-
-.kes{
-  font-size:20px;
+.price{
+  font-size:23px;
   font-weight:900;
+  margin:14px 0 4px;
 }
 
-.usdt{
-  color:#55df91;
+.crypto{
+  color:#9b92ad;
   font-size:13px;
 }
 
-.buy-btn{
-  width:100%;
+.primary{
   border:0;
   background:
     linear-gradient(
       90deg,
-      var(--purple),
-      var(--cyan)
+      #873cff,
+      #00bfe8
     );
-  color:white;
+  color:#fff;
+  padding:12px 17px;
+  border-radius:12px;
   font-weight:800;
-  padding:12px;
+}
+
+.secondary{
+  border:1px solid #39304f;
+  background:#13121d;
+  color:#fff;
+  padding:11px 15px;
   border-radius:11px;
 }
 
-/* =====================================================
-   SECTION
-===================================================== */
-
-.section{
-  display:none;
+.danger{
+  background:#40141c;
+  color:#ff8794;
+  border:1px solid #722431;
+  padding:10px 14px;
+  border-radius:10px;
 }
 
-.section.active{
-  display:block;
+.success{
+  color:#48f5a4;
 }
 
-.section-title{
+.warning{
+  color:#ffd45c;
+}
+
+.muted{
+  color:#8e899c;
+}
+
+/* AUTH */
+
+.auth{
+  min-height:
+    calc(100vh - 100px);
   display:flex;
-  justify-content:space-between;
+  justify-content:center;
   align-items:center;
-  gap:15px;
-  margin-bottom:20px;
 }
 
-.section-title h2{
-  margin:0;
+.auth-box{
+  width:min(450px,100%);
 }
 
-/* =====================================================
-   ADMIN
-===================================================== */
-
-.admin-layout{
-  display:grid;
-  grid-template-columns:
-    minmax(300px,380px)
-    1fr;
-  gap:20px;
-}
-
-.admin-card{
-  border:1px solid var(--border);
-  background:#0c1018;
-  border-radius:18px;
-  padding:20px;
-}
-
-.admin-card h3{
+.auth-box h1{
   margin-top:0;
 }
 
-.image-upload{
-  border:2px dashed #30394c;
-  padding:15px;
-  border-radius:14px;
-  text-align:center;
+.field{
+  margin-bottom:14px;
 }
 
-.image-upload input{
-  border:0;
-  background:transparent;
-  padding:5px;
+.field label{
+  display:block;
+  color:#aaa5b7;
+  margin-bottom:7px;
+  font-size:14px;
 }
 
-.preview-box{
-  margin-top:12px;
-  display:none;
-}
-
-.preview-box img{
+.field input,
+.field textarea,
+.field select{
   width:100%;
-  max-height:220px;
-  object-fit:cover;
-  border-radius:13px;
-  border:1px solid var(--border);
+  padding:13px;
+  border-radius:11px;
+  border:1px solid #302942;
+  background:#0b0b12;
+  color:#fff;
+  outline:none;
 }
 
-.admin-product-list{
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+  border-color:#9654ff;
+}
+
+.field textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.form-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* ADMIN */
+
+.admin-grid{
   display:grid;
-  gap:13px;
+  grid-template-columns:
+    minmax(0,1fr)
+    minmax(0,1fr);
+  gap:20px;
 }
 
 .admin-product{
   display:grid;
-  grid-template-columns:80px 1fr auto;
-  gap:15px;
-  align-items:center;
-  border:1px solid var(--border);
-  padding:12px;
+  grid-template-columns:90px 1fr;
+  gap:14px;
+  padding:13px;
+  border:1px solid #2b253c;
   border-radius:14px;
-  background:#080b11;
+  margin-bottom:10px;
+  background:#0d0c14;
 }
 
 .admin-product img{
-  width:80px;
-  height:65px;
+  width:90px;
+  height:90px;
   border-radius:10px;
   object-fit:cover;
-  background:#151a27;
 }
 
-.admin-product-info h4{
-  margin:0 0 4px;
-}
-
-.admin-product-info p{
-  margin:0;
-  color:var(--muted);
-  font-size:12px;
+.admin-product h4{
+  margin:0 0 5px;
 }
 
 .admin-actions{
   display:flex;
   gap:7px;
   flex-wrap:wrap;
-  justify-content:flex-end;
+  margin-top:9px;
 }
 
-/* =====================================================
-   ORDERS
-===================================================== */
+/* ORDERS */
 
-.order-list{
-  display:grid;
-  gap:14px;
-}
-
-.order-card{
-  border:1px solid var(--border);
-  background:#0c1018;
-  padding:18px;
-  border-radius:16px;
+.order{
+  border:1px solid #2b253c;
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:12px;
+  background:#0d0c14;
 }
 
 .order-head{
   display:flex;
   justify-content:space-between;
-  gap:15px;
-}
-
-.order-number{
-  font-weight:900;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 .status{
-  display:inline-flex;
+  display:inline-block;
   padding:5px 9px;
   border-radius:20px;
-  font-size:11px;
+  font-size:12px;
   font-weight:800;
+  background:#1b1830;
 }
 
-.status.PAID,
-.status.DELIVERED{
-  background:#0d2a1b;
-  color:#5df38b;
+.timeline{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:14px;
 }
 
-.status.PENDING,
-.status.PROCESSING,
-.status.DELIVERING,
-.status.PAYMENT_REVIEW{
-  background:#29200c;
-  color:#ffc65c;
+.timeline div{
+  padding:9px;
+  border-left:3px solid #6b3ac9;
+  background:#11101a;
 }
 
-.status.PAYMENT_FAILED{
-  background:#321014;
-  color:#ff737e;
-}
-
-/* =====================================================
-   MODAL
-===================================================== */
+/* MODAL */
 
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.78);
-  z-index:100;
-  display:none;
+  z-index:500;
+  background:
+    rgba(0,0,0,.75);
+  display:flex;
   align-items:center;
   justify-content:center;
-  padding:20px;
+  padding:15px;
 }
 
-.modal.show{
-  display:flex;
-}
-
-.modal-card{
-  width:100%;
-  max-width:600px;
-  max-height:90vh;
+.modal-box{
+  width:min(650px,100%);
+  max-height:
+    92vh;
   overflow:auto;
-  background:#0c1018;
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:22px;
-}
-
-.modal-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
 }
 
 .close{
-  width:36px;
-  height:36px;
-  border:1px solid var(--border);
-  background:#101521;
-  color:white;
+  float:right;
+  background:#1c1925;
+  border:1px solid #342d45;
+  color:#fff;
   border-radius:9px;
+  padding:7px 11px;
 }
 
-/* =====================================================
-   PAYMENT BOX
-===================================================== */
+/* IMAGE PREVIEW */
 
-.payment-box{
-  border:1px solid var(--border);
-  background:#080b11;
+.preview{
+  width:100%;
+  max-height:230px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-top:10px;
+  border:1px solid #332b46;
+}
+
+.upload-box{
+  border:1px dashed #54446f;
   border-radius:14px;
   padding:15px;
-  margin:15px 0;
+  background:#0b0a11;
 }
 
-.wallet{
-  word-break:break-all;
-  background:#121827;
-  padding:12px;
-  border-radius:9px;
-  color:#62e6ff;
-  margin-top:8px;
-}
+/* ALERT */
 
-/* =====================================================
-   TOAST
-===================================================== */
-
-#toast{
+#alert{
   position:fixed;
-  right:20px;
-  bottom:20px;
-  z-index:200;
-  background:#111827;
-  border:1px solid var(--border);
-  padding:13px 16px;
+  right:15px;
+  bottom:15px;
+  z-index:1000;
+  max-width:350px;
+}
+
+.alert-box{
+  padding:14px 17px;
   border-radius:12px;
-  display:none;
-  max-width:340px;
+  border:1px solid #3d3156;
+  background:#15121e;
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.4);
 }
 
-#toast.show{
-  display:block;
-}
+/* FOOTER */
 
-.muted{
-  color:var(--muted);
-}
-
-.empty-state{
-  border:1px dashed var(--border);
-  border-radius:15px;
-  padding:30px;
+footer{
   text-align:center;
-  color:var(--muted);
+  padding:30px;
+  color:#706b7b;
+  border-top:1px solid #201b2e;
 }
 
-/* =====================================================
-   MOBILE
-===================================================== */
+@media(max-width:700px){
 
-@media(max-width:800px){
-
-  .nav-inner{
-    flex-wrap:wrap;
+  .nav{
+    align-items:flex-start;
+    flex-direction:column;
   }
 
-  .nav-links{
+  .nav-buttons{
     width:100%;
-    overflow-x:auto;
-    order:3;
   }
 
-  .nav-links button{
-    white-space:nowrap;
+  .nav-buttons button{
+    flex:1;
   }
 
-  .user-chip{
-    display:none;
-  }
-
-  .hero{
-    padding:22px;
-  }
-
-  .hero h2{
-    font-size:25px;
-  }
-
-  .admin-layout{
+  .admin-grid{
     grid-template-columns:1fr;
   }
 
-  .admin-product{
-    grid-template-columns:60px 1fr;
+  main{
+    padding-left:12px;
+    padding-right:12px;
   }
 
-  .admin-product img{
-    width:60px;
-    height:55px;
-  }
-
-  .admin-actions{
-    grid-column:1 / -1;
-    justify-content:flex-start;
-  }
-
-  .order-head{
-    flex-direction:column;
-  }
 }
 
 </style>
-
 </head>
 
 <body>
 
-<!-- =====================================================
-     AUTH PAGE
-===================================================== -->
+<header>
 
-<div id="authPage">
+<div class="nav">
 
-  <div class="auth-card">
+<div class="logo">
+DARK <span>WEB</span>
+</div>
 
-    <div class="logo">
+<div class="nav-buttons">
 
-      <h1>DARK WEB</h1>
+<button onclick="showPage('store')">
+STORE
+</button>
 
-      <p>
-        DIGITAL PRODUCTS STORE
-      </p>
+<button
+  id="ordersNav"
+  onclick="showPage('orders')"
+>
+ORDERS
+</button>
 
-    </div>
+<button
+  id="adminNav"
+  class="hidden"
+  onclick="showPage('admin')"
+>
+ADMIN
+</button>
 
-    <div class="auth-tabs">
+<button
+  id="authNav"
+  onclick="showPage('auth')"
+>
+LOGIN
+</button>
 
-      <button
-        id="loginTab"
-        class="active"
-        onclick="showAuth('login')"
-      >
-        LOGIN
-      </button>
-
-      <button
-        id="registerTab"
-        onclick="showAuth('register')"
-      >
-        REGISTER
-      </button>
-
-    </div>
-
-    <form
-      id="loginForm"
-      onsubmit="login(event)"
-    >
-
-      <div class="form-group">
-
-        <label>Email</label>
-
-        <input
-          id="loginEmail"
-          type="email"
-          required
-          placeholder="you@example.com"
-        >
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Password</label>
-
-        <input
-          id="loginPassword"
-          type="password"
-          required
-          placeholder="Password"
-        >
-
-      </div>
-
-      <button class="primary-btn">
-        LOGIN
-      </button>
-
-    </form>
-
-    <form
-      id="registerForm"
-      class="hidden"
-      onsubmit="register(event)"
-    >
-
-      <div class="form-group">
-
-        <label>Name</label>
-
-        <input
-          id="registerName"
-          required
-          placeholder="Your name"
-        >
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Email</label>
-
-        <input
-          id="registerEmail"
-          type="email"
-          required
-          placeholder="you@example.com"
-        >
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Password</label>
-
-        <input
-          id="registerPassword"
-          type="password"
-          minlength="6"
-          required
-          placeholder="Minimum 6 characters"
-        >
-
-      </div>
-
-      <button class="primary-btn">
-        CREATE ACCOUNT
-      </button>
-
-    </form>
-
-  </div>
+<button
+  id="logoutBtn"
+  class="hidden"
+  onclick="logout()"
+>
+LOGOUT
+</button>
 
 </div>
 
-<!-- =====================================================
-     APP
-===================================================== -->
+</div>
 
-<div id="appPage" class="hidden">
-
-<nav>
-
-  <div class="nav-inner">
-
-    <div class="nav-logo">
-      DARK WEB
-    </div>
-
-    <div class="user-chip">
-      <span id="userName">
-        USER
-      </span>
-    </div>
-
-    <div class="nav-links">
-
-      <button
-        class="active"
-        onclick="showSection('store',this)"
-      >
-        STORE
-      </button>
-
-      <button
-        onclick="showSection('orders',this)"
-      >
-        ORDERS
-      </button>
-
-      <button
-        id="adminNav"
-        class="hidden"
-        onclick="showSection('admin',this)"
-      >
-        ADMIN
-      </button>
-
-      <button
-        onclick="logout()"
-      >
-        LOGOUT
-      </button>
-
-    </div>
-
-  </div>
-
-</nav>
+</header>
 
 <main>
 
-<!-- =====================================================
-     STORE
-===================================================== -->
+<!-- STORE -->
 
-<section
-  id="storeSection"
-  class="section active"
+<section id="storePage">
+
+<div class="hero">
+
+<h1>
+DARK <span>WEB</span>
+</h1>
+
+<p>
+Premium digital products.
+Secure checkout. Fast delivery.
+Choose your product and place your order.
+</p>
+
+</div>
+
+<h2 class="section-title">
+AVAILABLE PRODUCTS
+</h2>
+
+<div
+  id="products"
+  class="products"
 >
-
-  <div class="hero">
-
-    <h2>
-      Digital Store
-    </h2>
-
-    <p>
-      Choose your product and complete checkout securely.
-    </p>
-
-  </div>
-
-  <div
-    id="productGrid"
-    class="product-grid"
-  ></div>
+</div>
 
 </section>
 
-<!-- =====================================================
-     ORDERS
-===================================================== -->
+
+<!-- AUTH -->
 
 <section
-  id="ordersSection"
-  class="section"
+  id="authPage"
+  class="auth hidden"
 >
 
-  <div class="section-title">
+<div class="auth-box card">
 
-    <h2>
-      My Orders
-    </h2>
+<h1 id="authTitle">
+LOGIN
+</h1>
 
-    <button
-      class="secondary-btn"
-      onclick="loadOrders()"
-    >
-      REFRESH
-    </button>
+<p class="muted">
+Access your DARK WEB account.
+</p>
 
-  </div>
+<div
+  id="registerName"
+  class="field hidden"
+>
+<label>Name</label>
+<input
+  id="name"
+  placeholder="Your name"
+>
+</div>
 
-  <div
-    id="ordersList"
-    class="order-list"
-  ></div>
+<div class="field">
+
+<label>Email</label>
+
+<input
+  id="email"
+  type="email"
+  placeholder="you@example.com"
+>
+
+</div>
+
+<div class="field">
+
+<label>Password</label>
+
+<input
+  id="password"
+  type="password"
+  placeholder="Password"
+>
+
+</div>
+
+<button
+  class="primary"
+  style="width:100%"
+  onclick="submitAuth()"
+>
+<span id="authButton">
+LOGIN
+</span>
+</button>
+
+<p
+  style="text-align:center"
+  class="muted"
+>
+
+<span id="authSwitchText">
+Don't have an account?
+</span>
+
+<button
+  class="secondary"
+  onclick="toggleAuth()"
+>
+<span id="authSwitch">
+REGISTER
+</span>
+</button>
+
+</p>
+
+</div>
 
 </section>
 
-<!-- =====================================================
-     ADMIN
-===================================================== -->
+
+<!-- ORDERS -->
 
 <section
-  id="adminSection"
-  class="section"
+  id="ordersPage"
+  class="hidden"
 >
 
-  <div class="section-title">
+<h2 class="section-title">
+MY ORDERS
+</h2>
 
-    <div>
+<div id="orders"></div>
 
-      <h2>
-        Admin Product Management
-      </h2>
+</section>
 
-      <p class="muted">
-        Add, update, activate, deactivate or delete products.
-      </p>
 
-    </div>
+<!-- ADMIN -->
 
-    <button
-      class="secondary-btn"
-      onclick="loadAdminProducts()"
-    >
-      REFRESH
-    </button>
+<section
+  id="adminPage"
+  class="hidden"
+>
 
-  </div>
+<h2 class="section-title">
+ADMIN CONTROL
+</h2>
 
-  <div class="admin-layout">
+<div class="admin-grid">
 
-    <!-- ADD PRODUCT -->
+<!-- ADD PRODUCT -->
 
-    <div class="admin-card">
+<div class="card">
 
-      <h3>
-        Add Product
-      </h3>
+<h2>
+ADD PRODUCT
+</h2>
 
-      <form
-        id="productForm"
-        onsubmit="addProduct(event)"
-      >
+<form
+  id="productForm"
+>
 
-        <div class="form-group">
+<div class="field">
 
-          <label>
-            Product Name
-          </label>
+<label>
+Product Name
+</label>
 
-          <input
-            id="productName"
-            required
-            placeholder="Example: Item 6"
-          >
+<input
+  name="name"
+  required
+  placeholder="Item 6"
+>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<div class="field">
 
-          <label>
-            M-Pesa Price — KSh
-          </label>
+<label>
+M-Pesa Price — KSh
+</label>
 
-          <input
-            id="productKes"
-            type="number"
-            min="1"
-            step="0.01"
-            required
-            placeholder="500"
-          >
+<input
+  name="price_kes"
+  type="number"
+  min="1"
+  required
+  placeholder="500"
+>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<div class="field">
 
-          <label>
-            Binance Price — USDT
-          </label>
+<label>
+Binance Price — USDT
+</label>
 
-          <input
-            id="productUsdt"
-            type="number"
-            min="0.01"
-            step="0.01"
-            required
-            placeholder="3.50"
-          >
+<input
+  name="binance_price"
+  placeholder="3.50"
+>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<div class="field">
 
-          <label>
-            Short Description
-          </label>
+<label>
+Short Description
+</label>
 
-          <textarea
-            id="productDescription"
-            placeholder="Describe the product..."
-          ></textarea>
+<textarea
+  name="description"
+  placeholder="Product description"
+></textarea>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<div class="field">
 
-          <label>
-            Delivery Content
-          </label>
+<label>
+Delivery Content
+</label>
 
-          <textarea
-            id="productDelivery"
-            placeholder="Content that will be delivered after payment..."
-          ></textarea>
+<textarea
+  name="delivery_content"
+  placeholder="Content delivered after payment"
+></textarea>
 
-        </div>
+</div>
 
-        <div class="form-group">
+<div class="field">
 
-          <label>
-            Product Image
-          </label>
+<label>
+Product Image
+</label>
 
-          <div class="image-upload">
+<div class="upload-box">
 
-            <input
-              id="productImage"
-              type="file"
-              accept="image/*"
-              onchange="previewImage(event)"
-            >
+<input
+  id="productImage"
+  name="image"
+  type="file"
+  accept="image/jpeg,image/png,image/webp,image/gif"
+>
 
-            <div class="muted">
-              JPG, PNG, WEBP — maximum 5MB
-            </div>
+<div
+  id="previewContainer"
+  class="hidden"
+>
 
-            <div
-              id="previewBox"
-              class="preview-box"
-            >
+<img
+  id="imagePreview"
+  class="preview"
+>
 
-              <img
-                id="imagePreview"
-                alt="Image preview"
-              >
+</div>
 
-            </div>
+<p class="muted">
+Maximum image size: 5MB.
+</p>
 
-          </div>
+</div>
 
-        </div>
+</div>
 
-        <button
-          id="addProductBtn"
-          class="primary-btn"
-        >
-          ADD PRODUCT
-        </button>
+<div class="form-actions">
 
-      </form>
+<button
+  class="primary"
+  type="submit"
+>
+ADD PRODUCT
+</button>
 
-    </div>
+<button
+  class="secondary"
+  type="button"
+  onclick="loadAdminProducts()"
+>
+REFRESH
+</button>
 
-    <!-- PRODUCT MANAGEMENT -->
+</div>
 
-    <div class="admin-card">
+</form>
 
-      <h3>
-        Products
-      </h3>
+</div>
 
-      <div
-        id="adminProductList"
-        class="admin-product-list"
-      ></div>
 
-    </div>
+<!-- ADMIN PRODUCTS -->
 
-  </div>
+<div class="card">
 
-  <div
-    class="admin-card"
-    style="margin-top:20px"
-  >
+<h2>
+PRODUCT MANAGEMENT
+</h2>
 
-    <h3>
-      Orders
-    </h3>
+<div id="adminProducts"></div>
 
-    <div
-      id="adminOrdersList"
-      class="order-list"
-    ></div>
+</div>
 
-  </div>
+</div>
+
+<br>
+
+<div class="card">
+
+<h2>
+ORDER MANAGEMENT
+</h2>
+
+<div id="adminOrders"></div>
+
+</div>
 
 </section>
 
 </main>
 
-</div>
+<footer>
 
-<!-- =====================================================
-     CHECKOUT MODAL
-===================================================== -->
+DARK WEB STORE<br>
+
+POWERED BY DARK WEB
+
+</footer>
+
+
+<!-- CHECKOUT MODAL -->
 
 <div
   id="checkoutModal"
-  class="modal"
+  class="modal hidden"
 >
 
-  <div class="modal-card">
+<div class="modal-box card">
 
-    <div class="modal-head">
+<button
+  class="close"
+  onclick="closeModal('checkoutModal')"
+>
+X
+</button>
 
-      <h2>
-        Checkout
-      </h2>
+<h2>
+CHECKOUT
+</h2>
 
-      <button
-        class="close"
-        onclick="closeModal('checkoutModal')"
-      >
-        ×
-      </button>
+<div id="checkoutProduct"></div>
 
-    </div>
+<div class="field">
 
-    <div id="checkoutContent"></div>
+<label>
+Payment Method
+</label>
 
-  </div>
+<select id="paymentMethod">
+<option value="MPESA">
+M-Pesa
+</option>
+
+<option value="BINANCE">
+Binance / USDT
+</option>
+</select>
 
 </div>
 
-<!-- =====================================================
-     TRACKING MODAL
-===================================================== -->
+<div class="field">
+
+<label>
+Delivery Method
+</label>
+
+<select id="deliveryMethod">
+
+<option value="EMAIL">
+Email
+</option>
+
+<option value="WHATSAPP">
+WhatsApp
+</option>
+
+</select>
+
+</div>
+
+<div class="field">
+
+<label>
+Delivery Email / WhatsApp
+</label>
+
+<input
+  id="deliveryTarget"
+  placeholder="Email or WhatsApp number"
+>
+
+</div>
+
+<div class="field">
+
+<label>
+M-Pesa Phone Number
+</label>
+
+<input
+  id="phone"
+  placeholder="2547XXXXXXXX"
+>
+
+</div>
+
+<button
+  class="primary"
+  style="width:100%"
+  onclick="createOrder()"
+>
+CREATE ORDER
+</button>
+
+</div>
+
+</div>
+
+
+<!-- PAYMENT MODAL -->
 
 <div
-  id="trackingModal"
-  class="modal"
+  id="paymentModal"
+  class="modal hidden"
 >
 
-  <div class="modal-card">
+<div class="modal-box card">
 
-    <div class="modal-head">
+<button
+  class="close"
+  onclick="closeModal('paymentModal')"
+>
+X
+</button>
 
-      <h2>
-        Order Tracking
-      </h2>
+<h2>
+PAYMENT
+</h2>
 
-      <button
-        class="close"
-        onclick="closeModal('trackingModal')"
-      >
-        ×
-      </button>
-
-    </div>
-
-    <div id="trackingContent"></div>
-
-  </div>
+<div id="paymentContent"></div>
 
 </div>
 
-<div id="toast"></div>
+</div>
+
+
+<!-- TRACK MODAL -->
+
+<div
+  id="trackModal"
+  class="modal hidden"
+>
+
+<div class="modal-box card">
+
+<button
+  class="close"
+  onclick="closeModal('trackModal')"
+>
+X
+</button>
+
+<h2>
+ORDER TRACKING
+</h2>
+
+<div id="trackContent"></div>
+
+</div>
+
+</div>
+
+
+<div id="alert"></div>
+
 
 <script>
 
-/* =====================================================
-   STATE
-===================================================== */
-
 let currentUser = null;
+let authRegister = false;
 let selectedProduct = null;
+let currentOrder = null;
 
-/* =====================================================
+
+/* =========================================================
    API
-===================================================== */
+========================================================= */
 
 async function api(
   url,
@@ -1286,7 +1055,7 @@ async function api(
     await fetch(
       url,
       {
-        credentials:"same-origin",
+        credentials:"include",
         ...options
       }
     );
@@ -1294,392 +1063,387 @@ async function api(
   let data = {};
 
   try{
-    data = await response.json();
-  }catch(e){}
+    data =
+      await response.json();
+  }catch{}
 
   if(!response.ok){
 
     throw new Error(
       data.error ||
-      "Request failed."
+      "Request failed"
     );
+
   }
 
   return data;
 }
 
-/* =====================================================
-   TOAST
-===================================================== */
 
-function toast(message){
+/* =========================================================
+   ALERT
+========================================================= */
 
-  const el =
-    document.getElementById("toast");
+function alertUser(
+  message
+){
 
-  el.textContent =
+  const box =
+    document.createElement("div");
+
+  box.className =
+    "alert-box";
+
+  box.textContent =
     message;
 
-  el.classList.add("show");
+  document
+    .getElementById("alert")
+    .appendChild(box);
 
   setTimeout(
-    () => {
-      el.classList.remove("show");
+    ()=>{
+      box.remove();
     },
-    3500
+    4000
   );
 }
 
-/* =====================================================
-   AUTH UI
-===================================================== */
 
-function showAuth(type){
+/* =========================================================
+   PAGE
+========================================================= */
 
-  const login =
-    document.getElementById(
-      "loginForm"
-    );
+function showPage(
+  page
+){
 
-  const register =
-    document.getElementById(
-      "registerForm"
-    );
+  const pages = [
+    "store",
+    "auth",
+    "orders",
+    "admin"
+  ];
 
-  const loginTab =
-    document.getElementById(
-      "loginTab"
-    );
-
-  const registerTab =
-    document.getElementById(
-      "registerTab"
-    );
-
-  if(type === "login"){
-
-    login.classList.remove(
-      "hidden"
-    );
-
-    register.classList.add(
-      "hidden"
-    );
-
-    loginTab.classList.add(
-      "active"
-    );
-
-    registerTab.classList.remove(
-      "active"
-    );
-
-  }else{
-
-    login.classList.add(
-      "hidden"
-    );
-
-    register.classList.remove(
-      "hidden"
-    );
-
-    loginTab.classList.remove(
-      "active"
-    );
-
-    registerTab.classList.add(
-      "active"
-    );
-  }
-}
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-async function login(event){
-
-  event.preventDefault();
-
-  try{
-
-    const data =
-      await api(
-        "/api/login",
-        {
-          method:"POST",
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-          body:JSON.stringify({
-            email:
-              document.getElementById(
-                "loginEmail"
-              ).value,
-
-            password:
-              document.getElementById(
-                "loginPassword"
-              ).value
-          })
-        }
-      );
-
-    currentUser =
-      data.user;
-
-    enterApp();
-
-    toast(
-      "Welcome back, " +
-      currentUser.name
-    );
-
-  }catch(error){
-
-    toast(
-      error.message
-    );
-  }
-}
-
-/* =====================================================
-   REGISTER
-===================================================== */
-
-async function register(event){
-
-  event.preventDefault();
-
-  try{
-
-    const data =
-      await api(
-        "/api/register",
-        {
-          method:"POST",
-          headers:{
-            "Content-Type":
-              "application/json"
-          },
-          body:JSON.stringify({
-
-            name:
-              document.getElementById(
-                "registerName"
-              ).value,
-
-            email:
-              document.getElementById(
-                "registerEmail"
-              ).value,
-
-            password:
-              document.getElementById(
-                "registerPassword"
-              ).value
-
-          })
-        }
-      );
-
-    currentUser =
-      data.user;
-
-    enterApp();
-
-    toast(
-      "Account created successfully."
-    );
-
-  }catch(error){
-
-    toast(
-      error.message
-    );
-  }
-}
-
-/* =====================================================
-   ENTER APP
-===================================================== */
-
-function enterApp(){
+  pages.forEach(
+    name=>{
+      document
+        .getElementById(
+          name+"Page"
+        )
+        .classList.add(
+          "hidden"
+        );
+    }
+  );
 
   document
     .getElementById(
-      "authPage"
-    )
-    .classList.add(
-      "hidden"
-    );
-
-  document
-    .getElementById(
-      "appPage"
+      page+"Page"
     )
     .classList.remove(
       "hidden"
     );
 
-  document
-    .getElementById(
-      "userName"
-    )
-    .textContent =
-      currentUser.name;
-
-  if(currentUser.is_admin){
-
-    document
-      .getElementById(
-        "adminNav"
-      )
-      .classList.remove(
-        "hidden"
-      );
-
-  }else{
-
-    document
-      .getElementById(
-        "adminNav"
-      )
-      .classList.add(
-        "hidden"
-      );
+  if(page === "store"){
+    loadProducts();
   }
 
-  loadProducts();
-  loadOrders();
-
-  if(currentUser.is_admin){
-    loadAdminProducts();
-    loadAdminOrders();
-  }
-}
-
-/* =====================================================
-   CHECK SESSION
-===================================================== */
-
-async function checkSession(){
-
-  try{
-
-    const data =
-      await api(
-        "/api/me"
-      );
-
-    if(data.loggedIn){
-
-      currentUser =
-        data.user;
-
-      enterApp();
-
-    }
-
-  }catch(error){
-
-    console.error(error);
-
-  }
-}
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-async function logout(){
-
-  try{
-
-    await api(
-      "/api/logout",
-      {
-        method:"POST"
-      }
-    );
-
-  }catch(error){}
-
-  location.reload();
-}
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-function showSection(
-  section,
-  button
-){
-
-  document
-    .querySelectorAll(
-      ".section"
-    )
-    .forEach(
-      el =>
-        el.classList.remove(
-          "active"
-        )
-    );
-
-  document
-    .getElementById(
-      section + "Section"
-    )
-    .classList.add(
-      "active"
-    );
-
-  document
-    .querySelectorAll(
-      ".nav-links button"
-    )
-    .forEach(
-      el =>
-        el.classList.remove(
-          "active"
-        )
-    );
-
-  if(button){
-    button.classList.add(
-      "active"
-    );
-  }
-
-  if(section === "orders"){
+  if(page === "orders"){
     loadOrders();
   }
 
-  if(section === "admin"){
+  if(page === "admin"){
+    if(
+      !currentUser ||
+      !currentUser.is_admin
+    ){
+      showPage("auth");
+      return;
+    }
+
     loadAdminProducts();
     loadAdminOrders();
   }
 }
 
-/* =====================================================
-   LOAD PUBLIC PRODUCTS
-===================================================== */
+
+/* =========================================================
+   AUTH UI
+========================================================= */
+
+function toggleAuth(){
+
+  authRegister =
+    !authRegister;
+
+  document
+    .getElementById(
+      "authTitle"
+    )
+    .textContent =
+      authRegister
+        ? "REGISTER"
+        : "LOGIN";
+
+  document
+    .getElementById(
+      "authButton"
+    )
+    .textContent =
+      authRegister
+        ? "REGISTER"
+        : "LOGIN";
+
+  document
+    .getElementById(
+      "registerName"
+    )
+    .classList.toggle(
+      "hidden",
+      !authRegister
+    );
+
+  document
+    .getElementById(
+      "authSwitch"
+    )
+    .textContent =
+      authRegister
+        ? "LOGIN"
+        : "REGISTER";
+
+  document
+    .getElementById(
+      "authSwitchText"
+    )
+    .textContent =
+      authRegister
+        ? "Already have an account?"
+        : "Don't have an account?";
+}
+
+
+/* =========================================================
+   AUTH SUBMIT
+========================================================= */
+
+async function submitAuth(){
+
+  try{
+
+    const email =
+      document
+        .getElementById(
+          "email"
+        )
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById(
+          "password"
+        )
+        .value;
+
+    if(!email || !password){
+
+      alertUser(
+        "Enter email and password."
+      );
+
+      return;
+    }
+
+    let data;
+
+    if(authRegister){
+
+      const name =
+        document
+          .getElementById(
+            "name"
+          )
+          .value
+          .trim();
+
+      if(!name){
+
+        alertUser(
+          "Enter your name."
+        );
+
+        return;
+      }
+
+      data =
+        await api(
+          "/api/register",
+          {
+            method:"POST",
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
+            body:
+              JSON.stringify({
+                name,
+                email,
+                password
+              })
+          }
+        );
+
+    }else{
+
+      data =
+        await api(
+          "/api/login",
+          {
+            method:"POST",
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
+            body:
+              JSON.stringify({
+                email,
+                password
+              })
+          }
+        );
+
+    }
+
+    currentUser =
+      data.user;
+
+    updateNav();
+
+    alertUser(
+      "Welcome, "+
+      currentUser.name
+    );
+
+    showPage("store");
+
+  }catch(error){
+
+    alertUser(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+  await api(
+    "/api/logout",
+    {
+      method:"POST"
+    }
+  );
+
+  currentUser = null;
+
+  updateNav();
+
+  showPage("store");
+
+  alertUser(
+    "Logged out."
+  );
+}
+
+
+/* =========================================================
+   NAV
+========================================================= */
+
+function updateNav(){
+
+  const authNav =
+    document
+      .getElementById(
+        "authNav"
+      );
+
+  const logoutBtn =
+    document
+      .getElementById(
+        "logoutBtn"
+      );
+
+  const adminNav =
+    document
+      .getElementById(
+        "adminNav"
+      );
+
+  if(currentUser){
+
+    authNav.classList.add(
+      "hidden"
+    );
+
+    logoutBtn.classList.remove(
+      "hidden"
+    );
+
+    if(currentUser.is_admin){
+
+      adminNav.classList.remove(
+        "hidden"
+      );
+
+    }else{
+
+      adminNav.classList.add(
+        "hidden"
+      );
+
+    }
+
+  }else{
+
+    authNav.classList.remove(
+      "hidden"
+    );
+
+    logoutBtn.classList.add(
+      "hidden"
+    );
+
+    adminNav.classList.add(
+      "hidden"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
 
 async function loadProducts(){
 
-  const grid =
+  const box =
     document.getElementById(
-      "productGrid"
+      "products"
     );
 
-  grid.innerHTML =
-    `<div class="empty-state">
-      Loading products...
-    </div>`;
+  box.innerHTML =
+    "<p class='muted'>Loading products...</p>";
 
   try{
 
@@ -1688,46 +1452,39 @@ async function loadProducts(){
         "/api/products"
       );
 
-    if(
-      !data.products ||
-      !data.products.length
-    ){
+    if(!data.products.length){
 
-      grid.innerHTML =
-        `<div class="empty-state">
-          No products available.
-        </div>`;
+      box.innerHTML =
+        "<p class='muted'>No products available.</p>";
 
       return;
     }
 
-    grid.innerHTML =
+    box.innerHTML =
       data.products
-        .map(
-          productCard
-        )
+        .map(productCard)
         .join("");
 
   }catch(error){
 
-    grid.innerHTML =
-      `<div class="empty-state">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>`;
+    box.innerHTML =
+      `<p class="muted">${escapeHtml(
+        error.message
+      )}</p>`;
+
   }
+
 }
 
-/* =====================================================
-   PRODUCT CARD
-===================================================== */
 
-function productCard(product){
+function productCard(
+  product
+){
 
   const image =
     product.image_url
-      ? `<img
+      ? `
+        <img
           class="product-image"
           src="${escapeAttr(
             product.image_url
@@ -1735,787 +1492,188 @@ function productCard(product){
           alt="${escapeAttr(
             product.name
           )}"
-          onerror="this.style.display='none'"
-        >`
-      : `<div class="product-image empty">
+        >
+      `
+      : `
+        <div
+          class="product-image no-image"
+        >
           ◈
-        </div>`;
+        </div>
+      `;
 
   return `
-    <div class="product-card">
+  <article class="card product">
 
-      ${image}
+    ${image}
 
-      <div class="product-body">
+    <div class="product-body">
 
-        <h3>
-          ${escapeHtml(
-            product.name
-          )}
-        </h3>
-
-        <div class="product-description">
-          ${escapeHtml(
-            product.description ||
-            "Digital product"
-          )}
-        </div>
-
-        <div class="price-row">
-
-          <div class="kes">
-            KSh ${money(
-              product.price_kes
-            )}
-          </div>
-
-          <div class="usdt">
-            ${money(
-              product.binance_price
-            )}
-            USDT
-          </div>
-
-        </div>
-
-        <button
-          class="buy-btn"
-          onclick='openCheckout(
-            ${JSON.stringify(
-              product
-            )}
-          )'
-        >
-          BUY NOW
-        </button>
-
-      </div>
-
-    </div>
-  `;
-}
-
-/* =====================================================
-   IMAGE PREVIEW
-===================================================== */
-
-function previewImage(event){
-
-  const file =
-    event.target.files[0];
-
-  const box =
-    document.getElementById(
-      "previewBox"
-    );
-
-  const preview =
-    document.getElementById(
-      "imagePreview"
-    );
-
-  if(!file){
-
-    box.style.display =
-      "none";
-
-    preview.src =
-      "";
-
-    return;
-  }
-
-  if(
-    !file.type.startsWith(
-      "image/"
-    )
-  ){
-
-    toast(
-      "Please select an image."
-    );
-
-    event.target.value =
-      "";
-
-    return;
-  }
-
-  if(
-    file.size >
-    5 * 1024 * 1024
-  ){
-
-    toast(
-      "Image must be 5MB or smaller."
-    );
-
-    event.target.value =
-      "";
-
-    return;
-  }
-
-  const reader =
-    new FileReader();
-
-  reader.onload =
-    function(e){
-
-      preview.src =
-        e.target.result;
-
-      box.style.display =
-        "block";
-    };
-
-  reader.readAsDataURL(
-    file
-  );
-}
-
-/* =====================================================
-   ADD PRODUCT
-===================================================== */
-
-async function addProduct(event){
-
-  event.preventDefault();
-
-  const button =
-    document.getElementById(
-      "addProductBtn"
-    );
-
-  button.disabled =
-    true;
-
-  button.textContent =
-    "UPLOADING...";
-
-  try{
-
-    const formData =
-      new FormData();
-
-    formData.append(
-      "name",
-      document.getElementById(
-        "productName"
-      ).value
-    );
-
-    formData.append(
-      "price_kes",
-      document.getElementById(
-        "productKes"
-      ).value
-    );
-
-    formData.append(
-      "binance_price",
-      document.getElementById(
-        "productUsdt"
-      ).value
-    );
-
-    formData.append(
-      "description",
-      document.getElementById(
-        "productDescription"
-      ).value
-    );
-
-    formData.append(
-      "delivery_content",
-      document.getElementById(
-        "productDelivery"
-      ).value
-    );
-
-    const image =
-      document.getElementById(
-        "productImage"
-      ).files[0];
-
-    if(image){
-
-      formData.append(
-        "image",
-        image
-      );
-    }
-
-    await api(
-      "/api/admin/products",
-      {
-        method:"POST",
-        body:formData
-      }
-    );
-
-    toast(
-      "Product added successfully!"
-    );
-
-    document
-      .getElementById(
-        "productForm"
-      )
-      .reset();
-
-    document
-      .getElementById(
-        "previewBox"
-      )
-      .style.display =
-        "none";
-
-    await loadAdminProducts();
-    await loadProducts();
-
-  }catch(error){
-
-    toast(
-      error.message
-    );
-
-  }finally{
-
-    button.disabled =
-      false;
-
-    button.textContent =
-      "ADD PRODUCT";
-  }
-}
-
-/* =====================================================
-   ADMIN PRODUCTS
-===================================================== */
-
-async function loadAdminProducts(){
-
-  if(
-    !currentUser ||
-    !currentUser.is_admin
-  ){
-    return;
-  }
-
-  const container =
-    document.getElementById(
-      "adminProductList"
-    );
-
-  container.innerHTML =
-    `<div class="empty-state">
-      Loading...
-    </div>`;
-
-  try{
-
-    const data =
-      await api(
-        "/api/admin/products"
-      );
-
-    if(
-      !data.products.length
-    ){
-
-      container.innerHTML =
-        `<div class="empty-state">
-          No products.
-        </div>`;
-
-      return;
-    }
-
-    container.innerHTML =
-      data.products
-        .map(
-          adminProductCard
-        )
-        .join("");
-
-  }catch(error){
-
-    container.innerHTML =
-      `<div class="empty-state">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>`;
-  }
-}
-
-/* =====================================================
-   ADMIN PRODUCT CARD
-===================================================== */
-
-function adminProductCard(product){
-
-  const image =
-    product.image_url
-      ? `<img
-          src="${escapeAttr(
-            product.image_url
-          )}"
-          alt=""
-        >`
-      : `<img
-          src=""
-          alt=""
-          style="opacity:.15"
-        >`;
-
-  return `
-    <div class="admin-product">
-
-      ${image}
-
-      <div class="admin-product-info">
-
-        <h4>
-          ${escapeHtml(
-            product.name
-          )}
-        </h4>
-
-        <p>
-          KSh ${money(
-            product.price_kes
-          )}
-          ·
-          ${money(
-            product.binance_price
-          )} USDT
-        </p>
-
-        <p>
-          Status:
-          <strong>
-            ${
-              product.active
-                ? "ACTIVE"
-                : "INACTIVE"
-            }
-          </strong>
-        </p>
-
-      </div>
-
-      <div class="admin-actions">
-
-        <button
-          class="secondary-btn"
-          onclick='editProduct(
-            ${JSON.stringify(
-              product
-            )}
-          )'
-        >
-          EDIT
-        </button>
-
-        <button
-          class="${
-            product.active
-              ? "danger-btn"
-              : "success-btn"
-          }"
-          onclick="toggleProduct(
-            ${product.id},
-            ${product.active ? "false" : "true"}
-          )"
-        >
-          ${
-            product.active
-              ? "DEACTIVATE"
-              : "ACTIVATE"
-          }
-        </button>
-
-        <button
-          class="danger-btn"
-          onclick="deleteProduct(
-            ${product.id}
-          )"
-        >
-          DELETE
-        </button>
-
-      </div>
-
-    </div>
-  `;
-}
-
-/* =====================================================
-   EDIT PRODUCT
-===================================================== */
-
-function editProduct(product){
-
-  const name =
-    prompt(
-      "Product name:",
-      product.name
-    );
-
-  if(name === null){
-    return;
-  }
-
-  const description =
-    prompt(
-      "Description:",
-      product.description || ""
-    );
-
-  if(description === null){
-    return;
-  }
-
-  const kes =
-    prompt(
-      "M-Pesa price:",
-      product.price_kes
-    );
-
-  if(kes === null){
-    return;
-  }
-
-  const usdt =
-    prompt(
-      "Binance USDT price:",
-      product.binance_price
-    );
-
-  if(usdt === null){
-    return;
-  }
-
-  const delivery =
-    prompt(
-      "Delivery content:",
-      product.delivery_content || ""
-    );
-
-  if(delivery === null){
-    return;
-  }
-
-  updateProductSimple(
-    product.id,
-    {
-      name,
-      description,
-      price_kes:kes,
-      binance_price:usdt,
-      delivery_content:delivery
-    }
-  );
-}
-
-/* =====================================================
-   UPDATE PRODUCT
-===================================================== */
-
-async function updateProductSimple(
-  id,
-  data
-){
-
-  try{
-
-    const formData =
-      new FormData();
-
-    Object.entries(data)
-      .forEach(
-        ([key,value]) =>
-          formData.append(
-            key,
-            value
-          )
-      );
-
-    await api(
-      `/api/admin/products/${id}`,
-      {
-        method:"PUT",
-        body:formData
-      }
-    );
-
-    toast(
-      "Product updated."
-    );
-
-    await loadAdminProducts();
-    await loadProducts();
-
-  }catch(error){
-
-    toast(
-      error.message
-    );
-  }
-}
-
-/* =====================================================
-   TOGGLE PRODUCT
-===================================================== */
-
-async function toggleProduct(
-  id,
-  active
-){
-
-  try{
-
-    await api(
-      `/api/admin/products/${id}/status`,
-      {
-        method:"PATCH",
-        headers:{
-          "Content-Type":
-            "application/json"
-        },
-        body:JSON.stringify({
-          active
-        })
-      }
-    );
-
-    toast(
-      active
-        ? "Product activated."
-        : "Product deactivated."
-    );
-
-    await loadAdminProducts();
-    await loadProducts();
-
-  }catch(error){
-
-    toast(
-      error.message
-    );
-  }
-}
-
-/* =====================================================
-   DELETE PRODUCT
-===================================================== */
-
-async function deleteProduct(id){
-
-  if(
-    !confirm(
-      "Delete this product? If it has existing orders, it will be deactivated instead."
-    )
-  ){
-    return;
-  }
-
-  try{
-
-    const data =
-      await api(
-        `/api/admin/products/${id}`,
-        {
-          method:"DELETE"
-        }
-      );
-
-    toast(
-      data.message ||
-      "Product removed."
-    );
-
-    await loadAdminProducts();
-    await loadProducts();
-
-  }catch(error){
-
-    toast(
-      error.message
-    );
-  }
-}
-
-/* =====================================================
-   CHECKOUT
-===================================================== */
-
-function openCheckout(product){
-
-  selectedProduct =
-    product;
-
-  const content =
-    document.getElementById(
-      "checkoutContent"
-    );
-
-  content.innerHTML = `
-
-    <div class="payment-box">
-
-      <strong>
+      <h3>
         ${escapeHtml(
           product.name
         )}
-      </strong>
+      </h3>
 
-      <div class="price-row">
-
-        <div>
-          KSh ${money(
-            product.price_kes
-          )}
-        </div>
-
-        <div class="usdt">
-          ${money(
-            product.binance_price
-          )}
-          USDT
-        </div>
-
+      <div class="description">
+        ${escapeHtml(
+          product.description || ""
+        )}
       </div>
 
-    </div>
+      <div class="price">
+        KSh ${Number(
+          product.price_kes
+        ).toLocaleString()}
+      </div>
 
-    <div class="form-group">
+      <div class="crypto">
+        ${product.binance_price
+          ? product.binance_price+
+            " USDT"
+          : ""}
+      </div>
 
-      <label>
-        Payment Method
-      </label>
+      <br>
 
-      <select id="paymentMethod">
-
-        <option value="MPESA">
-          M-Pesa
-        </option>
-
-        <option value="BINANCE">
-          Binance / USDT
-        </option>
-
-      </select>
-
-    </div>
-
-    <div class="form-group">
-
-      <label>
-        Delivery Method
-      </label>
-
-      <select id="deliveryMethod">
-
-        <option value="EMAIL">
-          Email
-        </option>
-
-        <option value="WHATSAPP">
-          WhatsApp
-        </option>
-
-      </select>
-
-    </div>
-
-    <div class="form-group">
-
-      <label>
-        Delivery Email / WhatsApp
-      </label>
-
-      <input
-        id="deliveryTarget"
-        placeholder="Email address or WhatsApp number"
-        required
+      <button
+        class="primary"
+        onclick="openCheckout(${product.id})"
       >
+        BUY NOW
+      </button>
 
     </div>
 
-    <div class="form-group">
+  </article>
+  `;
+}
 
-      <label>
-        M-Pesa Phone Number
-      </label>
 
-      <input
-        id="phone"
-        placeholder="2547XXXXXXXX"
-      >
+/* =========================================================
+   CHECKOUT
+========================================================= */
 
-    </div>
+async function openCheckout(
+  productId
+){
 
-    <button
-      class="primary-btn"
-      onclick="createOrder()"
-    >
-      CREATE ORDER
-    </button>
+  if(!currentUser){
 
+    alertUser(
+      "Please login first."
+    );
+
+    showPage("auth");
+
+    return;
+  }
+
+  const data =
+    await api(
+      "/api/products"
+    );
+
+  selectedProduct =
+    data.products.find(
+      p =>
+        Number(p.id) ===
+        Number(productId)
+    );
+
+  if(!selectedProduct){
+
+    alertUser(
+      "Product unavailable."
+    );
+
+    return;
+  }
+
+  document
+    .getElementById(
+      "checkoutProduct"
+    )
+    .innerHTML = `
+      <div class="card">
+
+        <h3>
+          ${escapeHtml(
+            selectedProduct.name
+          )}
+        </h3>
+
+        <strong>
+          KSh ${Number(
+            selectedProduct.price_kes
+          ).toLocaleString()}
+        </strong>
+
+      </div>
+      <br>
   `;
 
   document
     .getElementById(
       "checkoutModal"
     )
-    .classList.add(
-      "show"
+    .classList.remove(
+      "hidden"
     );
 }
 
-/* =====================================================
+
+/* =========================================================
    CREATE ORDER
-===================================================== */
+========================================================= */
 
 async function createOrder(){
 
-  if(!selectedProduct){
-    return;
-  }
-
-  const paymentMethod =
-    document.getElementById(
-      "paymentMethod"
-    ).value;
-
-  const deliveryMethod =
-    document.getElementById(
-      "deliveryMethod"
-    ).value;
-
-  const deliveryTarget =
-    document.getElementById(
-      "deliveryTarget"
-    ).value.trim();
-
-  const phone =
-    document.getElementById(
-      "phone"
-    ).value.trim();
-
-  if(!deliveryTarget){
-
-    toast(
-      "Enter your delivery target."
-    );
-
-    return;
-  }
-
   try{
+
+    if(!selectedProduct){
+
+      return;
+    }
+
+    const paymentMethod =
+      document
+        .getElementById(
+          "paymentMethod"
+        )
+        .value;
+
+    const deliveryMethod =
+      document
+        .getElementById(
+          "deliveryMethod"
+        )
+        .value;
+
+    const deliveryTarget =
+      document
+        .getElementById(
+          "deliveryTarget"
+        )
+        .value
+        .trim();
+
+    const phone =
+      document
+        .getElementById(
+          "phone"
+        )
+        .value
+        .trim();
+
+    if(!deliveryTarget){
+
+      alertUser(
+        "Enter your delivery email or WhatsApp."
+      );
+
+      return;
+    }
 
     const data =
       await api(
@@ -2526,167 +1684,228 @@ async function createOrder(){
             "Content-Type":
               "application/json"
           },
-          body:JSON.stringify({
+          body:
+            JSON.stringify({
 
-            product_id:
-              selectedProduct.id,
+              product_id:
+                selectedProduct.id,
 
-            payment_method:
-              paymentMethod,
+              payment_method:
+                paymentMethod,
 
-            delivery_method:
-              deliveryMethod,
+              delivery_method:
+                deliveryMethod,
 
-            delivery_target:
-              deliveryTarget,
+              delivery_target:
+                deliveryTarget,
 
-            phone
-          })
+              phone
+
+            })
         }
       );
+
+    currentOrder =
+      data.order;
 
     closeModal(
       "checkoutModal"
     );
 
-    toast(
-      "Order created: " +
-      data.order.order_number
+    openPayment(
+      currentOrder
     );
-
-    if(
-      paymentMethod ===
-      "MPESA"
-    ){
-
-      await showMpesaPayment(
-        data.order
-      );
-
-    }else{
-
-      await showBinancePayment(
-        data.order
-      );
-    }
-
-    loadOrders();
 
   }catch(error){
 
-    toast(
+    alertUser(
       error.message
     );
+
   }
+
 }
 
-/* =====================================================
-   M-PESA PAYMENT
-===================================================== */
 
-async function showMpesaPayment(
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+async function openPayment(
   order
 ){
 
-  const modal =
-    document.getElementById(
-      "checkoutModal"
+  const box =
+    document
+      .getElementById(
+        "paymentContent"
+      );
+
+  document
+    .getElementById(
+      "paymentModal"
+    )
+    .classList.remove(
+      "hidden"
     );
 
-  const content =
-    document.getElementById(
-      "checkoutContent"
-    );
+  if(
+    order.payment_method ===
+    "MPESA"
+  ){
 
-  content.innerHTML = `
+    box.innerHTML = `
 
-    <h3>
-      M-Pesa Payment
-    </h3>
+      <div class="card">
 
-    <p class="muted">
-      Order:
-      ${escapeHtml(
-        order.order_number
-      )}
-    </p>
+        <h3>
+          M-Pesa Payment
+        </h3>
 
-    <div class="payment-box">
+        <p>
+          Order:
+          <strong>
+            ${escapeHtml(
+              order.order_number
+            )}
+          </strong>
+        </p>
 
-      <strong>
-        Amount
-      </strong>
+        <p>
+          Amount:
+          <strong>
+            KSh ${Number(
+              order.amount_kes
+            ).toLocaleString()}
+          </strong>
+        </p>
 
-      <h2>
-        KSh ${money(
-          order.amount_kes
-        )}
-      </h2>
+        <div class="field">
 
-    </div>
+          <label>
+            M-Pesa Phone
+          </label>
 
-    <div class="form-group">
+          <input
+            id="mpesaPhone"
+            placeholder="2547XXXXXXXX"
+          >
 
-      <label>
-        M-Pesa Phone Number
-      </label>
+        </div>
 
-      <input
-        id="stkPhone"
-        value="${escapeAttr(
-          order.delivery_target
-            .match(/254\d{9}/)?.[0] ||
-          ""
-        )}"
-        placeholder="2547XXXXXXXX"
-      >
+        <button
+          class="primary"
+          onclick="startMpesa()"
+        >
+          SEND STK PUSH
+        </button>
 
-    </div>
+      </div>
 
-    <button
-      class="primary-btn"
-      onclick="sendStk(
-        '${escapeAttr(
-          order.order_number
-        )}'
-      )"
-    >
-      SEND M-PESA PROMPT
-    </button>
+    `;
 
-    <p class="muted">
-      After payment, the order status will update from the M-Pesa callback.
-    </p>
-  `;
+  }else{
 
-  modal.classList.add(
-    "show"
-  );
-}
+    const info =
+      await api(
+        "/api/binance/payment-info"
+      );
 
-/* =====================================================
-   SEND STK
-===================================================== */
+    box.innerHTML = `
 
-async function sendStk(
-  orderNumber
-){
+      <div class="card">
 
-  const phone =
-    document.getElementById(
-      "stkPhone"
-    ).value.trim();
+        <h3>
+          Binance / USDT
+        </h3>
 
-  if(!phone){
+        <p>
+          Amount:
+          <strong>
+            ${escapeHtml(
+              order.amount_crypto
+            )}
+            ${escapeHtml(
+              info.asset
+            )}
+          </strong>
+        </p>
 
-    toast(
-      "Enter your M-Pesa phone number."
-    );
+        <p>
+          Network:
+          <strong>
+            ${escapeHtml(
+              info.network
+            )}
+          </strong>
+        </p>
 
-    return;
+        <p>
+          Send payment to:
+        </p>
+
+        <textarea
+          readonly
+        >${escapeHtml(
+          info.address ||
+          "Payment address not configured."
+        )}</textarea>
+
+        <br><br>
+
+        <div class="field">
+
+          <label>
+            Transaction Hash / TXID
+          </label>
+
+          <input
+            id="txid"
+            placeholder="Paste transaction hash"
+          >
+
+        </div>
+
+        <button
+          class="primary"
+          onclick="submitBinance()"
+        >
+          SUBMIT PAYMENT
+        </button>
+
+      </div>
+
+    `;
+
   }
 
+}
+
+
+/* =========================================================
+   MPESA
+========================================================= */
+
+async function startMpesa(){
+
   try{
+
+    const phone =
+      document
+        .getElementById(
+          "mpesaPhone"
+        )
+        .value
+        .trim();
+
+    if(!phone){
+
+      alertUser(
+        "Enter your M-Pesa number."
+      );
+
+      return;
+    }
 
     const data =
       await api(
@@ -2697,223 +1916,132 @@ async function sendStk(
             "Content-Type":
               "application/json"
           },
-          body:JSON.stringify({
-            order_number:
-              orderNumber,
-            phone
-          })
+          body:
+            JSON.stringify({
+
+              order_number:
+                currentOrder.order_number,
+
+              phone
+
+            })
         }
       );
 
-    toast(
-      data.response?.CustomerMessage ||
-      "M-Pesa prompt sent."
+    alertUser(
+      data.message ||
+      "Check your phone."
     );
 
-    closeModal(
-      "checkoutModal"
-    );
+    setTimeout(
+      ()=>{
+        closeModal(
+          "paymentModal"
+        );
 
-    loadOrders();
+        loadOrders();
+      },
+      2500
+    );
 
   }catch(error){
 
-    toast(
+    alertUser(
       error.message
     );
+
   }
+
 }
 
-/* =====================================================
-   BINANCE PAYMENT
-===================================================== */
 
-async function showBinancePayment(
-  order
-){
+/* =========================================================
+   BINANCE
+========================================================= */
+
+async function submitBinance(){
 
   try{
 
-    const info =
+    const txid =
+      document
+        .getElementById(
+          "txid"
+        )
+        .value
+        .trim();
+
+    if(!txid){
+
+      alertUser(
+        "Enter transaction hash."
+      );
+
+      return;
+    }
+
+    const data =
       await api(
-        "/api/binance/payment-info"
+        "/api/binance/submit",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+          body:
+            JSON.stringify({
+
+              order_number:
+                currentOrder.order_number,
+
+              txid
+
+            })
+        }
       );
 
-    const modal =
-      document.getElementById(
-        "checkoutModal"
-      );
-
-    const content =
-      document.getElementById(
-        "checkoutContent"
-      );
-
-    content.innerHTML = `
-
-      <h3>
-        Binance / USDT Payment
-      </h3>
-
-      <p class="muted">
-        Order:
-        ${escapeHtml(
-          order.order_number
-        )}
-      </p>
-
-      <div class="payment-box">
-
-        <div>
-          Send exactly:
-        </div>
-
-        <h2>
-          ${money(
-            order.amount_crypto
-          )}
-          ${escapeHtml(
-            info.asset
-          )}
-        </h2>
-
-        <div>
-          Network:
-          <strong>
-            ${escapeHtml(
-              info.network
-            )}
-          </strong>
-        </div>
-
-        <div class="wallet">
-          ${escapeHtml(
-            info.address ||
-            "Payment address not configured."
-          )}
-        </div>
-
-      </div>
-
-      <div class="form-group">
-
-        <label>
-          Transaction Hash / TXID
-        </label>
-
-        <input
-          id="binanceTxid"
-          placeholder="Paste transaction hash"
-        >
-
-      </div>
-
-      <button
-        class="primary-btn"
-        onclick="submitBinance(
-          '${escapeAttr(
-            order.order_number
-          )}'
-        )"
-      >
-        SUBMIT TRANSACTION
-      </button>
-
-      <p class="muted">
-        Binance payments are manually verified by the administrator.
-      </p>
-
-    `;
-
-    modal.classList.add(
-      "show"
-    );
-
-  }catch(error){
-
-    toast(
-      error.message
-    );
-  }
-}
-
-/* =====================================================
-   SUBMIT BINANCE
-===================================================== */
-
-async function submitBinance(
-  orderNumber
-){
-
-  const txid =
-    document.getElementById(
-      "binanceTxid"
-    ).value.trim();
-
-  if(!txid){
-
-    toast(
-      "Enter your transaction hash."
-    );
-
-    return;
-  }
-
-  try{
-
-    await api(
-      "/api/binance/submit",
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":
-            "application/json"
-        },
-        body:JSON.stringify({
-          order_number:
-            orderNumber,
-          txid
-        })
-      }
+    alertUser(
+      data.message
     );
 
     closeModal(
-      "checkoutModal"
-    );
-
-    toast(
-      "Payment submitted for verification."
+      "paymentModal"
     );
 
     loadOrders();
 
   }catch(error){
 
-    toast(
+    alertUser(
       error.message
     );
+
   }
+
 }
 
-/* =====================================================
+
+/* =========================================================
    ORDERS
-===================================================== */
+========================================================= */
 
 async function loadOrders(){
 
   if(!currentUser){
+
+    showPage("auth");
+
     return;
   }
 
-  const container =
+  const box =
     document.getElementById(
-      "ordersList"
+      "orders"
     );
 
-  container.innerHTML =
-    `<div class="empty-state">
-      Loading orders...
-    </div>`;
+  box.innerHTML =
+    "<p class='muted'>Loading...</p>";
 
   try{
 
@@ -2922,136 +2050,106 @@ async function loadOrders(){
         "/api/orders"
       );
 
-    if(
-      !data.orders.length
-    ){
+    if(!data.orders.length){
 
-      container.innerHTML =
-        `<div class="empty-state">
-          You have no orders yet.
-        </div>`;
+      box.innerHTML =
+        "<p class='muted'>No orders yet.</p>";
 
       return;
     }
 
-    container.innerHTML =
+    box.innerHTML =
       data.orders
-        .map(
-          customerOrderCard
-        )
+        .map(orderCard)
         .join("");
 
   }catch(error){
 
-    container.innerHTML =
-      `<div class="empty-state">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>`;
+    box.innerHTML =
+      `<p>${escapeHtml(
+        error.message
+      )}</p>`;
+
   }
+
 }
 
-/* =====================================================
-   CUSTOMER ORDER CARD
-===================================================== */
 
-function customerOrderCard(order){
+function orderCard(
+  order
+){
 
   return `
 
-    <div class="order-card">
+  <div class="order">
 
-      <div class="order-head">
+    <div class="order-head">
 
-        <div>
+      <div>
 
-          <div class="order-number">
-            ${escapeHtml(
-              order.order_number
-            )}
-          </div>
+        <strong>
+          ${escapeHtml(
+            order.order_number
+          )}
+        </strong>
 
-          <div class="muted">
-            ${escapeHtml(
-              order.product_name ||
-              "Product"
-            )}
-          </div>
-
-        </div>
-
-        <div>
-
-          <span class="status ${
-            order.payment_status
-          }">
-            ${escapeHtml(
-              order.payment_status
-            )}
-          </span>
-
-          <span class="status ${
-            order.delivery_status
-          }">
-            ${escapeHtml(
-              order.delivery_status
-            )}
-          </span>
-
+        <div class="muted">
+          ${escapeHtml(
+            order.product_name
+          )}
         </div>
 
       </div>
 
-      <hr
-        style="
-          border:0;
-          border-top:1px solid #20283a;
-          margin:15px 0;
-        "
-      >
-
-      <p>
-        Amount:
-        <strong>
-          KSh ${money(
-            order.amount_kes
-          )}
-        </strong>
-      </p>
-
-      <p class="muted">
-        Payment:
+      <span class="status">
         ${escapeHtml(
-          order.payment_method
+          order.payment_status
         )}
-      </p>
-
-      <p class="muted">
-        Delivery:
-        ${escapeHtml(
-          order.delivery_method
-        )}
-      </p>
-
-      <button
-        class="secondary-btn"
-        onclick="trackOrder(
-          '${escapeAttr(
-            order.order_number
-          )}'
-        )"
-      >
-        TRACK ORDER
-      </button>
+      </span>
 
     </div>
+
+    <p>
+      KSh ${Number(
+        order.amount_kes
+      ).toLocaleString()}
+    </p>
+
+    <p class="muted">
+      Delivery:
+      ${escapeHtml(
+        order.delivery_method
+      )}
+    </p>
+
+    <p>
+      Delivery status:
+      <strong>
+        ${escapeHtml(
+          order.delivery_status
+        )}
+      </strong>
+    </p>
+
+    <button
+      class="secondary"
+      onclick="trackOrder('${escapeAttr(
+        order.order_number
+      )}')"
+    >
+      TRACK ORDER
+    </button>
+
+  </div>
+
   `;
+
 }
 
-/* =====================================================
-   TRACK ORDER
-===================================================== */
+
+/* =========================================================
+   TRACK
+========================================================= */
 
 async function trackOrder(
   orderNumber
@@ -3061,179 +2159,497 @@ async function trackOrder(
 
     const data =
       await api(
-        `/api/orders/${encodeURIComponent(
+        "/api/orders/" +
+        encodeURIComponent(
           orderNumber
-        )}`
+        )
       );
 
-    const order =
+    const o =
       data.order;
 
-    const content =
-      document.getElementById(
-        "trackingContent"
-      );
+    document
+      .getElementById(
+        "trackContent"
+      )
+      .innerHTML = `
 
-    content.innerHTML = `
+      <div class="card">
 
-      <h3>
-        ${escapeHtml(
-          order.product_name
-        )}
-      </h3>
-
-      <p>
-        Order:
-        <strong>
+        <h3>
           ${escapeHtml(
-            order.order_number
+            o.product_name
           )}
-        </strong>
-      </p>
+        </h3>
 
-      <div class="payment-box">
+        <p>
+          Order:
+          <strong>
+            ${escapeHtml(
+              o.order_number
+            )}
+          </strong>
+        </p>
 
         <p>
           Payment:
-          <span class="status ${
-            order.payment_status
-          }">
+          <strong>
             ${escapeHtml(
-              order.payment_status
+              o.payment_status
             )}
-          </span>
+          </strong>
         </p>
 
         <p>
           Delivery:
-          <span class="status ${
-            order.delivery_status
-          }">
+          <strong>
             ${escapeHtml(
-              order.delivery_status
+              o.delivery_status
             )}
-          </span>
+          </strong>
         </p>
 
-      </div>
+        <div class="timeline">
 
-      <h3>
-        Order Timeline
-      </h3>
+          <div>
+            ✓ Order received
+          </div>
 
-      <div class="payment-box">
-
-        <p>
-          ✓ Order received
-        </p>
-
-        <p>
-          ${
-            order.payment_status === "PAID"
+          <div>
+            ${
+              o.payment_status === "PAID"
               ? "✓"
               : "○"
-          }
-          Payment
-        </p>
+            }
+            Payment
+          </div>
 
-        <p>
-          ${
-            [
-              "PROCESSING",
-              "DELIVERING",
-              "DELIVERED"
-            ].includes(
-              order.delivery_status
-            )
+          <div>
+            ${
+              ["PROCESSING","DELIVERING","DELIVERED"]
+              .includes(
+                o.delivery_status
+              )
               ? "✓"
               : "○"
-          }
-          Preparing delivery
-        </p>
+            }
+            Preparing delivery
+          </div>
 
-        <p>
-          ${
-            [
-              "DELIVERING",
-              "DELIVERED"
-            ].includes(
-              order.delivery_status
-            )
+          <div>
+            ${
+              ["DELIVERING","DELIVERED"]
+              .includes(
+                o.delivery_status
+              )
               ? "✓"
               : "○"
-          }
-          Delivery
-        </p>
+            }
+            Delivery
+          </div>
 
-        <p>
-          ${
-            order.delivery_status ===
-            "DELIVERED"
+          <div>
+            ${
+              o.delivery_status === "DELIVERED"
               ? "✓"
               : "○"
-          }
-          Delivered
-        </p>
+            }
+            Delivered
+          </div>
 
-      </div>
+        </div>
 
-      ${
-        order.delivery_notes
+        ${
+          o.delivery_notes
           ? `
-            <div class="payment-box">
+            <p>
               <strong>
-                Delivery Note
-              </strong>
-              <p>
-                ${escapeHtml(
-                  order.delivery_notes
-                )}
-              </p>
-            </div>
+                Delivery notes:
+              </strong><br>
+              ${escapeHtml(
+                o.delivery_notes
+              )}
+            </p>
           `
           : ""
-      }
+        }
+
+      </div>
 
     `;
 
     document
       .getElementById(
-        "trackingModal"
+        "trackModal"
       )
-      .classList.add(
-        "show"
+      .classList.remove(
+        "hidden"
       );
 
   }catch(error){
 
-    toast(
+    alertUser(
       error.message
     );
+
   }
+
 }
 
-/* =====================================================
-   ADMIN ORDERS
-===================================================== */
 
-async function loadAdminOrders(){
+/* =========================================================
+   ADMIN PRODUCTS
+========================================================= */
+
+async function loadAdminProducts(){
 
   if(
     !currentUser ||
     !currentUser.is_admin
   ){
+
     return;
   }
 
-  const container =
+  const box =
     document.getElementById(
-      "adminOrdersList"
+      "adminProducts"
     );
 
-  container.innerHTML =
-    `<div class="empty-state">
-      Loading orders...
-    </div>`;
+  box.innerHTML =
+    "<p class='muted'>Loading...</p>";
+
+  try{
+
+    const data =
+      await api(
+        "/api/admin/products"
+      );
+
+    box.innerHTML =
+      data.products
+        .map(
+          p => `
+
+          <div
+            class="admin-product"
+          >
+
+            ${
+              p.image_url
+              ? `
+                <img
+                  src="${escapeAttr(
+                    p.image_url
+                  )}"
+                >
+              `
+              : `
+                <div
+                  style="
+                    width:90px;
+                    height:90px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    background:#171521;
+                    border-radius:10px;
+                  "
+                >
+                  ◈
+                </div>
+              `
+            }
+
+            <div>
+
+              <h4>
+                ${escapeHtml(
+                  p.name
+                )}
+              </h4>
+
+              <div class="muted">
+                KSh ${Number(
+                  p.price_kes
+                ).toLocaleString()}
+              </div>
+
+              <div>
+                Status:
+                ${
+                  p.active
+                  ? "<span class='success'>ACTIVE</span>"
+                  : "<span class='warning'>HIDDEN</span>"
+                }
+              </div>
+
+              <div class="admin-actions">
+
+                <button
+                  class="secondary"
+                  onclick="toggleProduct(${p.id})"
+                >
+                  ${
+                    p.active
+                    ? "HIDE"
+                    : "ACTIVATE"
+                  }
+                </button>
+
+                <button
+                  class="danger"
+                  onclick="deleteProduct(${p.id})"
+                >
+                  DELETE
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          `
+        )
+        .join("");
+
+  }catch(error){
+
+    box.innerHTML =
+      `<p>${escapeHtml(
+        error.message
+      )}</p>`;
+
+  }
+
+}
+
+
+/* =========================================================
+   ADD PRODUCT
+========================================================= */
+
+document
+  .getElementById(
+    "productForm"
+  )
+  .addEventListener(
+    "submit",
+    async function(event){
+
+      event.preventDefault();
+
+      try{
+
+        const formData =
+          new FormData(this);
+
+        const response =
+          await fetch(
+            "/api/admin/products",
+            {
+              method:"POST",
+              credentials:"include",
+              body:formData
+            }
+          );
+
+        const data =
+          await response.json();
+
+        if(!response.ok){
+
+          throw new Error(
+            data.error ||
+            "Product creation failed."
+          );
+
+        }
+
+        alertUser(
+          "Product added successfully."
+        );
+
+        this.reset();
+
+        document
+          .getElementById(
+            "previewContainer"
+          )
+          .classList.add(
+            "hidden"
+          );
+
+        loadAdminProducts();
+        loadProducts();
+
+      }catch(error){
+
+        alertUser(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+document
+  .getElementById(
+    "productImage"
+  )
+  .addEventListener(
+    "change",
+    function(){
+
+      const file =
+        this.files[0];
+
+      if(!file){
+
+        document
+          .getElementById(
+            "previewContainer"
+          )
+          .classList.add(
+            "hidden"
+          );
+
+        return;
+      }
+
+      if(file.size > 5 * 1024 * 1024){
+
+        alertUser(
+          "Image must be 5MB or smaller."
+        );
+
+        this.value = "";
+
+        return;
+      }
+
+      const url =
+        URL.createObjectURL(
+          file
+        );
+
+      document
+        .getElementById(
+          "imagePreview"
+        )
+        .src = url;
+
+      document
+        .getElementById(
+          "previewContainer"
+        )
+        .classList.remove(
+          "hidden"
+        );
+
+    }
+  );
+
+
+/* =========================================================
+   TOGGLE PRODUCT
+========================================================= */
+
+async function toggleProduct(
+  id
+){
+
+  try{
+
+    await api(
+      `/api/admin/products/${id}/toggle`,
+      {
+        method:"POST"
+      }
+    );
+
+    alertUser(
+      "Product status updated."
+    );
+
+    loadAdminProducts();
+    loadProducts();
+
+  }catch(error){
+
+    alertUser(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   DELETE PRODUCT
+========================================================= */
+
+async function deleteProduct(
+  id
+){
+
+  if(
+    !confirm(
+      "Delete this product?"
+    )
+  ){
+
+    return;
+  }
+
+  try{
+
+    await api(
+      `/api/admin/products/${id}`,
+      {
+        method:"DELETE"
+      }
+    );
+
+    alertUser(
+      "Product deleted."
+    );
+
+    loadAdminProducts();
+    loadProducts();
+
+  }catch(error){
+
+    alertUser(
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN ORDERS
+========================================================= */
+
+async function loadAdminOrders(){
+
+  const box =
+    document.getElementById(
+      "adminOrders"
+    );
+
+  box.innerHTML =
+    "<p class='muted'>Loading...</p>";
 
   try{
 
@@ -3242,197 +2658,214 @@ async function loadAdminOrders(){
         "/api/admin/orders"
       );
 
-    if(
-      !data.orders.length
-    ){
+    if(!data.orders.length){
 
-      container.innerHTML =
-        `<div class="empty-state">
-          No orders.
-        </div>`;
+      box.innerHTML =
+        "<p class='muted'>No orders.</p>";
 
       return;
     }
 
-    container.innerHTML =
+    box.innerHTML =
       data.orders
         .map(
-          adminOrderCard
+          o => `
+
+          <div class="order">
+
+            <div class="order-head">
+
+              <strong>
+                ${escapeHtml(
+                  o.order_number
+                )}
+              </strong>
+
+              <span class="status">
+                ${escapeHtml(
+                  o.payment_status
+                )}
+              </span>
+
+            </div>
+
+            <p>
+              Product:
+              ${escapeHtml(
+                o.product_name
+              )}
+            </p>
+
+            <p>
+              Customer:
+              ${escapeHtml(
+                o.customer_name
+              )}
+              <br>
+              ${escapeHtml(
+                o.customer_email
+              )}
+            </p>
+
+            <p>
+              Amount:
+              <strong>
+                KSh ${Number(
+                  o.amount_kes
+                ).toLocaleString()}
+              </strong>
+            </p>
+
+            <p>
+              Delivery:
+              ${escapeHtml(
+                o.delivery_method
+              )}
+              —
+              ${escapeHtml(
+                o.delivery_target
+              )}
+            </p>
+
+            ${
+              o.payment_status ===
+              "PAYMENT_REVIEW"
+              ? `
+
+                <div class="admin-actions">
+
+                  <button
+                    class="primary"
+                    onclick="verifyBinance(${o.id},true)"
+                  >
+                    APPROVE PAYMENT
+                  </button>
+
+                  <button
+                    class="danger"
+                    onclick="verifyBinance(${o.id},false)"
+                  >
+                    REJECT
+                  </button>
+
+                </div>
+
+              `
+              : ""
+            }
+
+            <hr
+              style="
+                border:0;
+                border-top:1px solid #29233b;
+                margin:15px 0;
+              "
+            >
+
+            <div class="field">
+
+              <label>
+                Delivery Status
+              </label>
+
+              <select
+                id="delivery-${o.id}"
+              >
+
+                <option
+                  value="RECEIVED"
+                  ${
+                    o.delivery_status ===
+                    "RECEIVED"
+                    ? "selected"
+                    : ""
+                  }
+                >
+                  RECEIVED
+                </option>
+
+                <option
+                  value="PROCESSING"
+                  ${
+                    o.delivery_status ===
+                    "PROCESSING"
+                    ? "selected"
+                    : ""
+                  }
+                >
+                  PROCESSING
+                </option>
+
+                <option
+                  value="DELIVERING"
+                  ${
+                    o.delivery_status ===
+                    "DELIVERING"
+                    ? "selected"
+                    : ""
+                  }
+                >
+                  DELIVERING
+                </option>
+
+                <option
+                  value="DELIVERED"
+                  ${
+                    o.delivery_status ===
+                    "DELIVERED"
+                    ? "selected"
+                    : ""
+                  }
+                >
+                  DELIVERED
+                </option>
+
+              </select>
+
+            </div>
+
+            <div class="field">
+
+              <label>
+                Delivery Notes
+              </label>
+
+              <textarea
+                id="notes-${o.id}"
+              >${escapeHtml(
+                o.delivery_notes || ""
+              )}</textarea>
+
+            </div>
+
+            <button
+              class="primary"
+              onclick="updateDelivery(${o.id})"
+            >
+              UPDATE DELIVERY
+            </button>
+
+          </div>
+
+          `
         )
         .join("");
 
   }catch(error){
 
-    container.innerHTML =
-      `<div class="empty-state">
-        ${escapeHtml(
-          error.message
-        )}
-      </div>`;
+    box.innerHTML =
+      `<p>${escapeHtml(
+        error.message
+      )}</p>`;
+
   }
+
 }
 
-/* =====================================================
-   ADMIN ORDER CARD
-===================================================== */
 
-function adminOrderCard(order){
-
-  return `
-
-    <div class="order-card">
-
-      <div class="order-head">
-
-        <div>
-
-          <div class="order-number">
-            ${escapeHtml(
-              order.order_number
-            )}
-          </div>
-
-          <p>
-            ${escapeHtml(
-              order.product_name || ""
-            )}
-          </p>
-
-          <p class="muted">
-            Customer:
-            ${escapeHtml(
-              order.customer_name || ""
-            )}
-            ·
-            ${escapeHtml(
-              order.customer_email || ""
-            )}
-          </p>
-
-        </div>
-
-        <div>
-
-          <span class="status ${
-            order.payment_status
-          }">
-            ${escapeHtml(
-              order.payment_status
-            )}
-          </span>
-
-          <span class="status ${
-            order.delivery_status
-          }">
-            ${escapeHtml(
-              order.delivery_status
-            )}
-          </span>
-
-        </div>
-
-      </div>
-
-      <p>
-        Amount:
-        <strong>
-          KSh ${money(
-            order.amount_kes
-          )}
-        </strong>
-      </p>
-
-      ${
-        order.payment_method ===
-        "BINANCE"
-          ? `
-            <p class="muted">
-              TXID:
-              ${escapeHtml(
-                order.binance_txid ||
-                "Not submitted"
-              )}
-            </p>
-
-            ${
-              order.payment_status ===
-              "PAYMENT_REVIEW"
-                ? `
-                  <div class="admin-actions">
-
-                    <button
-                      class="success-btn"
-                      onclick="verifyBinance(
-                        ${order.id},
-                        true
-                      )"
-                    >
-                      APPROVE PAYMENT
-                    </button>
-
-                    <button
-                      class="danger-btn"
-                      onclick="verifyBinance(
-                        ${order.id},
-                        false
-                      )"
-                    >
-                      REJECT
-                    </button>
-
-                  </div>
-                `
-                : ""
-            }
-          `
-          : ""
-      }
-
-      <div
-        class="admin-actions"
-        style="margin-top:12px"
-      >
-
-        <button
-          class="secondary-btn"
-          onclick="setDelivery(
-            ${order.id},
-            'PROCESSING'
-          )"
-        >
-          PROCESSING
-        </button>
-
-        <button
-          class="secondary-btn"
-          onclick="setDelivery(
-            ${order.id},
-            'DELIVERING'
-          )"
-        >
-          DELIVERING
-        </button>
-
-        <button
-          class="success-btn"
-          onclick="setDelivery(
-            ${order.id},
-            'DELIVERED'
-          )"
-        >
-          DELIVERED
-        </button>
-
-      </div>
-
-    </div>
-
-  `;
-}
-
-/* =====================================================
+/* =========================================================
    VERIFY BINANCE
-===================================================== */
+========================================================= */
 
 async function verifyBinance(
   id,
@@ -3449,49 +2882,55 @@ async function verifyBinance(
           "Content-Type":
             "application/json"
         },
-        body:JSON.stringify({
-          approved
-        })
+        body:
+          JSON.stringify({
+            approved
+          })
       }
     );
 
-    toast(
+    alertUser(
       approved
-        ? "Payment approved."
-        : "Payment rejected."
+      ? "Payment approved."
+      : "Payment rejected."
     );
 
     loadAdminOrders();
 
   }catch(error){
 
-    toast(
+    alertUser(
       error.message
     );
+
   }
+
 }
 
-/* =====================================================
-   DELIVERY STATUS
-===================================================== */
 
-async function setDelivery(
-  id,
-  status
+/* =========================================================
+   UPDATE DELIVERY
+========================================================= */
+
+async function updateDelivery(
+  id
 ){
 
-  let notes = "";
-
-  if(status === "DELIVERED"){
-
-    notes =
-      prompt(
-        "Delivery note (optional):",
-        ""
-      ) || "";
-  }
-
   try{
+
+    const status =
+      document
+        .getElementById(
+          "delivery-"+id
+        )
+        .value;
+
+    const notes =
+      document
+        .getElementById(
+          "notes-"+id
+        )
+        .value;
 
     await api(
       `/api/admin/orders/${id}/delivery`,
@@ -3501,123 +2940,128 @@ async function setDelivery(
           "Content-Type":
             "application/json"
         },
-        body:JSON.stringify({
-          status,
-          notes
-        })
+        body:
+          JSON.stringify({
+            delivery_status:
+              status,
+            delivery_notes:
+              notes
+          })
       }
     );
 
-    toast(
-      "Delivery status updated."
+    alertUser(
+      "Delivery updated."
     );
 
     loadAdminOrders();
 
   }catch(error){
 
-    toast(
+    alertUser(
       error.message
     );
+
   }
+
 }
 
-/* =====================================================
-   MODALS
-===================================================== */
 
-function closeModal(id){
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal(
+  id
+){
 
   document
     .getElementById(id)
-    .classList.remove(
-      "show"
+    .classList.add(
+      "hidden"
     );
 }
 
-document
-  .querySelectorAll(".modal")
-  .forEach(
-    modal => {
 
-      modal.addEventListener(
-        "click",
-        event => {
+/* =========================================================
+   ESCAPE
+========================================================= */
 
-          if(
-            event.target ===
-            modal
-          ){
-            modal.classList.remove(
-              "show"
-            );
-          }
-
-        }
-      );
-
-    }
-  );
-
-/* =====================================================
-   HELPERS
-===================================================== */
-
-function money(value){
-
-  return Number(
-    value || 0
-  ).toLocaleString(
-    "en-KE",
-    {
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
-    }
-  );
-}
-
-function escapeHtml(value){
+function escapeHtml(
+  value
+){
 
   return String(
     value ?? ""
   )
-    .replaceAll(
-      "&",
-      "&amp;"
-    )
-    .replaceAll(
-      "<",
-      "&lt;"
-    )
-    .replaceAll(
-      ">",
-      "&gt;"
-    )
-    .replaceAll(
-      '"',
-      "&quot;"
-    )
-    .replaceAll(
-      "'",
-      "&#039;"
-    );
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
 }
 
-function escapeAttr(value){
+function escapeAttr(
+  value
+){
 
   return escapeHtml(
     value
   );
+
 }
 
-/* =====================================================
-   START
-===================================================== */
 
-checkSession();
+/* =========================================================
+   START
+========================================================= */
+
+async function init(){
+
+  try{
+
+    const data =
+      await api(
+        "/api/me"
+      );
+
+    currentUser =
+      data.user;
+
+  }catch{
+
+    currentUser =
+      null;
+
+  }
+
+  updateNav();
+
+  showPage(
+    "store"
+  );
+
+}
+
+init();
 
 </script>
 
 </body>
-
   </html>
