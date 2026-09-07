@@ -14,24 +14,45 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+const ROOT = __dirname;
+const PUBLIC_DIR = path.join(ROOT, "public");
+const UPLOAD_DIR = path.join(PUBLIC_DIR, "uploads", "products");
+
+fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+
 /* =========================================================
-   DIRECTORIES
+   EXPRESS
 ========================================================= */
 
-const PUBLIC_DIR = path.join(__dirname, "public");
-const UPLOAD_DIR = path.join(PUBLIC_DIR, "uploads");
-const PRODUCT_UPLOAD_DIR = path.join(UPLOAD_DIR, "products");
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true }));
 
-fs.mkdirSync(PRODUCT_UPLOAD_DIR, {
-  recursive: true
-});
+app.use(
+  session({
+    secret:
+      process.env.SESSION_SECRET ||
+      "CHANGE_THIS_SECRET_IN_RENDER",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+  })
+);
+
+app.use("/uploads", express.static(path.join(PUBLIC_DIR, "uploads")));
+
+app.use(express.static(PUBLIC_DIR));
 
 /* =========================================================
    DATABASE
 ========================================================= */
 
 const db = new Database(
-  process.env.DATABASE_PATH || path.join(__dirname, "darkweb.db")
+  process.env.DB_PATH || path.join(ROOT, "darkweb.db")
 );
 
 db.pragma("journal_mode = WAL");
@@ -51,9 +72,8 @@ CREATE TABLE IF NOT EXISTS products (
   name TEXT NOT NULL,
   description TEXT DEFAULT '',
   price_kes REAL NOT NULL,
-  binance_price REAL NOT NULL,
+  binance_price TEXT DEFAULT '',
   delivery_content TEXT DEFAULT '',
-  image_url TEXT DEFAULT '',
   active INTEGER DEFAULT 1,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
@@ -64,7 +84,7 @@ CREATE TABLE IF NOT EXISTS orders (
   user_id INTEGER NOT NULL,
   product_id INTEGER NOT NULL,
   amount_kes REAL NOT NULL,
-  amount_crypto REAL NOT NULL,
+  amount_crypto TEXT DEFAULT '',
   payment_method TEXT NOT NULL,
   payment_status TEXT DEFAULT 'PENDING',
   delivery_method TEXT NOT NULL,
@@ -75,7 +95,7 @@ CREATE TABLE IF NOT EXISTS orders (
   checkout_request_id TEXT DEFAULT '',
   merchant_request_id TEXT DEFAULT '',
   mpesa_receipt TEXT DEFAULT '',
-  delivery_status TEXT DEFAULT 'PENDING',
+  delivery_status TEXT DEFAULT 'RECEIVED',
   delivery_notes TEXT DEFAULT '',
   created_at TEXT DEFAULT CURRENT_TIMESTAMP,
   paid_at TEXT DEFAULT '',
@@ -85,7 +105,6 @@ CREATE TABLE IF NOT EXISTS orders (
 
 /* =========================================================
    DATABASE MIGRATION
-   Adds image_url to old databases
 ========================================================= */
 
 function addColumnIfMissing(table, column, definition) {
@@ -93,25 +112,21 @@ function addColumnIfMissing(table, column, definition) {
     .prepare(`PRAGMA table_info(${table})`)
     .all();
 
-  const exists = columns.some(
-    c => c.name === column
-  );
+  const exists = columns.some((c) => c.name === column);
 
   if (!exists) {
-    db.exec(
+    db.prepare(
       `ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`
-    );
+    ).run();
+
+    console.log(`Added column ${table}.${column}`);
   }
 }
 
-addColumnIfMissing(
-  "products",
-  "image_url",
-  "TEXT DEFAULT ''"
-);
+addColumnIfMissing("products", "image_url", "TEXT");
 
 /* =========================================================
-   ADMIN ACCOUNT
+   DEFAULT ADMIN
 ========================================================= */
 
 const adminEmail =
@@ -121,16 +136,11 @@ const adminPassword =
   process.env.ADMIN_PASSWORD || "ChangeMe123!";
 
 const existingAdmin = db
-  .prepare(
-    "SELECT id FROM users WHERE email = ?"
-  )
+  .prepare("SELECT id FROM users WHERE email = ?")
   .get(adminEmail);
 
 if (!existingAdmin) {
-  const hash = bcrypt.hashSync(
-    adminPassword,
-    12
-  );
+  const passwordHash = bcrypt.hashSync(adminPassword, 12);
 
   db.prepare(`
     INSERT INTO users
@@ -139,37 +149,25 @@ if (!existingAdmin) {
   `).run(
     "Administrator",
     adminEmail,
-    hash
+    passwordHash
   );
 
-  console.log(
-    `Admin created: ${adminEmail}`
-  );
+  console.log("Admin account created:", adminEmail);
 }
 
 /* =========================================================
-   DEFAULT PRODUCTS
+   SAMPLE PRODUCTS
 ========================================================= */
 
 const productCount = db
-  .prepare(
-    "SELECT COUNT(*) AS count FROM products"
-  )
-  .get();
+  .prepare("SELECT COUNT(*) AS count FROM products")
+  .get().count;
 
-if (productCount.count === 0) {
+if (productCount === 0) {
   const insert = db.prepare(`
     INSERT INTO products
-    (
-      name,
-      description,
-      price_kes,
-      binance_price,
-      delivery_content,
-      image_url,
-      active
-    )
-    VALUES (?, ?, ?, ?, ?, ?, 1)
+    (name, description, price_kes, binance_price, delivery_content, active)
+    VALUES (?, ?, ?, ?, ?, 1)
   `);
 
   const products = [
@@ -177,147 +175,112 @@ if (productCount.count === 0) {
       "Item 1",
       "Digital product Item 1",
       500,
-      3.5,
-      "Replace this with the actual delivery content for Item 1.",
-      ""
+      "3.50",
+      "Replace this with your Item 1 delivery content."
     ],
     [
       "Item 2",
       "Digital product Item 2",
       1000,
-      7,
-      "Replace this with the actual delivery content for Item 2.",
-      ""
+      "7.00",
+      "Replace this with your Item 2 delivery content."
     ],
     [
       "Item 3",
       "Digital product Item 3",
       1500,
-      10.5,
-      "Replace this with the actual delivery content for Item 3.",
-      ""
+      "10.50",
+      "Replace this with your Item 3 delivery content."
     ],
     [
       "Item 4",
       "Digital product Item 4",
       2500,
-      17.5,
-      "Replace this with the actual delivery content for Item 4.",
-      ""
+      "17.50",
+      "Replace this with your Item 4 delivery content."
     ],
     [
       "Item 5",
       "Digital product Item 5",
       5000,
-      35,
-      "Replace this with the actual delivery content for Item 5.",
-      ""
+      "35.00",
+      "Replace this with your Item 5 delivery content."
     ]
   ];
 
-  for (const product of products) {
-    insert.run(...product);
+  for (const p of products) {
+    insert.run(...p);
   }
+
+  console.log("Sample products created.");
 }
-
-/* =========================================================
-   MIDDLEWARE
-========================================================= */
-
-app.use(express.json({
-  limit: "2mb"
-}));
-
-app.use(express.urlencoded({
-  extended: true,
-  limit: "2mb"
-}));
-
-app.use(
-  session({
-    secret:
-      process.env.SESSION_SECRET ||
-      "CHANGE_THIS_SESSION_SECRET",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure:
-        process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 1000 * 60 * 60 * 24 * 7
-    }
-  })
-);
-
-app.use(
-  express.static(PUBLIC_DIR)
-);
 
 /* =========================================================
    IMAGE UPLOAD
 ========================================================= */
 
 const storage = multer.diskStorage({
-
-  destination: function(req, file, cb) {
-    cb(null, PRODUCT_UPLOAD_DIR);
+  destination: function (req, file, cb) {
+    cb(null, UPLOAD_DIR);
   },
 
-  filename: function(req, file, cb) {
-
-    const ext =
-      path.extname(file.originalname)
-        .toLowerCase();
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname).toLowerCase();
 
     const safeName =
-      crypto
-        .randomBytes(16)
-        .toString("hex");
+      Date.now() +
+      "-" +
+      crypto.randomBytes(8).toString("hex") +
+      ext;
 
-    cb(
-      null,
-      `${Date.now()}-${safeName}${ext}`
-    );
+    cb(null, safeName);
   }
-
 });
 
 const upload = multer({
-
   storage,
 
   limits: {
     fileSize: 5 * 1024 * 1024
   },
 
-  fileFilter: function(req, file, cb) {
+  fileFilter: function (req, file, cb) {
+    const allowed = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif"
+    ];
 
-    if (
-      !file.mimetype ||
-      !file.mimetype.startsWith("image/")
-    ) {
+    if (!allowed.includes(file.mimetype)) {
       return cb(
         new Error(
-          "Only image files are allowed."
+          "Only JPG, PNG, WEBP and GIF images are allowed."
         )
       );
     }
 
     cb(null, true);
   }
-
 });
 
 /* =========================================================
    HELPERS
 ========================================================= */
 
-function requireLogin(req, res, next) {
+function generateOrderNumber() {
+  return (
+    "DW-" +
+    Date.now().toString(36).toUpperCase() +
+    "-" +
+    crypto.randomBytes(3).toString("hex").toUpperCase()
+  );
+}
 
-  if (!req.session.userId) {
+function requireLogin(req, res, next) {
+  if (!req.session.user) {
     return res.status(401).json({
-      error: "Please log in first."
+      error: "Login required"
     });
   }
 
@@ -325,607 +288,345 @@ function requireLogin(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-
-  if (!req.session.userId) {
-    return res.status(401).json({
-      error: "Login required."
-    });
-  }
-
-  const user = db
-    .prepare(
-      "SELECT id, is_admin FROM users WHERE id = ?"
-    )
-    .get(req.session.userId);
-
-  if (!user || !user.is_admin) {
+  if (!req.session.user || !req.session.user.is_admin) {
     return res.status(403).json({
-      error: "Administrator access required."
+      error: "Admin access required"
     });
   }
 
   next();
 }
 
-function makeOrderNumber() {
-
-  const random =
-    crypto
-      .randomBytes(4)
-      .toString("hex")
-      .toUpperCase();
-
-  return `DW-${Date.now()}-${random}`;
-}
-
-function nowISO() {
-  return new Date().toISOString();
-}
-
 /* =========================================================
    AUTH
 ========================================================= */
 
-app.post(
-  "/api/register",
-  async (req, res) => {
+app.post("/api/register", async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      password
+    } = req.body;
 
-    try {
-
-      const {
-        name,
-        email,
-        password
-      } = req.body;
-
-      if (
-        !name ||
-        !email ||
-        !password
-      ) {
-        return res.status(400).json({
-          error:
-            "Name, email and password are required."
-        });
-      }
-
-      if (password.length < 6) {
-        return res.status(400).json({
-          error:
-            "Password must be at least 6 characters."
-        });
-      }
-
-      const cleanEmail =
-        email.trim().toLowerCase();
-
-      const exists = db
-        .prepare(
-          "SELECT id FROM users WHERE email = ?"
-        )
-        .get(cleanEmail);
-
-      if (exists) {
-        return res.status(409).json({
-          error:
-            "An account with this email already exists."
-        });
-      }
-
-      const hash =
-        await bcrypt.hash(
-          password,
-          12
-        );
-
-      const result = db
-        .prepare(`
-          INSERT INTO users
-          (name, email, password_hash)
-          VALUES (?, ?, ?)
-        `)
-        .run(
-          name.trim(),
-          cleanEmail,
-          hash
-        );
-
-      req.session.userId =
-        result.lastInsertRowid;
-
-      res.json({
-        success: true,
-        user: {
-          id: result.lastInsertRowid,
-          name: name.trim(),
-          email: cleanEmail,
-          is_admin: false
-        }
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        error: "Registration failed."
-      });
-    }
-  }
-);
-
-app.post(
-  "/api/login",
-  async (req, res) => {
-
-    try {
-
-      const {
-        email,
-        password
-      } = req.body;
-
-      if (
-        !email ||
-        !password
-      ) {
-        return res.status(400).json({
-          error:
-            "Email and password are required."
-        });
-      }
-
-      const user =
-        db.prepare(`
-          SELECT *
-          FROM users
-          WHERE email = ?
-        `).get(
-          email.trim().toLowerCase()
-        );
-
-      if (!user) {
-        return res.status(401).json({
-          error:
-            "Invalid email or password."
-        });
-      }
-
-      const valid =
-        await bcrypt.compare(
-          password,
-          user.password_hash
-        );
-
-      if (!valid) {
-        return res.status(401).json({
-          error:
-            "Invalid email or password."
-        });
-      }
-
-      req.session.userId =
-        user.id;
-
-      res.json({
-        success: true,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          is_admin: !!user.is_admin
-        }
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        error: "Login failed."
-      });
-    }
-  }
-);
-
-app.post(
-  "/api/logout",
-  (req, res) => {
-
-    req.session.destroy(() => {
-
-      res.json({
-        success: true
-      });
-
-    });
-  }
-);
-
-app.get(
-  "/api/me",
-  (req, res) => {
-
-    if (!req.session.userId) {
-      return res.json({
-        loggedIn: false
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        error: "Name, email and password are required."
       });
     }
 
-    const user =
-      db.prepare(`
-        SELECT
-          id,
-          name,
-          email,
-          is_admin
-        FROM users
-        WHERE id = ?
-      `).get(
-        req.session.userId
-      );
-
-    if (!user) {
-      return res.json({
-        loggedIn: false
+    if (password.length < 6) {
+      return res.status(400).json({
+        error: "Password must contain at least 6 characters."
       });
     }
+
+    const normalizedEmail =
+      String(email).trim().toLowerCase();
+
+    const exists = db
+      .prepare("SELECT id FROM users WHERE email = ?")
+      .get(normalizedEmail);
+
+    if (exists) {
+      return res.status(409).json({
+        error: "Email already registered."
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(
+      password,
+      12
+    );
+
+    const result = db.prepare(`
+      INSERT INTO users
+      (name, email, password_hash)
+      VALUES (?, ?, ?)
+    `).run(
+      String(name).trim(),
+      normalizedEmail,
+      passwordHash
+    );
+
+    req.session.user = {
+      id: result.lastInsertRowid,
+      name: String(name).trim(),
+      email: normalizedEmail,
+      is_admin: 0
+    };
 
     res.json({
-      loggedIn: true,
-      user: {
-        ...user,
-        is_admin: !!user.is_admin
-      }
+      success: true,
+      user: req.session.user
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: "Registration failed."
     });
   }
-);
+});
+
+app.post("/api/login", async (req, res) => {
+  try {
+    const {
+      email,
+      password
+    } = req.body;
+
+    const normalizedEmail =
+      String(email || "").trim().toLowerCase();
+
+    const user = db
+      .prepare(`
+        SELECT *
+        FROM users
+        WHERE email = ?
+      `)
+      .get(normalizedEmail);
+
+    if (!user) {
+      return res.status(401).json({
+        error: "Invalid email or password."
+      });
+    }
+
+    const valid = await bcrypt.compare(
+      password || "",
+      user.password_hash
+    );
+
+    if (!valid) {
+      return res.status(401).json({
+        error: "Invalid email or password."
+      });
+    }
+
+    req.session.user = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      is_admin: Number(user.is_admin)
+    };
+
+    res.json({
+      success: true,
+      user: req.session.user
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: "Login failed."
+    });
+  }
+});
+
+app.post("/api/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.json({
+      success: true
+    });
+  });
+});
+
+app.get("/api/me", (req, res) => {
+  res.json({
+    user: req.session.user || null
+  });
+});
 
 /* =========================================================
-   PUBLIC PRODUCTS
+   PRODUCTS
+========================================================= */
+
+app.get("/api/products", (req, res) => {
+  const products = db
+    .prepare(`
+      SELECT
+        id,
+        name,
+        description,
+        price_kes,
+        binance_price,
+        image_url,
+        active,
+        created_at
+      FROM products
+      WHERE active = 1
+      ORDER BY id DESC
+    `)
+    .all();
+
+  res.json({
+    products
+  });
+});
+
+/* =========================================================
+   ADMIN PRODUCTS
 ========================================================= */
 
 app.get(
-  "/api/products",
+  "/api/admin/products",
+  requireAdmin,
   (req, res) => {
+    const products = db
+      .prepare(`
+        SELECT *
+        FROM products
+        ORDER BY id DESC
+      `)
+      .all();
 
-    const products =
-      db.prepare(`
-        SELECT
-          id,
+    res.json({
+      products
+    });
+  }
+);
+
+/*
+   ADD PRODUCT WITH IMAGE
+
+   multipart/form-data:
+   name
+   description
+   price_kes
+   binance_price
+   delivery_content
+   image
+*/
+
+app.post(
+  "/api/admin/products",
+  requireAdmin,
+  upload.single("image"),
+  (req, res) => {
+    try {
+      const {
+        name,
+        description,
+        price_kes,
+        binance_price,
+        delivery_content
+      } = req.body;
+
+      if (!name || !price_kes) {
+        if (req.file) {
+          fs.unlinkSync(req.file.path);
+        }
+
+        return res.status(400).json({
+          error: "Product name and M-Pesa price are required."
+        });
+      }
+
+      const price = Number(price_kes);
+
+      if (!Number.isFinite(price) || price <= 0) {
+        if (req.file) {
+          fs.unlinkSync(req.file.path);
+        }
+
+        return res.status(400).json({
+          error: "Invalid product price."
+        });
+      }
+
+      let imageUrl = "";
+
+      if (req.file) {
+        imageUrl =
+          "/uploads/products/" +
+          req.file.filename;
+      }
+
+      const result = db.prepare(`
+        INSERT INTO products
+        (
           name,
           description,
           price_kes,
           binance_price,
+          delivery_content,
           image_url,
-          active,
-          created_at
-        FROM products
-        WHERE active = 1
-        ORDER BY id DESC
-      `).all();
+          active
+        )
+        VALUES (?, ?, ?, ?, ?, ?, 1)
+      `).run(
+        String(name).trim(),
+        String(description || "").trim(),
+        price,
+        String(binance_price || "").trim(),
+        String(delivery_content || "").trim(),
+        imageUrl
+      );
 
-    res.json({
-      products
-    });
+      const product = db
+        .prepare(`
+          SELECT *
+          FROM products
+          WHERE id = ?
+        `)
+        .get(result.lastInsertRowid);
+
+      res.json({
+        success: true,
+        product
+      });
+    } catch (error) {
+      console.error(error);
+
+      if (req.file) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch {}
+      }
+
+      res.status(500).json({
+        error: error.message || "Product creation failed."
+      });
+    }
   }
 );
 
 /* =========================================================
-   ADMIN PRODUCT LIST
-========================================================= */
-
-app.get(
-  "/api/admin/products",
-  requireAdmin,
-  (req, res) => {
-
-    const products =
-      db.prepare(`
-        SELECT *
-        FROM products
-        ORDER BY id DESC
-      `).all();
-
-    res.json({
-      products
-    });
-  }
-);
-
-/* =========================================================
-   ADD PRODUCT WITH IMAGE
+   TOGGLE PRODUCT
 ========================================================= */
 
 app.post(
-  "/api/admin/products",
-  requireAdmin,
-  upload.single("image"),
-  (req, res) => {
-
-    try {
-
-      const {
-        name,
-        description,
-        price_kes,
-        binance_price,
-        delivery_content
-      } = req.body;
-
-      if (!name) {
-        return res.status(400).json({
-          error: "Product name is required."
-        });
-      }
-
-      const kes =
-        Number(price_kes);
-
-      const usdt =
-        Number(binance_price);
-
-      if (
-        !Number.isFinite(kes) ||
-        kes <= 0
-      ) {
-        return res.status(400).json({
-          error:
-            "Enter a valid KSh price."
-        });
-      }
-
-      if (
-        !Number.isFinite(usdt) ||
-        usdt <= 0
-      ) {
-        return res.status(400).json({
-          error:
-            "Enter a valid USDT price."
-        });
-      }
-
-      const imageUrl =
-        req.file
-          ? `/uploads/products/${req.file.filename}`
-          : "";
-
-      const result =
-        db.prepare(`
-          INSERT INTO products
-          (
-            name,
-            description,
-            price_kes,
-            binance_price,
-            delivery_content,
-            image_url,
-            active
-          )
-          VALUES (?, ?, ?, ?, ?, ?, 1)
-        `).run(
-          name.trim(),
-          (description || "").trim(),
-          kes,
-          usdt,
-          (delivery_content || "").trim(),
-          imageUrl
-        );
-
-      const product =
-        db.prepare(
-          "SELECT * FROM products WHERE id = ?"
-        ).get(
-          result.lastInsertRowid
-        );
-
-      res.json({
-        success: true,
-        message: "Product added successfully.",
-        product
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      if (req.file) {
-        try {
-          fs.unlinkSync(
-            req.file.path
-          );
-        } catch (_) {}
-      }
-
-      res.status(500).json({
-        error:
-          "Could not add product."
-      });
-    }
-  }
-);
-
-/* =========================================================
-   UPDATE PRODUCT
-========================================================= */
-
-app.put(
-  "/api/admin/products/:id",
-  requireAdmin,
-  upload.single("image"),
-  (req, res) => {
-
-    try {
-
-      const id =
-        Number(req.params.id);
-
-      const existing =
-        db.prepare(
-          "SELECT * FROM products WHERE id = ?"
-        ).get(id);
-
-      if (!existing) {
-
-        if (req.file) {
-          try {
-            fs.unlinkSync(
-              req.file.path
-            );
-          } catch (_) {}
-        }
-
-        return res.status(404).json({
-          error: "Product not found."
-        });
-      }
-
-      const {
-        name,
-        description,
-        price_kes,
-        binance_price,
-        delivery_content
-      } = req.body;
-
-      const kes =
-        Number(price_kes);
-
-      const usdt =
-        Number(binance_price);
-
-      if (
-        !name ||
-        !Number.isFinite(kes) ||
-        kes <= 0 ||
-        !Number.isFinite(usdt) ||
-        usdt <= 0
-      ) {
-        return res.status(400).json({
-          error:
-            "Enter valid product information."
-        });
-      }
-
-      let imageUrl =
-        existing.image_url || "";
-
-      if (req.file) {
-
-        imageUrl =
-          `/uploads/products/${req.file.filename}`;
-
-        if (
-          existing.image_url &&
-          existing.image_url.startsWith(
-            "/uploads/products/"
-          )
-        ) {
-
-          const oldPath =
-            path.join(
-              PUBLIC_DIR,
-              existing.image_url
-            );
-
-          if (
-            fs.existsSync(oldPath)
-          ) {
-            try {
-              fs.unlinkSync(
-                oldPath
-              );
-            } catch (_) {}
-          }
-        }
-      }
-
-      db.prepare(`
-        UPDATE products
-        SET
-          name = ?,
-          description = ?,
-          price_kes = ?,
-          binance_price = ?,
-          delivery_content = ?,
-          image_url = ?
-        WHERE id = ?
-      `).run(
-        name.trim(),
-        (description || "").trim(),
-        kes,
-        usdt,
-        (delivery_content || "").trim(),
-        imageUrl,
-        id
-      );
-
-      const product =
-        db.prepare(
-          "SELECT * FROM products WHERE id = ?"
-        ).get(id);
-
-      res.json({
-        success: true,
-        message:
-          "Product updated successfully.",
-        product
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      if (req.file) {
-        try {
-          fs.unlinkSync(
-            req.file.path
-          );
-        } catch (_) {}
-      }
-
-      res.status(500).json({
-        error:
-          "Could not update product."
-      });
-    }
-  }
-);
-
-/* =========================================================
-   ACTIVATE / DEACTIVATE
-========================================================= */
-
-app.patch(
-  "/api/admin/products/:id/status",
+  "/api/admin/products/:id/toggle",
   requireAdmin,
   (req, res) => {
+    const id = Number(req.params.id);
 
-    const id =
-      Number(req.params.id);
+    const product = db
+      .prepare("SELECT * FROM products WHERE id = ?")
+      .get(id);
 
-    const active =
-      req.body.active ? 1 : 0;
-
-    const result =
-      db.prepare(`
-        UPDATE products
-        SET active = ?
-        WHERE id = ?
-      `).run(
-        active,
-        id
-      );
-
-    if (!result.changes) {
+    if (!product) {
       return res.status(404).json({
         error: "Product not found."
       });
     }
 
+    const newStatus =
+      product.active ? 0 : 1;
+
+    db.prepare(`
+      UPDATE products
+      SET active = ?
+      WHERE id = ?
+    `).run(
+      newStatus,
+      id
+    );
+
     res.json({
       success: true,
-      active: !!active
+      active: newStatus
     });
   }
 );
@@ -938,93 +639,42 @@ app.delete(
   "/api/admin/products/:id",
   requireAdmin,
   (req, res) => {
+    const id = Number(req.params.id);
 
-    try {
+    const product = db
+      .prepare("SELECT * FROM products WHERE id = ?")
+      .get(id);
 
-      const id =
-        Number(req.params.id);
-
-      const product =
-        db.prepare(
-          "SELECT * FROM products WHERE id = ?"
-        ).get(id);
-
-      if (!product) {
-        return res.status(404).json({
-          error:
-            "Product not found."
-        });
-      }
-
-      const orders =
-        db.prepare(`
-          SELECT COUNT(*) AS count
-          FROM orders
-          WHERE product_id = ?
-        `).get(id);
-
-      /*
-       * Keep products that already have orders.
-       * Deactivate instead of deleting them.
-       */
-      if (orders.count > 0) {
-
-        db.prepare(`
-          UPDATE products
-          SET active = 0
-          WHERE id = ?
-        `).run(id);
-
-        return res.json({
-          success: true,
-          message:
-            "Product has existing orders, so it was deactivated instead of deleted."
-        });
-      }
-
-      db.prepare(
-        "DELETE FROM products WHERE id = ?"
-      ).run(id);
-
-      if (
-        product.image_url &&
-        product.image_url.startsWith(
-          "/uploads/products/"
-        )
-      ) {
-
-        const imagePath =
-          path.join(
-            PUBLIC_DIR,
-            product.image_url
-          );
-
-        if (
-          fs.existsSync(imagePath)
-        ) {
-          try {
-            fs.unlinkSync(
-              imagePath
-            );
-          } catch (_) {}
-        }
-      }
-
-      res.json({
-        success: true,
-        message:
-          "Product deleted."
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        error:
-          "Could not delete product."
+    if (!product) {
+      return res.status(404).json({
+        error: "Product not found."
       });
     }
+
+    if (product.image_url) {
+      const imagePath = path.join(
+        PUBLIC_DIR,
+        product.image_url.replace(/^\/+/, "")
+      );
+
+      if (
+        fs.existsSync(imagePath) &&
+        imagePath.startsWith(PUBLIC_DIR)
+      ) {
+        try {
+          fs.unlinkSync(imagePath);
+        } catch {}
+      }
+    }
+
+    db.prepare(`
+      DELETE FROM products
+      WHERE id = ?
+    `).run(id);
+
+    res.json({
+      success: true
+    });
   }
 );
 
@@ -1036,9 +686,7 @@ app.post(
   "/api/orders",
   requireLogin,
   (req, res) => {
-
     try {
-
       const {
         product_id,
         payment_method,
@@ -1047,20 +695,18 @@ app.post(
         phone
       } = req.body;
 
-      const product =
-        db.prepare(`
+      const product = db
+        .prepare(`
           SELECT *
           FROM products
           WHERE id = ?
           AND active = 1
-        `).get(
-          Number(product_id)
-        );
+        `)
+        .get(Number(product_id));
 
       if (!product) {
         return res.status(404).json({
-          error:
-            "Product not found."
+          error: "Product not found."
         });
       }
 
@@ -1070,8 +716,7 @@ app.post(
         )
       ) {
         return res.status(400).json({
-          error:
-            "Invalid payment method."
+          error: "Invalid payment method."
         });
       }
 
@@ -1081,75 +726,64 @@ app.post(
         )
       ) {
         return res.status(400).json({
-          error:
-            "Invalid delivery method."
+          error: "Invalid delivery method."
         });
       }
 
-      if (
-        !delivery_target ||
-        delivery_target.trim().length < 3
-      ) {
+      if (!delivery_target) {
         return res.status(400).json({
-          error:
-            "Delivery target is required."
+          error: "Delivery target is required."
         });
       }
 
       const orderNumber =
-        makeOrderNumber();
+        generateOrderNumber();
 
-      const result =
-        db.prepare(`
-          INSERT INTO orders
-          (
-            order_number,
-            user_id,
-            product_id,
-            amount_kes,
-            amount_crypto,
-            payment_method,
-            payment_status,
-            delivery_method,
-            delivery_target,
-            phone,
-            delivery_status
-          )
-          VALUES (?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?, 'PENDING')
-        `).run(
-          orderNumber,
-          req.session.userId,
-          product.id,
-          product.price_kes,
-          product.binance_price,
+      const result = db.prepare(`
+        INSERT INTO orders
+        (
+          order_number,
+          user_id,
+          product_id,
+          amount_kes,
+          amount_crypto,
           payment_method,
+          payment_status,
           delivery_method,
-          delivery_target.trim(),
-          (phone || "").trim()
-        );
+          delivery_target,
+          phone,
+          delivery_status
+        )
+        VALUES (?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?, 'RECEIVED')
+      `).run(
+        orderNumber,
+        req.session.user.id,
+        product.id,
+        product.price_kes,
+        product.binance_price || "",
+        payment_method,
+        delivery_method,
+        String(delivery_target).trim(),
+        String(phone || "").trim()
+      );
+
+      const order = db
+        .prepare(`
+          SELECT *
+          FROM orders
+          WHERE id = ?
+        `)
+        .get(result.lastInsertRowid);
 
       res.json({
         success: true,
-        order: {
-          id: result.lastInsertRowid,
-          order_number: orderNumber,
-          product_name: product.name,
-          amount_kes: product.price_kes,
-          amount_crypto:
-            product.binance_price,
-          payment_method,
-          delivery_method,
-          delivery_target
-        }
+        order
       });
-
     } catch (error) {
-
       console.error(error);
 
       res.status(500).json({
-        error:
-          "Could not create order."
+        error: "Could not create order."
       });
     }
   }
@@ -1163,21 +797,19 @@ app.get(
   "/api/orders",
   requireLogin,
   (req, res) => {
-
-    const orders =
-      db.prepare(`
+    const orders = db
+      .prepare(`
         SELECT
           o.*,
           p.name AS product_name,
           p.image_url
         FROM orders o
-        LEFT JOIN products p
+        JOIN products p
           ON p.id = o.product_id
         WHERE o.user_id = ?
         ORDER BY o.id DESC
-      `).all(
-        req.session.userId
-      );
+      `)
+      .all(req.session.user.id);
 
     res.json({
       orders
@@ -1186,35 +818,34 @@ app.get(
 );
 
 /* =========================================================
-   ORDER TRACKING
+   TRACK ORDER
 ========================================================= */
 
 app.get(
   "/api/orders/:orderNumber",
   requireLogin,
   (req, res) => {
-
-    const order =
-      db.prepare(`
+    const order = db
+      .prepare(`
         SELECT
           o.*,
           p.name AS product_name,
-          p.description AS product_description,
+          p.description,
           p.image_url
         FROM orders o
-        LEFT JOIN products p
+        JOIN products p
           ON p.id = o.product_id
         WHERE o.order_number = ?
         AND o.user_id = ?
-      `).get(
+      `)
+      .get(
         req.params.orderNumber,
-        req.session.userId
+        req.session.user.id
       );
 
     if (!order) {
       return res.status(404).json({
-        error:
-          "Order not found."
+        error: "Order not found."
       });
     }
 
@@ -1225,94 +856,89 @@ app.get(
 );
 
 /* =========================================================
-   M-PESA ACCESS TOKEN
+   M-PESA
 ========================================================= */
 
 async function getMpesaToken() {
-
-  const consumerKey =
+  const key =
     process.env.MPESA_CONSUMER_KEY;
 
-  const consumerSecret =
+  const secret =
     process.env.MPESA_CONSUMER_SECRET;
 
-  if (
-    !consumerKey ||
-    !consumerSecret
-  ) {
+  if (!key || !secret) {
     throw new Error(
       "M-Pesa credentials are not configured."
     );
   }
 
-  const env =
-    process.env.MPESA_ENV ===
-    "production"
+  const environment =
+    process.env.MPESA_ENV === "production"
       ? "production"
       : "sandbox";
 
-  const url =
-    env === "production"
-      ? "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-      : "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+  const base =
+    environment === "production"
+      ? "https://api.safaricom.co.ke"
+      : "https://sandbox.safaricom.co.ke";
 
-  const response =
-    await axios.get(
-      url,
-      {
-        auth: {
-          username: consumerKey,
-          password: consumerSecret
-        }
+  const credentials = Buffer.from(
+    `${key}:${secret}`
+  ).toString("base64");
+
+  const response = await axios.get(
+    `${base}/oauth/v1/generate?grant_type=client_credentials`,
+    {
+      headers: {
+        Authorization: `Basic ${credentials}`
       }
-    );
+    }
+  );
 
-  return response.data.access_token;
+  return {
+    token: response.data.access_token,
+    base
+  };
 }
-
-/* =========================================================
-   M-PESA STK PUSH
-========================================================= */
 
 app.post(
   "/api/mpesa/stkpush",
   requireLogin,
   async (req, res) => {
-
     try {
-
       const {
         order_number,
         phone
       } = req.body;
 
-      const order =
-        db.prepare(`
+      const order = db
+        .prepare(`
           SELECT *
           FROM orders
           WHERE order_number = ?
           AND user_id = ?
-        `).get(
+        `)
+        .get(
           order_number,
-          req.session.userId
+          req.session.user.id
         );
 
       if (!order) {
         return res.status(404).json({
-          error:
-            "Order not found."
+          error: "Order not found."
         });
       }
 
-      if (
-        order.payment_method !==
-        "MPESA"
-      ) {
+      if (order.payment_method !== "MPESA") {
         return res.status(400).json({
-          error:
-            "This order is not using M-Pesa."
+          error: "This order is not using M-Pesa."
         });
       }
+
+      const {
+        token,
+        base
+      } = await getMpesaToken();
 
       const shortcode =
         process.env.MPESA_SHORTCODE;
@@ -1320,88 +946,50 @@ app.post(
       const passkey =
         process.env.MPESA_PASSKEY;
 
-      const callbackUrl =
+      const callback =
         process.env.MPESA_CALLBACK_URL;
 
       if (
         !shortcode ||
         !passkey ||
-        !callbackUrl
+        !callback
       ) {
         return res.status(500).json({
           error:
-            "M-Pesa configuration is incomplete."
+            "M-Pesa environment variables are incomplete."
         });
       }
-
-      const token =
-        await getMpesaToken();
-
-      const env =
-        process.env.MPESA_ENV ===
-        "production"
-          ? "production"
-          : "sandbox";
-
-      const base =
-        env === "production"
-          ? "https://api.safaricom.co.ke"
-          : "https://sandbox.safaricom.co.ke";
 
       const timestamp =
         new Date()
           .toISOString()
-          .replace(
-            /[-:TZ.]/g,
-            ""
-          )
+          .replace(/\D/g, "")
           .slice(0, 14);
 
-      const password =
-        Buffer.from(
-          shortcode +
-          passkey +
-          timestamp
-        ).toString("base64");
+      const password = Buffer.from(
+        `${shortcode}${passkey}${timestamp}`
+      ).toString("base64");
 
       const response =
         await axios.post(
           `${base}/mpesa/stkpush/v1/processrequest`,
           {
-            BusinessShortCode:
-              shortcode,
-
-            Password:
-              password,
-
-            Timestamp:
-              timestamp,
-
+            BusinessShortCode: shortcode,
+            Password: password,
+            Timestamp: timestamp,
             TransactionType:
               "CustomerPayBillOnline",
-
-            Amount:
-              Math.round(
-                order.amount_kes
-              ),
-
-            PartyA:
-              phone,
-
-            PartyB:
-              shortcode,
-
-            PhoneNumber:
-              phone,
-
-            CallBackURL:
-              callbackUrl,
-
+            Amount: Math.round(
+              order.amount_kes
+            ),
+            PartyA: phone,
+            PartyB: shortcode,
+            PhoneNumber: phone,
+            CallBackURL: callback,
             AccountReference:
               order.order_number,
-
             TransactionDesc:
-              `DARK WEB ${order.order_number}`
+              `Payment for ${order.order_number}`
           },
           {
             headers: {
@@ -1413,36 +1001,34 @@ app.post(
 
       db.prepare(`
         UPDATE orders
-        SET
-          checkout_request_id = ?,
-          merchant_request_id = ?,
-          phone = ?
-        WHERE order_number = ?
+        SET checkout_request_id = ?,
+            merchant_request_id = ?
+        WHERE id = ?
       `).run(
         response.data.CheckoutRequestID || "",
         response.data.MerchantRequestID || "",
-        phone,
-        order.order_number
+        order.id
       );
 
       res.json({
         success: true,
-        response: response.data
+        message:
+          response.data.CustomerMessage ||
+          "Check your phone and enter your M-Pesa PIN.",
+        data: response.data
       });
-
     } catch (error) {
-
       console.error(
-        "M-Pesa STK error:",
-        error.response?.data ||
-        error.message
+        "M-Pesa error:",
+        error.response?.data || error.message
       );
 
       res.status(500).json({
         error:
           error.response?.data?.errorMessage ||
+          error.response?.data?.ResponseDescription ||
           error.message ||
-          "M-Pesa STK Push failed."
+          "M-Pesa request failed."
       });
     }
   }
@@ -1455,88 +1041,72 @@ app.post(
 app.post(
   "/api/mpesa/callback",
   (req, res) => {
-
     try {
-
-      const callback =
+      const body =
         req.body?.Body?.stkCallback;
 
-      if (!callback) {
+      if (!body) {
         return res.json({
           ResultCode: 0,
           ResultDesc: "Accepted"
         });
       }
 
-      const checkoutId =
-        callback.CheckoutRequestID;
+      const checkoutRequestId =
+        body.CheckoutRequestID;
 
       const resultCode =
-        callback.ResultCode;
+        Number(body.ResultCode);
 
       const metadata =
-        callback.CallbackMetadata?.Item ||
-        [];
+        body.CallbackMetadata?.Item || [];
 
-      let receipt = "";
+      const getItem = (name) => {
+        const item = metadata.find(
+          (x) => x.Name === name
+        );
 
-      for (const item of metadata) {
+        return item ? item.Value : "";
+      };
 
-        if (
-          item.Name ===
-          "MpesaReceiptNumber"
-        ) {
-          receipt =
-            item.Value || "";
-        }
-      }
+      const receipt =
+        getItem("MpesaReceiptNumber");
 
-      const order =
-        db.prepare(`
+      const order = db
+        .prepare(`
           SELECT *
           FROM orders
           WHERE checkout_request_id = ?
-        `).get(
-          checkoutId
-        );
+        `)
+        .get(checkoutRequestId);
 
-      if (order) {
-
-        if (resultCode === 0) {
-
-          db.prepare(`
-            UPDATE orders
-            SET
-              payment_status = 'PAID',
-              delivery_status = 'PROCESSING',
+      if (order && resultCode === 0) {
+        db.prepare(`
+          UPDATE orders
+          SET payment_status = 'PAID',
               mpesa_receipt = ?,
-              paid_at = ?
-            WHERE id = ?
-          `).run(
-            receipt,
-            nowISO(),
-            order.id
-          );
+              paid_at = CURRENT_TIMESTAMP,
+              delivery_status = 'PROCESSING'
+          WHERE id = ?
+        `).run(
+          receipt || "",
+          order.id
+        );
+      }
 
-        } else {
-
-          db.prepare(`
-            UPDATE orders
-            SET payment_status = 'PAYMENT_FAILED'
-            WHERE id = ?
-          `).run(
-            order.id
-          );
-        }
+      if (order && resultCode !== 0) {
+        db.prepare(`
+          UPDATE orders
+          SET payment_status = 'PAYMENT_FAILED'
+          WHERE id = ?
+        `).run(order.id);
       }
 
       res.json({
         ResultCode: 0,
         ResultDesc: "Accepted"
       });
-
     } catch (error) {
-
       console.error(
         "M-Pesa callback error:",
         error
@@ -1551,13 +1121,13 @@ app.post(
 );
 
 /* =========================================================
-   BINANCE PAYMENT INFORMATION
+   BINANCE PAYMENT INFO
 ========================================================= */
 
 app.get(
   "/api/binance/payment-info",
+  requireLogin,
   (req, res) => {
-
     res.json({
       asset:
         process.env.BINANCE_ASSET ||
@@ -1572,74 +1142,66 @@ app.get(
         "",
 
       instructions:
-        "Send the exact amount, then submit your transaction hash for manual verification."
+        "Send the exact amount shown for your order, then submit your transaction hash for verification."
     });
   }
 );
 
 /* =========================================================
-   BINANCE TXID SUBMISSION
+   BINANCE SUBMISSION
 ========================================================= */
 
 app.post(
   "/api/binance/submit",
   requireLogin,
   (req, res) => {
-
     try {
-
       const {
         order_number,
         txid
       } = req.body;
 
-      if (
-        !order_number ||
-        !txid
-      ) {
+      if (!txid) {
         return res.status(400).json({
           error:
-            "Order number and transaction hash are required."
+            "Transaction hash is required."
         });
       }
 
-      const order =
-        db.prepare(`
+      const order = db
+        .prepare(`
           SELECT *
           FROM orders
           WHERE order_number = ?
           AND user_id = ?
-        `).get(
+        `)
+        .get(
           order_number,
-          req.session.userId
+          req.session.user.id
         );
 
       if (!order) {
         return res.status(404).json({
-          error:
-            "Order not found."
+          error: "Order not found."
         });
       }
 
       db.prepare(`
         UPDATE orders
-        SET
-          binance_txid = ?,
-          payment_status = 'PAYMENT_REVIEW'
+        SET binance_txid = ?,
+            payment_status = 'PAYMENT_REVIEW'
         WHERE id = ?
       `).run(
-        txid.trim(),
+        String(txid).trim(),
         order.id
       );
 
       res.json({
         success: true,
         message:
-          "Transaction submitted for manual verification."
+          "Transaction submitted for verification."
       });
-
     } catch (error) {
-
       console.error(error);
 
       res.status(500).json({
@@ -1658,21 +1220,21 @@ app.get(
   "/api/admin/orders",
   requireAdmin,
   (req, res) => {
-
-    const orders =
-      db.prepare(`
+    const orders = db
+      .prepare(`
         SELECT
           o.*,
           p.name AS product_name,
           u.name AS customer_name,
           u.email AS customer_email
         FROM orders o
-        LEFT JOIN products p
+        JOIN products p
           ON p.id = o.product_id
-        LEFT JOIN users u
+        JOIN users u
           ON u.id = o.user_id
         ORDER BY o.id DESC
-      `).all();
+      `)
+      .all();
 
     res.json({
       orders
@@ -1681,59 +1243,49 @@ app.get(
 );
 
 /* =========================================================
-   ADMIN BINANCE VERIFY
+   VERIFY BINANCE
 ========================================================= */
 
 app.post(
   "/api/admin/orders/:id/verify-binance",
   requireAdmin,
   (req, res) => {
-
-    const id =
-      Number(req.params.id);
+    const id = Number(req.params.id);
 
     const {
       approved
     } = req.body;
 
-    const order =
-      db.prepare(
-        "SELECT * FROM orders WHERE id = ?"
-      ).get(id);
+    const order = db
+      .prepare(`
+        SELECT *
+        FROM orders
+        WHERE id = ?
+      `)
+      .get(id);
 
     if (!order) {
       return res.status(404).json({
-        error:
-          "Order not found."
+        error: "Order not found."
       });
     }
 
     if (approved) {
-
       db.prepare(`
         UPDATE orders
-        SET
-          payment_status = 'PAID',
-          binance_verified = 1,
-          delivery_status = 'PROCESSING',
-          paid_at = ?
+        SET payment_status = 'PAID',
+            binance_verified = 1,
+            paid_at = CURRENT_TIMESTAMP,
+            delivery_status = 'PROCESSING'
         WHERE id = ?
-      `).run(
-        nowISO(),
-        id
-      );
-
+      `).run(id);
     } else {
-
       db.prepare(`
         UPDATE orders
-        SET
-          payment_status = 'PAYMENT_FAILED',
-          binance_verified = 0
+        SET payment_status = 'PAYMENT_FAILED',
+            binance_verified = 0
         WHERE id = ?
-      `).run(
-        id
-      );
+      `).run(id);
     }
 
     res.json({
@@ -1743,64 +1295,50 @@ app.post(
 );
 
 /* =========================================================
-   ADMIN DELIVERY STATUS
+   ADMIN DELIVERY
 ========================================================= */
 
 app.post(
   "/api/admin/orders/:id/delivery",
   requireAdmin,
   (req, res) => {
-
-    const id =
-      Number(req.params.id);
+    const id = Number(req.params.id);
 
     const {
-      status,
-      notes
+      delivery_status,
+      delivery_notes
     } = req.body;
 
     const allowed = [
-      "PENDING",
+      "RECEIVED",
       "PROCESSING",
       "DELIVERING",
       "DELIVERED"
     ];
 
-    if (
-      !allowed.includes(status)
-    ) {
+    if (!allowed.includes(delivery_status)) {
       return res.status(400).json({
-        error:
-          "Invalid delivery status."
+        error: "Invalid delivery status."
       });
     }
 
     const deliveredAt =
-      status === "DELIVERED"
-        ? nowISO()
+      delivery_status === "DELIVERED"
+        ? new Date().toISOString()
         : "";
 
-    const result =
-      db.prepare(`
-        UPDATE orders
-        SET
-          delivery_status = ?,
+    db.prepare(`
+      UPDATE orders
+      SET delivery_status = ?,
           delivery_notes = ?,
           delivered_at = ?
-        WHERE id = ?
-      `).run(
-        status,
-        notes || "",
-        deliveredAt,
-        id
-      );
-
-    if (!result.changes) {
-      return res.status(404).json({
-        error:
-          "Order not found."
-      });
-    }
+      WHERE id = ?
+    `).run(
+      delivery_status,
+      String(delivery_notes || ""),
+      deliveredAt,
+      id
+    );
 
     res.json({
       success: true
@@ -1812,77 +1350,61 @@ app.post(
    HEALTH
 ========================================================= */
 
-app.get(
-  "/api/health",
-  (req, res) => {
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    service: "DARK WEB STORE",
+    time: new Date().toISOString()
+  });
+});
 
-    res.json({
-      ok: true,
-      service:
-        "DARK WEB Store",
-      time:
-        new Date().toISOString()
-    });
-  }
-);
+/* =========================================================
+   FRONTEND FALLBACK
+========================================================= */
+
+app.get("*splat", (req, res) => {
+  res.sendFile(
+    path.join(PUBLIC_DIR, "index.html")
+  );
+});
 
 /* =========================================================
    MULTER ERROR HANDLER
 ========================================================= */
 
-app.use(
-  (error, req, res, next) => {
-
-    if (
-      error instanceof multer.MulterError
-    ) {
-
-      if (
-        error.code ===
-        "LIMIT_FILE_SIZE"
-      ) {
-        return res.status(400).json({
-          error:
-            "Image is too large. Maximum size is 5MB."
-        });
-      }
-
+app.use((error, req, res, next) => {
+  if (error instanceof multer.MulterError) {
+    if (error.code === "LIMIT_FILE_SIZE") {
       return res.status(400).json({
         error:
-          error.message
+          "Image is too large. Maximum size is 5MB."
       });
     }
 
-    if (
-      error &&
-      error.message ===
-      "Only image files are allowed."
-    ) {
-      return res.status(400).json({
-        error:
-          "Only image files are allowed."
-      });
-    }
-
-    next(error);
+    return res.status(400).json({
+      error: error.message
+    });
   }
-);
+
+  if (error) {
+    return res.status(400).json({
+      error: error.message
+    });
+  }
+
+  next();
+});
 
 /* =========================================================
    START
 ========================================================= */
 
-app.listen(
-  PORT,
-  () => {
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(
+    `DARK WEB STORE running on port ${PORT}`
+  );
 
-    console.log(
-      `DARK WEB Store running on port ${PORT}`
-    );
-
-    console.log(
-      `http://localhost:${PORT}`
-    );
-
-  }
-);
+  console.log(
+    `Products images: ${UPLOAD_DIR}`
+  );
+});
