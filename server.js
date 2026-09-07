@@ -25,28 +25,20 @@ fs.mkdirSync(UPLOAD_DIR, {
   recursive: true
 });
 
-/* =========================================================
-   EXPRESS
-========================================================= */
-
-app.use(express.json({
-  limit: "10mb"
-}));
-
-app.use(express.urlencoded({
-  extended: true,
-  limit: "10mb"
-}));
+app.use(express.json({ limit: "2mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 /* =========================================================
    SESSION
 ========================================================= */
 
+app.set("trust proxy", 1);
+
 app.use(
   session({
     secret:
       process.env.SESSION_SECRET ||
-      "CHANGE_THIS_SECRET_IN_RENDER",
+      "CHANGE_THIS_SESSION_SECRET",
 
     resave: false,
 
@@ -58,7 +50,11 @@ app.use(
       secure:
         process.env.NODE_ENV === "production",
       maxAge:
-        1000 * 60 * 60 * 24 * 7
+        1000 *
+        60 *
+        60 *
+        24 *
+        7
     }
   })
 );
@@ -96,7 +92,7 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
-  is_admin INTEGER DEFAULT 0,
+  is_admin INTEGER NOT NULL DEFAULT 0,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -104,38 +100,40 @@ CREATE TABLE IF NOT EXISTS products (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   description TEXT DEFAULT '',
-  price_kes REAL DEFAULT 0,
-  binance_price TEXT DEFAULT '',
+  price_kes REAL NOT NULL DEFAULT 0,
+  binance_price REAL NOT NULL DEFAULT 0,
   delivery_content TEXT DEFAULT '',
   image_url TEXT DEFAULT '',
-  active INTEGER DEFAULT 1,
+  active INTEGER NOT NULL DEFAULT 1,
   created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   order_number TEXT NOT NULL UNIQUE,
+
   user_id INTEGER NOT NULL,
   product_id INTEGER NOT NULL,
 
-  amount_kes REAL DEFAULT 0,
-  amount_crypto TEXT DEFAULT '',
+  amount_kes REAL NOT NULL DEFAULT 0,
+  amount_crypto REAL NOT NULL DEFAULT 0,
 
   payment_method TEXT NOT NULL,
-  payment_status TEXT DEFAULT 'pending',
+  payment_status TEXT NOT NULL DEFAULT 'pending',
 
   delivery_method TEXT DEFAULT 'email',
   delivery_target TEXT DEFAULT '',
+
   phone TEXT DEFAULT '',
 
   binance_txid TEXT DEFAULT '',
-  binance_verified INTEGER DEFAULT 0,
+  binance_verified INTEGER NOT NULL DEFAULT 0,
 
   checkout_request_id TEXT DEFAULT '',
   merchant_request_id TEXT DEFAULT '',
   mpesa_receipt TEXT DEFAULT '',
 
-  delivery_status TEXT DEFAULT 'pending',
+  delivery_status TEXT NOT NULL DEFAULT 'pending',
   delivery_notes TEXT DEFAULT '',
 
   created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -145,34 +143,72 @@ CREATE TABLE IF NOT EXISTS orders (
 `);
 
 /* =========================================================
-   MIGRATION
+   SAFE MIGRATIONS
 ========================================================= */
 
-try {
-  db.prepare(
-    "ALTER TABLE products ADD COLUMN image_url TEXT DEFAULT ''"
-  ).run();
-} catch (err) {
-  // Column already exists
+function addColumnIfMissing(
+  table,
+  column,
+  definition
+) {
+  try {
+    db.exec(
+      `ALTER TABLE ${table}
+       ADD COLUMN ${column} ${definition}`
+    );
+  } catch (error) {
+    if (
+      !String(error.message).includes(
+        "duplicate column"
+      )
+    ) {
+      console.log(
+        "Migration:",
+        error.message
+      );
+    }
+  }
 }
 
+addColumnIfMissing(
+  "products",
+  "image_url",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "orders",
+  "delivery_notes",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "orders",
+  "paid_at",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "orders",
+  "delivered_at",
+  "TEXT DEFAULT ''"
+);
+
 /* =========================================================
-   ADMIN ACCOUNT
+   ADMIN
 ========================================================= */
 
-const adminEmail =
-  String(
-    process.env.ADMIN_EMAIL ||
-      "admin@example.com"
-  )
-    .trim()
-    .toLowerCase();
+const adminEmail = String(
+  process.env.ADMIN_EMAIL ||
+    "admin@example.com"
+)
+  .trim()
+  .toLowerCase();
 
-const adminPassword =
-  String(
-    process.env.ADMIN_PASSWORD ||
-      "ChangeMe123!"
-  );
+const adminPassword = String(
+  process.env.ADMIN_PASSWORD ||
+    "ChangeMe123!"
+);
 
 if (adminPassword.length < 6) {
   throw new Error(
@@ -180,17 +216,16 @@ if (adminPassword.length < 6) {
   );
 }
 
-const passwordHash =
-  bcrypt.hashSync(adminPassword, 12);
-
 const existingAdmin = db
   .prepare(
     "SELECT * FROM users WHERE email = ?"
   )
   .get(adminEmail);
 
-if (!existingAdmin) {
+const adminHash =
+  bcrypt.hashSync(adminPassword, 12);
 
+if (!existingAdmin) {
   db.prepare(`
     INSERT INTO users
     (name, email, password_hash, is_admin)
@@ -198,16 +233,14 @@ if (!existingAdmin) {
   `).run(
     "Administrator",
     adminEmail,
-    passwordHash
+    adminHash
   );
 
   console.log(
     "ADMIN CREATED:",
     adminEmail
   );
-
 } else {
-
   db.prepare(`
     UPDATE users
     SET
@@ -216,7 +249,7 @@ if (!existingAdmin) {
       name = 'Administrator'
     WHERE email = ?
   `).run(
-    passwordHash,
+    adminHash,
     adminEmail
   );
 
@@ -225,86 +258,6 @@ if (!existingAdmin) {
     adminEmail
   );
 }
-
-/* =========================================================
-   MULTER
-========================================================= */
-
-const storage =
-  multer.diskStorage({
-
-    destination:
-      function (
-        req,
-        file,
-        cb
-      ) {
-        cb(null, UPLOAD_DIR);
-      },
-
-    filename:
-      function (
-        req,
-        file,
-        cb
-      ) {
-
-        const ext =
-          path.extname(
-            file.originalname
-          );
-
-        const name =
-          crypto
-            .randomBytes(12)
-            .toString("hex");
-
-        cb(
-          null,
-          name + ext
-        );
-      }
-  });
-
-const upload =
-  multer({
-    storage,
-
-    limits: {
-      fileSize:
-        5 * 1024 * 1024
-    },
-
-    fileFilter:
-      function (
-        req,
-        file,
-        cb
-      ) {
-
-        const allowed =
-          [
-            "image/jpeg",
-            "image/png",
-            "image/webp",
-            "image/gif"
-          ];
-
-        if (
-          allowed.includes(
-            file.mimetype
-          )
-        ) {
-          cb(null, true);
-        } else {
-          cb(
-            new Error(
-              "Only image files are allowed."
-            )
-          );
-        }
-      }
-  });
 
 /* =========================================================
    HELPERS
@@ -316,12 +269,35 @@ function cleanEmail(email) {
     .toLowerCase();
 }
 
+function cleanText(value) {
+  return String(value || "").trim();
+}
+
+function makeOrderNumber() {
+  const date =
+    new Date()
+      .toISOString()
+      .replace(/\D/g, "")
+      .slice(0, 14);
+
+  const random =
+    crypto
+      .randomBytes(3)
+      .toString("hex")
+      .toUpperCase();
+
+  return `DW-${date}-${random}`;
+}
+
+function now() {
+  return new Date().toISOString();
+}
+
 function requireLogin(
   req,
   res,
   next
 ) {
-
   if (!req.session.user) {
     return res.status(401).json({
       success: false,
@@ -337,14 +313,10 @@ function requireAdmin(
   res,
   next
 ) {
-
   if (
     !req.session.user ||
-    Number(
-      req.session.user.is_admin
-    ) !== 1
+    Number(req.session.user.is_admin) !== 1
   ) {
-
     return res.status(403).json({
       success: false,
       message: "Admin access required."
@@ -354,18 +326,77 @@ function requireAdmin(
   next();
 }
 
-function makeOrderNumber() {
+/* =========================================================
+   IMAGE UPLOAD
+========================================================= */
 
-  return (
-    "DW-" +
-    Date.now() +
-    "-" +
-    crypto
-      .randomBytes(3)
-      .toString("hex")
-      .toUpperCase()
-  );
-}
+const storage =
+  multer.diskStorage({
+    destination: (
+      req,
+      file,
+      cb
+    ) => {
+      cb(null, UPLOAD_DIR);
+    },
+
+    filename: (
+      req,
+      file,
+      cb
+    ) => {
+      const ext =
+        path.extname(
+          file.originalname
+        ).toLowerCase();
+
+      const filename =
+        Date.now() +
+        "-" +
+        crypto
+          .randomBytes(5)
+          .toString("hex") +
+        ext;
+
+      cb(null, filename);
+    }
+  });
+
+const upload = multer({
+  storage,
+
+  limits: {
+    fileSize:
+      5 * 1024 * 1024
+  },
+
+  fileFilter: (
+    req,
+    file,
+    cb
+  ) => {
+    const allowed = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif"
+    ];
+
+    if (
+      allowed.includes(
+        file.mimetype
+      )
+    ) {
+      cb(null, true);
+    } else {
+      cb(
+        new Error(
+          "Only JPG, PNG, WEBP and GIF images are allowed."
+        )
+      );
+    }
+  }
+});
 
 /* =========================================================
    AUTH
@@ -374,18 +405,12 @@ function makeOrderNumber() {
 app.post(
   "/api/register",
   async (req, res) => {
-
     try {
-
       const name =
-        String(
-          req.body.name || ""
-        ).trim();
+        cleanText(req.body.name);
 
       const email =
-        cleanEmail(
-          req.body.email
-        );
+        cleanEmail(req.body.email);
 
       const password =
         String(
@@ -393,40 +418,47 @@ app.post(
         );
 
       if (
-        !name ||
-        !email ||
-        !password
+        name.length < 2
       ) {
-
         return res.status(400).json({
           success: false,
           message:
-            "Name, email and password are required."
+            "Please enter your name."
+        });
+      }
+
+      if (
+        !email.includes("@")
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Please enter a valid email."
         });
       }
 
       if (
         password.length < 6
       ) {
-
         return res.status(400).json({
           success: false,
           message:
-            "Password must contain at least 6 characters."
+            "Password must be at least 6 characters."
         });
       }
 
-      const existing =
-        db.prepare(
-          "SELECT id FROM users WHERE email = ?"
-        ).get(email);
+      const exists =
+        db
+          .prepare(
+            "SELECT id FROM users WHERE email = ?"
+          )
+          .get(email);
 
-      if (existing) {
-
-        return res.status(400).json({
+      if (exists) {
+        return res.status(409).json({
           success: false,
           message:
-            "An account with this email already exists."
+            "Email already registered."
         });
       }
 
@@ -437,15 +469,17 @@ app.post(
         );
 
       const result =
-        db.prepare(`
-          INSERT INTO users
-          (name, email, password_hash, is_admin)
-          VALUES (?, ?, ?, 0)
-        `).run(
-          name,
-          email,
-          hash
-        );
+        db
+          .prepare(`
+            INSERT INTO users
+            (name,email,password_hash,is_admin)
+            VALUES (?,?,?,0)
+          `)
+          .run(
+            name,
+            email,
+            hash
+          );
 
       const user = {
         id: result.lastInsertRowid,
@@ -461,9 +495,7 @@ app.post(
         success: true,
         user
       });
-
     } catch (error) {
-
       console.error(
         "REGISTER ERROR:",
         error
@@ -478,46 +510,34 @@ app.post(
   }
 );
 
-/* =========================================================
-   LOGIN
-========================================================= */
-
 app.post(
   "/api/login",
   async (req, res) => {
-
     try {
-
       const email =
-        cleanEmail(
-          req.body.email
-        );
+        cleanEmail(req.body.email);
 
       const password =
         String(
           req.body.password || ""
         );
 
-      if (
-        !email ||
-        !password
-      ) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Email and password are required."
-        });
-      }
+      console.log(
+        "LOGIN ATTEMPT:",
+        email
+      );
 
       const user =
-        db.prepare(`
-          SELECT *
-          FROM users
-          WHERE email = ?
-        `).get(email);
+        db
+          .prepare(
+            "SELECT * FROM users WHERE email = ?"
+          )
+          .get(email);
 
       if (!user) {
+        console.log(
+          "LOGIN USER FOUND: false"
+        );
 
         return res.status(401).json({
           success: false,
@@ -532,8 +552,12 @@ app.post(
           user.password_hash
         );
 
-      if (!valid) {
+      console.log(
+        "LOGIN USER FOUND: true PASSWORD VALID:",
+        valid
+      );
 
+      if (!valid) {
         return res.status(401).json({
           success: false,
           message:
@@ -551,12 +575,9 @@ app.post(
 
       res.json({
         success: true,
-        user:
-          req.session.user
+        user: req.session.user
       });
-
     } catch (error) {
-
       console.error(
         "LOGIN ERROR:",
         error
@@ -571,14 +592,9 @@ app.post(
   }
 );
 
-/* =========================================================
-   CURRENT USER
-========================================================= */
-
 app.get(
   "/api/me",
   (req, res) => {
-
     res.json({
       success: true,
       user:
@@ -588,38 +604,29 @@ app.get(
   }
 );
 
-/* =========================================================
-   LOGOUT
-========================================================= */
-
 app.post(
   "/api/logout",
   (req, res) => {
-
     req.session.destroy(
       () => {
-
         res.json({
           success: true
         });
-
       }
     );
   }
 );
 
 /* =========================================================
-   PRODUCTS - PUBLIC
+   PUBLIC PRODUCTS
 ========================================================= */
 
 app.get(
   "/api/products",
   (req, res) => {
-
-    try {
-
-      const products =
-        db.prepare(`
+    const products =
+      db
+        .prepare(`
           SELECT
             id,
             name,
@@ -632,41 +639,8 @@ app.get(
           FROM products
           WHERE active = 1
           ORDER BY id DESC
-        `).all();
-
-      res.json({
-        success: true,
-        products
-      });
-
-    } catch (error) {
-
-      console.error(error);
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Could not load products."
-      });
-    }
-  }
-);
-
-/* =========================================================
-   ADMIN PRODUCTS
-========================================================= */
-
-app.get(
-  "/api/admin/products",
-  requireAdmin,
-  (req, res) => {
-
-    const products =
-      db.prepare(`
-        SELECT *
-        FROM products
-        ORDER BY id DESC
-      `).all();
+        `)
+        .all();
 
     res.json({
       success: true,
@@ -676,316 +650,33 @@ app.get(
 );
 
 /* =========================================================
-   ADMIN ADD PRODUCT
+   CUSTOMER ACCOUNT
 ========================================================= */
 
-app.post(
-  "/api/admin/products",
-  requireAdmin,
-  upload.single("image"),
-  (req, res) => {
-
-    try {
-
-      const name =
-        String(
-          req.body.name || ""
-        ).trim();
-
-      const description =
-        String(
-          req.body.description || ""
-        ).trim();
-
-      const priceKes =
-        Number(
-          req.body.price_kes || 0
-        );
-
-      const binancePrice =
-        String(
-          req.body.binance_price || ""
-        ).trim();
-
-      const deliveryContent =
-        String(
-          req.body.delivery_content || ""
-        );
-
-      if (!name) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Product name is required."
-        });
-      }
-
-      const imageUrl =
-        req.file
-          ? "/uploads/products/" +
-            req.file.filename
-          : "";
-
-      const result =
-        db.prepare(`
-          INSERT INTO products
-          (
-            name,
-            description,
-            price_kes,
-            binance_price,
-            delivery_content,
-            image_url,
-            active
-          )
-          VALUES (?, ?, ?, ?, ?, ?, 1)
-        `).run(
-          name,
-          description,
-          priceKes,
-          binancePrice,
-          deliveryContent,
-          imageUrl
-        );
-
-      res.json({
-        success: true,
-        productId:
-          result.lastInsertRowid
-      });
-
-    } catch (error) {
-
-      console.error(
-        "ADD PRODUCT ERROR:",
-        error
-      );
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Could not create product."
-      });
-    }
-  }
-);
-
-/* =========================================================
-   ADMIN TOGGLE PRODUCT
-========================================================= */
-
-app.post(
-  "/api/admin/products/:id/toggle",
-  requireAdmin,
-  (req, res) => {
-
-    const id =
-      Number(req.params.id);
-
-    const product =
-      db.prepare(
-        "SELECT active FROM products WHERE id = ?"
-      ).get(id);
-
-    if (!product) {
-
-      return res.status(404).json({
-        success: false,
-        message:
-          "Product not found."
-      });
-    }
-
-    db.prepare(`
-      UPDATE products
-      SET active = ?
-      WHERE id = ?
-    `).run(
-      product.active ? 0 : 1,
-      id
-    );
-
-    res.json({
-      success: true
-    });
-  }
-);
-
-/* =========================================================
-   ADMIN DELETE PRODUCT
-========================================================= */
-
-app.delete(
-  "/api/admin/products/:id",
-  requireAdmin,
-  (req, res) => {
-
-    const id =
-      Number(req.params.id);
-
-    db.prepare(
-      "DELETE FROM products WHERE id = ?"
-    ).run(id);
-
-    res.json({
-      success: true
-    });
-  }
-);
-
-/* =========================================================
-   CREATE ORDER
-========================================================= */
-
-app.post(
-  "/api/orders",
+app.get(
+  "/api/account",
   requireLogin,
   (req, res) => {
-
-    try {
-
-      const productId =
-        Number(
-          req.body.product_id
-        );
-
-      const paymentMethod =
-        String(
-          req.body.payment_method || ""
-        ).trim();
-
-      const deliveryMethod =
-        String(
-          req.body.delivery_method ||
-            "email"
-        ).trim();
-
-      const deliveryTarget =
-        String(
-          req.body.delivery_target ||
-            ""
-        ).trim();
-
-      const phone =
-        String(
-          req.body.phone || ""
-        ).trim();
-
-      const product =
-        db.prepare(`
-          SELECT *
-          FROM products
+    const user =
+      db
+        .prepare(`
+          SELECT
+            id,
+            name,
+            email,
+            is_admin,
+            created_at
+          FROM users
           WHERE id = ?
-          AND active = 1
-        `).get(productId);
-
-      if (!product) {
-
-        return res.status(404).json({
-          success: false,
-          message:
-            "Product not found."
-        });
-      }
-
-      if (
-        ![
-          "mpesa",
-          "binance"
-        ].includes(
-          paymentMethod
-        )
-      ) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Invalid payment method."
-        });
-      }
-
-      if (!deliveryTarget) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "Delivery target is required."
-        });
-      }
-
-      const orderNumber =
-        makeOrderNumber();
-
-      const amountKes =
-        Number(
-          product.price_kes || 0
+        `)
+        .get(
+          req.session.user.id
         );
 
-      const amountCrypto =
-        String(
-          product.binance_price || ""
-        );
-
-      const result =
-        db.prepare(`
-          INSERT INTO orders
-          (
-            order_number,
-            user_id,
-            product_id,
-            amount_kes,
-            amount_crypto,
-            payment_method,
-            payment_status,
-            delivery_method,
-            delivery_target,
-            phone
-          )
-          VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)
-        `).run(
-          orderNumber,
-          req.session.user.id,
-          productId,
-          amountKes,
-          amountCrypto,
-          paymentMethod,
-          deliveryMethod,
-          deliveryTarget,
-          phone
-        );
-
-      res.json({
-        success: true,
-        order: {
-          id:
-            result.lastInsertRowid,
-          order_number:
-            orderNumber,
-          amount_kes:
-            amountKes,
-          amount_crypto:
-            amountCrypto,
-          payment_method:
-            paymentMethod,
-          payment_status:
-            "pending"
-        }
-      });
-
-    } catch (error) {
-
-      console.error(
-        "ORDER ERROR:",
-        error
-      );
-
-      res.status(500).json({
-        success: false,
-        message:
-          "Could not create order."
-      });
-    }
+    res.json({
+      success: true,
+      user
+    });
   }
 );
 
@@ -994,24 +685,25 @@ app.post(
 ========================================================= */
 
 app.get(
-  "/api/orders",
+  "/api/my-orders",
   requireLogin,
   (req, res) => {
-
     const orders =
-      db.prepare(`
-        SELECT
-          o.*,
-          p.name AS product_name,
-          p.image_url
-        FROM orders o
-        LEFT JOIN products p
-          ON p.id = o.product_id
-        WHERE o.user_id = ?
-        ORDER BY o.id DESC
-      `).all(
-        req.session.user.id
-      );
+      db
+        .prepare(`
+          SELECT
+            o.*,
+            p.name AS product_name,
+            p.description AS product_description
+          FROM orders o
+          LEFT JOIN products p
+            ON p.id = o.product_id
+          WHERE o.user_id = ?
+          ORDER BY o.id DESC
+        `)
+        .all(
+          req.session.user.id
+        );
 
     res.json({
       success: true,
@@ -1020,38 +712,30 @@ app.get(
   }
 );
 
-/* =========================================================
-   SINGLE ORDER
-========================================================= */
-
 app.get(
   "/api/orders/:id",
   requireLogin,
   (req, res) => {
-
-    const id =
-      Number(req.params.id);
-
     const order =
-      db.prepare(`
-        SELECT
-          o.*,
-          p.name AS product_name,
-          p.description,
-          p.image_url,
-          p.delivery_content
-        FROM orders o
-        LEFT JOIN products p
-          ON p.id = o.product_id
-        WHERE o.id = ?
-        AND o.user_id = ?
-      `).get(
-        id,
-        req.session.user.id
-      );
+      db
+        .prepare(`
+          SELECT
+            o.*,
+            p.name AS product_name,
+            p.description AS product_description,
+            p.delivery_content
+          FROM orders o
+          LEFT JOIN products p
+            ON p.id = o.product_id
+          WHERE o.id = ?
+            AND o.user_id = ?
+        `)
+        .get(
+          Number(req.params.id),
+          req.session.user.id
+        );
 
     if (!order) {
-
       return res.status(404).json({
         success: false,
         message:
@@ -1067,27 +751,168 @@ app.get(
 );
 
 /* =========================================================
-   BINANCE PAYMENT INFO
+   CREATE ORDER
+========================================================= */
+
+app.post(
+  "/api/orders",
+  requireLogin,
+  (req, res) => {
+    try {
+      const productId =
+        Number(
+          req.body.product_id
+        );
+
+      const paymentMethod =
+        cleanText(
+          req.body.payment_method
+        ).toLowerCase();
+
+      const deliveryTarget =
+        cleanText(
+          req.body.delivery_target
+        );
+
+      const phone =
+        cleanText(
+          req.body.phone
+        );
+
+      const deliveryMethod =
+        cleanText(
+          req.body.delivery_method ||
+            "email"
+        );
+
+      const product =
+        db
+          .prepare(
+            "SELECT * FROM products WHERE id = ? AND active = 1"
+          )
+          .get(productId);
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Product not found."
+        });
+      }
+
+      if (
+        ![
+          "mpesa",
+          "binance"
+        ].includes(
+          paymentMethod
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Select a valid payment method."
+        });
+      }
+
+      if (
+        deliveryTarget.length < 3
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Enter your delivery email/contact."
+        });
+      }
+
+      const amountKes =
+        Number(
+          product.price_kes
+        );
+
+      const amountCrypto =
+        Number(
+          product.binance_price
+        );
+
+      const orderNumber =
+        makeOrderNumber();
+
+      const result =
+        db
+          .prepare(`
+            INSERT INTO orders (
+              order_number,
+              user_id,
+              product_id,
+              amount_kes,
+              amount_crypto,
+              payment_method,
+              payment_status,
+              delivery_method,
+              delivery_target,
+              phone
+            )
+            VALUES (?,?,?,?,?,?,?,?,?,?)
+          `)
+          .run(
+            orderNumber,
+            req.session.user.id,
+            product.id,
+            amountKes,
+            amountCrypto,
+            paymentMethod,
+            "pending",
+            deliveryMethod,
+            deliveryTarget,
+            phone
+          );
+
+      const order =
+        db
+          .prepare(
+            "SELECT * FROM orders WHERE id = ?"
+          )
+          .get(
+            result.lastInsertRowid
+          );
+
+      res.json({
+        success: true,
+        order
+      });
+    } catch (error) {
+      console.error(
+        "CREATE ORDER ERROR:",
+        error
+      );
+
+      res.status(500).json({
+        success: false,
+        message:
+          "Could not create order."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   BINANCE INFO
 ========================================================= */
 
 app.get(
-  "/api/payment/binance",
-  requireLogin,
+  "/api/binance-info",
   (req, res) => {
-
     res.json({
       success: true,
 
-      wallet:
+      address:
         process.env.BINANCE_USDT_ADDRESS ||
         "",
 
       network:
         process.env.BINANCE_NETWORK ||
-        "TRC20",
-
-      instructions:
-        "Send the exact USDT amount to the wallet, then submit your transaction hash."
+        "TRC20"
     });
   }
 );
@@ -1097,40 +922,38 @@ app.get(
 ========================================================= */
 
 app.post(
-  "/api/orders/:id/binance",
+  "/api/orders/:id/binance-txid",
   requireLogin,
   (req, res) => {
-
-    const id =
-      Number(req.params.id);
-
     const txid =
-      String(
-        req.body.txid || ""
-      ).trim();
+      cleanText(
+        req.body.txid
+      );
 
-    if (!txid) {
-
+    if (
+      txid.length < 8
+    ) {
       return res.status(400).json({
         success: false,
         message:
-          "Transaction hash is required."
+          "Enter a valid transaction hash."
       });
     }
 
     const order =
-      db.prepare(`
-        SELECT *
-        FROM orders
-        WHERE id = ?
-        AND user_id = ?
-      `).get(
-        id,
-        req.session.user.id
-      );
+      db
+        .prepare(`
+          SELECT *
+          FROM orders
+          WHERE id = ?
+            AND user_id = ?
+        `)
+        .get(
+          Number(req.params.id),
+          req.session.user.id
+        );
 
     if (!order) {
-
       return res.status(404).json({
         success: false,
         message:
@@ -1138,21 +961,331 @@ app.post(
       });
     }
 
+    if (
+      order.payment_method !==
+      "binance"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "This order is not a Binance order."
+      });
+    }
+
     db.prepare(`
       UPDATE orders
       SET
         binance_txid = ?,
-        payment_status = 'verification_pending'
+        payment_status = 'payment_submitted'
       WHERE id = ?
     `).run(
       txid,
-      id
+      order.id
     );
 
     res.json({
       success: true,
       message:
         "Transaction submitted for admin verification."
+    });
+  }
+);
+
+/* =========================================================
+   ADMIN DASHBOARD
+========================================================= */
+
+app.get(
+  "/api/admin/stats",
+  requireAdmin,
+  (req, res) => {
+    const users =
+      db
+        .prepare(
+          "SELECT COUNT(*) AS count FROM users WHERE is_admin = 0"
+        )
+        .get().count;
+
+    const products =
+      db
+        .prepare(
+          "SELECT COUNT(*) AS count FROM products WHERE active = 1"
+        )
+        .get().count;
+
+    const orders =
+      db
+        .prepare(
+          "SELECT COUNT(*) AS count FROM orders"
+        )
+        .get().count;
+
+    const paid =
+      db
+        .prepare(`
+          SELECT COUNT(*) AS count
+          FROM orders
+          WHERE payment_status = 'paid'
+        `)
+        .get().count;
+
+    const revenue =
+      db
+        .prepare(`
+          SELECT
+            COALESCE(
+              SUM(amount_kes),
+              0
+            ) AS total
+          FROM orders
+          WHERE payment_status = 'paid'
+        `)
+        .get().total;
+
+    res.json({
+      success: true,
+      stats: {
+        users,
+        products,
+        orders,
+        paid,
+        revenue
+      }
+    });
+  }
+);
+
+/* =========================================================
+   ADMIN USERS
+========================================================= */
+
+app.get(
+  "/api/admin/users",
+  requireAdmin,
+  (req, res) => {
+    const users =
+      db
+        .prepare(`
+          SELECT
+            id,
+            name,
+            email,
+            is_admin,
+            created_at
+          FROM users
+          ORDER BY id DESC
+        `)
+        .all();
+
+    res.json({
+      success: true,
+      users
+    });
+  }
+);
+
+/* =========================================================
+   ADMIN PRODUCTS
+========================================================= */
+
+app.get(
+  "/api/admin/products",
+  requireAdmin,
+  (req, res) => {
+    const products =
+      db
+        .prepare(`
+          SELECT *
+          FROM products
+          ORDER BY id DESC
+        `)
+        .all();
+
+    res.json({
+      success: true,
+      products
+    });
+  }
+);
+
+app.post(
+  "/api/admin/products",
+  requireAdmin,
+  upload.single("image"),
+  (req, res) => {
+    try {
+      const name =
+        cleanText(
+          req.body.name
+        );
+
+      const description =
+        cleanText(
+          req.body.description
+        );
+
+      const deliveryContent =
+        String(
+          req.body.delivery_content ||
+            ""
+        );
+
+      const priceKes =
+        Number(
+          req.body.price_kes
+        );
+
+      const binancePrice =
+        Number(
+          req.body.binance_price ||
+            0
+        );
+
+      if (!name) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Product name is required."
+        });
+      }
+
+      if (
+        !Number.isFinite(
+          priceKes
+        ) ||
+        priceKes <= 0
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Enter a valid KSh price."
+        });
+      }
+
+      let imageUrl = "";
+
+      if (req.file) {
+        imageUrl =
+          "/uploads/products/" +
+          req.file.filename;
+      }
+
+      const result =
+        db
+          .prepare(`
+            INSERT INTO products (
+              name,
+              description,
+              price_kes,
+              binance_price,
+              delivery_content,
+              image_url,
+              active
+            )
+            VALUES (?,?,?,?,?,?,1)
+          `)
+          .run(
+            name,
+            description,
+            priceKes,
+            binancePrice,
+            deliveryContent,
+            imageUrl
+          );
+
+      res.json({
+        success: true,
+        product:
+          db
+            .prepare(
+              "SELECT * FROM products WHERE id = ?"
+            )
+            .get(
+              result.lastInsertRowid
+            )
+      });
+    } catch (error) {
+      console.error(
+        "PRODUCT ERROR:",
+        error
+      );
+
+      res.status(500).json({
+        success: false,
+        message:
+          error.message ||
+          "Product creation failed."
+      });
+    }
+  }
+);
+
+app.post(
+  "/api/admin/products/:id/toggle",
+  requireAdmin,
+  (req, res) => {
+    const product =
+      db
+        .prepare(
+          "SELECT * FROM products WHERE id = ?"
+        )
+        .get(
+          Number(req.params.id)
+        );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Product not found."
+      });
+    }
+
+    db.prepare(`
+      UPDATE products
+      SET active = ?
+      WHERE id = ?
+    `).run(
+      product.active ? 0 : 1,
+      product.id
+    );
+
+    res.json({
+      success: true
+    });
+  }
+);
+
+app.delete(
+  "/api/admin/products/:id",
+  requireAdmin,
+  (req, res) => {
+    const product =
+      db
+        .prepare(
+          "SELECT * FROM products WHERE id = ?"
+        )
+        .get(
+          Number(req.params.id)
+        );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Product not found."
+      });
+    }
+
+    db.prepare(`
+      DELETE FROM products
+      WHERE id = ?
+    `).run(
+      product.id
+    );
+
+    res.json({
+      success: true
     });
   }
 );
@@ -1165,21 +1298,22 @@ app.get(
   "/api/admin/orders",
   requireAdmin,
   (req, res) => {
-
     const orders =
-      db.prepare(`
-        SELECT
-          o.*,
-          u.name AS customer_name,
-          u.email AS customer_email,
-          p.name AS product_name
-        FROM orders o
-        LEFT JOIN users u
-          ON u.id = o.user_id
-        LEFT JOIN products p
-          ON p.id = o.product_id
-        ORDER BY o.id DESC
-      `).all();
+      db
+        .prepare(`
+          SELECT
+            o.*,
+            u.name AS customer_name,
+            u.email AS customer_email,
+            p.name AS product_name
+          FROM orders o
+          LEFT JOIN users u
+            ON u.id = o.user_id
+          LEFT JOIN products p
+            ON p.id = o.product_id
+          ORDER BY o.id DESC
+        `)
+        .all();
 
     res.json({
       success: true,
@@ -1189,29 +1323,23 @@ app.get(
 );
 
 /* =========================================================
-   ADMIN VERIFY BINANCE
+   ADMIN BINANCE VERIFY
 ========================================================= */
 
 app.post(
-  "/api/admin/orders/:id/binance-verify",
+  "/api/admin/orders/:id/verify-binance",
   requireAdmin,
   (req, res) => {
-
-    const id =
-      Number(req.params.id);
-
-    const approved =
-      Boolean(
-        req.body.approved
-      );
-
     const order =
-      db.prepare(
-        "SELECT * FROM orders WHERE id = ?"
-      ).get(id);
+      db
+        .prepare(
+          "SELECT * FROM orders WHERE id = ?"
+        )
+        .get(
+          Number(req.params.id)
+        );
 
     if (!order) {
-
       return res.status(404).json({
         success: false,
         message:
@@ -1219,27 +1347,92 @@ app.post(
       });
     }
 
-    if (approved) {
+    db.prepare(`
+      UPDATE orders
+      SET
+        binance_verified = 1,
+        payment_status = 'paid',
+        paid_at = ?
+      WHERE id = ?
+    `).run(
+      now(),
+      order.id
+    );
 
-      db.prepare(`
-        UPDATE orders
-        SET
-          binance_verified = 1,
-          payment_status = 'paid',
-          paid_at = CURRENT_TIMESTAMP
-        WHERE id = ?
-      `).run(id);
+    res.json({
+      success: true,
+      message:
+        "Binance payment marked as paid."
+    });
+  }
+);
 
-    } else {
+/* =========================================================
+   ADMIN MARK PAYMENT
+========================================================= */
 
-      db.prepare(`
-        UPDATE orders
-        SET
-          binance_verified = 0,
-          payment_status = 'rejected'
-        WHERE id = ?
-      `).run(id);
+app.post(
+  "/api/admin/orders/:id/payment",
+  requireAdmin,
+  (req, res) => {
+    const status =
+      cleanText(
+        req.body.status
+      );
+
+    const allowed = [
+      "pending",
+      "payment_submitted",
+      "paid",
+      "failed",
+      "cancelled"
+    ];
+
+    if (
+      !allowed.includes(
+        status
+      )
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Invalid payment status."
+      });
     }
+
+    const order =
+      db
+        .prepare(
+          "SELECT * FROM orders WHERE id = ?"
+        )
+        .get(
+          Number(req.params.id)
+        );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Order not found."
+      });
+    }
+
+    db.prepare(`
+      UPDATE orders
+      SET
+        payment_status = ?,
+        paid_at = CASE
+          WHEN ? = 'paid'
+          THEN ?
+          ELSE paid_at
+        END
+      WHERE id = ?
+    `).run(
+      status,
+      status,
+      now(),
+      order.id
+    );
 
     res.json({
       success: true
@@ -1248,39 +1441,35 @@ app.post(
 );
 
 /* =========================================================
-   ADMIN DELIVERY UPDATE
+   ADMIN DELIVERY
 ========================================================= */
 
 app.post(
   "/api/admin/orders/:id/delivery",
   requireAdmin,
   (req, res) => {
-
-    const id =
-      Number(req.params.id);
-
     const status =
-      String(
-        req.body.status || ""
-      ).trim();
+      cleanText(
+        req.body.status
+      );
 
     const notes =
-      String(
-        req.body.notes || ""
-      ).trim();
+      cleanText(
+        req.body.notes
+      );
 
-    const allowed =
-      [
-        "pending",
-        "processing",
-        "delivered",
-        "cancelled"
-      ];
+    const allowed = [
+      "pending",
+      "processing",
+      "delivered",
+      "cancelled"
+    ];
 
     if (
-      !allowed.includes(status)
+      !allowed.includes(
+        status
+      )
     ) {
-
       return res.status(400).json({
         success: false,
         message:
@@ -1288,37 +1477,41 @@ app.post(
       });
     }
 
-    if (
-      status === "delivered"
-    ) {
+    const order =
+      db
+        .prepare(
+          "SELECT * FROM orders WHERE id = ?"
+        )
+        .get(
+          Number(req.params.id)
+        );
 
-      db.prepare(`
-        UPDATE orders
-        SET
-          delivery_status = ?,
-          delivery_notes = ?,
-          delivered_at = CURRENT_TIMESTAMP
-        WHERE id = ?
-      `).run(
-        status,
-        notes,
-        id
-      );
-
-    } else {
-
-      db.prepare(`
-        UPDATE orders
-        SET
-          delivery_status = ?,
-          delivery_notes = ?
-        WHERE id = ?
-      `).run(
-        status,
-        notes,
-        id
-      );
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message:
+          "Order not found."
+      });
     }
+
+    db.prepare(`
+      UPDATE orders
+      SET
+        delivery_status = ?,
+        delivery_notes = ?,
+        delivered_at = CASE
+          WHEN ? = 'delivered'
+          THEN ?
+          ELSE delivered_at
+        END
+      WHERE id = ?
+    `).run(
+      status,
+      notes,
+      status,
+      now(),
+      order.id
+    );
 
     res.json({
       success: true
@@ -1327,45 +1520,45 @@ app.post(
 );
 
 /* =========================================================
-   M-PESA CONFIG
+   MPESA
 ========================================================= */
 
-function mpesaConfigured() {
-
-  return Boolean(
-    process.env.MPESA_CONSUMER_KEY &&
-    process.env.MPESA_CONSUMER_SECRET &&
-    process.env.MPESA_SHORTCODE &&
-    process.env.MPESA_PASSKEY &&
-    process.env.MPESA_CALLBACK_URL
-  );
+function mpesaBaseUrl() {
+  return (
+    process.env.MPESA_ENV ===
+    "production"
+  )
+    ? "https://api.safaricom.co.ke"
+    : "https://sandbox.safaricom.co.ke";
 }
 
-/* =========================================================
-   M-PESA TOKEN
-========================================================= */
-
 async function getMpesaToken() {
+  const key =
+    process.env.MPESA_CONSUMER_KEY;
 
-  const url =
-    process.env.MPESA_ENV === "production"
-      ? "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-      : "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
+  const secret =
+    process.env.MPESA_CONSUMER_SECRET;
+
+  if (!key || !secret) {
+    throw new Error(
+      "M-Pesa credentials are not configured."
+    );
+  }
 
   const auth =
     Buffer.from(
-      process.env.MPESA_CONSUMER_KEY +
-      ":" +
-      process.env.MPESA_CONSUMER_SECRET
-    ).toString("base64");
+      `${key}:${secret}`
+    ).toString(
+      "base64"
+    );
 
   const response =
     await axios.get(
-      url,
+      `${mpesaBaseUrl()}/oauth/v1/generate?grant_type=client_credentials`,
       {
         headers: {
           Authorization:
-            "Basic " + auth
+            `Basic ${auth}`
         }
       }
     );
@@ -1373,56 +1566,55 @@ async function getMpesaToken() {
   return response.data.access_token;
 }
 
-/* =========================================================
-   M-PESA STK
-========================================================= */
+function mpesaTimestamp() {
+  const d = new Date();
+
+  const pad =
+    n =>
+      String(n).padStart(
+        2,
+        "0"
+      );
+
+  return (
+    d.getFullYear() +
+    pad(d.getMonth() + 1) +
+    pad(d.getDate()) +
+    pad(d.getHours()) +
+    pad(d.getMinutes()) +
+    pad(d.getSeconds())
+  );
+}
 
 app.post(
-  "/api/orders/:id/mpesa",
+  "/api/mpesa/stk",
   requireLogin,
   async (req, res) => {
-
     try {
-
-      if (!mpesaConfigured()) {
-
-        return res.status(503).json({
-          success: false,
-          message:
-            "M-Pesa is not configured yet."
-        });
-      }
-
-      const id =
-        Number(req.params.id);
-
-      const phone =
-        String(
-          req.body.phone || ""
-        ).trim();
-
-      if (!phone) {
-
-        return res.status(400).json({
-          success: false,
-          message:
-            "M-Pesa phone number is required."
-        });
-      }
-
-      const order =
-        db.prepare(`
-          SELECT *
-          FROM orders
-          WHERE id = ?
-          AND user_id = ?
-        `).get(
-          id,
-          req.session.user.id
+      const orderId =
+        Number(
+          req.body.order_id
         );
 
-      if (!order) {
+      const phone =
+        cleanText(
+          req.body.phone
+        );
 
+      const order =
+        db
+          .prepare(`
+            SELECT *
+            FROM orders
+            WHERE id = ?
+              AND user_id = ?
+          `)
+          .get(
+            orderId,
+            req.session.user.id
+          );
+
+      if (!order) {
         return res.status(404).json({
           success: false,
           message:
@@ -1430,42 +1622,74 @@ app.post(
         });
       }
 
+      if (
+        order.payment_method !==
+        "mpesa"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "This is not an M-Pesa order."
+        });
+      }
+
+      if (!phone) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Enter your M-Pesa phone number."
+        });
+      }
+
+      const shortcode =
+        process.env.MPESA_SHORTCODE;
+
+      const passkey =
+        process.env.MPESA_PASSKEY;
+
+      const callback =
+        process.env.MPESA_CALLBACK_URL;
+
+      if (
+        !shortcode ||
+        !passkey ||
+        !callback
+      ) {
+        return res.status(500).json({
+          success: false,
+          message:
+            "M-Pesa is not fully configured in Render."
+        });
+      }
+
       const token =
         await getMpesaToken();
 
       const timestamp =
-        new Date()
-          .toISOString()
-          .replace(
-            /\D/g,
-            ""
-          )
-          .slice(
-            0,
-            14
-          );
+        mpesaTimestamp();
 
       const password =
         Buffer.from(
-          process.env.MPESA_SHORTCODE +
-          process.env.MPESA_PASSKEY +
+          shortcode +
+          passkey +
           timestamp
         ).toString(
           "base64"
         );
 
-      const baseUrl =
-        process.env.MPESA_ENV === "production"
-          ? "https://api.safaricom.co.ke"
-          : "https://sandbox.safaricom.co.ke";
+      const amount =
+        Math.round(
+          Number(
+            order.amount_kes
+          )
+        );
 
       const response =
         await axios.post(
-          baseUrl +
-            "/mpesa/stkpush/v1/processrequest",
+          `${mpesaBaseUrl()}/mpesa/stkpush/v1/processrequest`,
           {
             BusinessShortCode:
-              process.env.MPESA_SHORTCODE,
+              shortcode,
 
             Password:
               password,
@@ -1477,73 +1701,60 @@ app.post(
               "CustomerPayBillOnline",
 
             Amount:
-              Math.max(
-                1,
-                Math.round(
-                  Number(
-                    order.amount_kes
-                  )
-                )
-              ),
+              amount,
 
             PartyA:
               phone,
 
             PartyB:
-              process.env.MPESA_SHORTCODE,
+              shortcode,
 
             PhoneNumber:
               phone,
 
             CallBackURL:
-              process.env.MPESA_CALLBACK_URL,
+              callback,
 
             AccountReference:
               order.order_number,
 
             TransactionDesc:
-              "DARK WEB purchase"
+              `DARK WEB ${order.order_number}`
           },
           {
             headers: {
               Authorization:
-                "Bearer " + token
+                `Bearer ${token}`
             }
           }
         );
 
-      const data =
-        response.data;
-
       db.prepare(`
         UPDATE orders
         SET
-          phone = ?,
           checkout_request_id = ?,
           merchant_request_id = ?,
-          payment_status = 'stk_sent'
+          phone = ?,
+          payment_status = 'payment_submitted'
         WHERE id = ?
       `).run(
+        response.data.CheckoutRequestID ||
+          "",
+        response.data.MerchantRequestID ||
+          "",
         phone,
-        data.CheckoutRequestID ||
-          "",
-        data.MerchantRequestID ||
-          "",
-        id
+        order.id
       );
 
       res.json({
         success: true,
         message:
-          data.CustomerMessage ||
-          "STK Push sent to your phone.",
-        data
+          response.data.CustomerMessage ||
+          "Check your phone for the M-Pesa payment prompt."
       });
-
     } catch (error) {
-
       console.error(
-        "MPESA ERROR:",
+        "MPESA STK ERROR:",
         error.response?.data ||
           error.message
       );
@@ -1551,6 +1762,7 @@ app.post(
       res.status(500).json({
         success: false,
         message:
+          error.response?.data?.errorMessage ||
           "Could not start M-Pesa payment."
       });
     }
@@ -1558,71 +1770,69 @@ app.post(
 );
 
 /* =========================================================
-   M-PESA CALLBACK
+   MPESA CALLBACK
 ========================================================= */
 
 app.post(
   "/api/mpesa/callback",
   (req, res) => {
-
     try {
-
-      const body =
+      const callback =
         req.body?.Body?.stkCallback;
 
-      if (!body) {
-
+      if (!callback) {
         return res.json({
           ResultCode: 0,
-          ResultDesc: "Accepted"
+          ResultDesc:
+            "Accepted"
         });
       }
 
-      const checkoutRequestId =
-        body.CheckoutRequestID;
+      const checkoutId =
+        callback.CheckoutRequestID;
 
       const resultCode =
         Number(
-          body.ResultCode
+          callback.ResultCode
         );
 
       const order =
-        db.prepare(`
-          SELECT *
-          FROM orders
-          WHERE checkout_request_id = ?
-        `).get(
-          checkoutRequestId
-        );
+        db
+          .prepare(`
+            SELECT *
+            FROM orders
+            WHERE checkout_request_id = ?
+          `)
+          .get(
+            checkoutId
+          );
 
       if (!order) {
-
         return res.json({
           ResultCode: 0,
-          ResultDesc: "Accepted"
+          ResultDesc:
+            "Accepted"
         });
       }
 
-      if (resultCode === 0) {
-
+      if (
+        resultCode === 0
+      ) {
         const metadata =
-          body.CallbackMetadata?.Item ||
-          [];
+          callback.CallbackMetadata
+            ?.Item || [];
 
         let receipt = "";
 
         for (
-          const item
-          of metadata
+          const item of metadata
         ) {
-
           if (
             item.Name ===
             "MpesaReceiptNumber"
           ) {
             receipt =
-              item.Value ||
-              "";
+              item.Value || "";
           }
         }
 
@@ -1631,15 +1841,14 @@ app.post(
           SET
             payment_status = 'paid',
             mpesa_receipt = ?,
-            paid_at = CURRENT_TIMESTAMP
+            paid_at = ?
           WHERE id = ?
         `).run(
           receipt,
+          now(),
           order.id
         );
-
       } else {
-
         db.prepare(`
           UPDATE orders
           SET
@@ -1650,13 +1859,12 @@ app.post(
         );
       }
 
-      res.json({
+      return res.json({
         ResultCode: 0,
-        ResultDesc: "Accepted"
+        ResultDesc:
+          "Accepted"
       });
-
     } catch (error) {
-
       console.error(
         "MPESA CALLBACK ERROR:",
         error
@@ -1664,7 +1872,8 @@ app.post(
 
       res.json({
         ResultCode: 0,
-        ResultDesc: "Accepted"
+        ResultDesc:
+          "Accepted"
       });
     }
   }
@@ -1677,25 +1886,23 @@ app.post(
 app.get(
   "/api/health",
   (req, res) => {
-
     res.json({
       success: true,
       status: "online",
-      app: "DARK WEB STORE",
-      time:
-        new Date().toISOString()
+      service:
+        "DARK WEB STORE",
+      time: now()
     });
   }
 );
 
 /* =========================================================
-   FRONTEND FALLBACK
+   SPA FALLBACK - EXPRESS 5
 ========================================================= */
 
 app.get(
   "*splat",
   (req, res) => {
-
     res.sendFile(
       path.join(
         PUBLIC_DIR,
@@ -1716,7 +1923,6 @@ app.use(
     res,
     next
   ) => {
-
     console.error(
       "SERVER ERROR:",
       error
@@ -1738,7 +1944,6 @@ app.use(
 app.listen(
   PORT,
   () => {
-
     console.log(
       "======================================"
     );
@@ -1755,6 +1960,12 @@ app.listen(
     console.log(
       "ADMIN:",
       adminEmail
+    );
+
+    console.log(
+      "WHATSAPP:",
+      process.env.SUPPORT_WHATSAPP ||
+        "254781601410"
     );
 
     console.log(
