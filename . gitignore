@@ -5,7 +5,3 @@ darkweb.db-shm
 darkweb.db-wal
 
 public/uploads/products/*
-!public/uploads/products/.gitkeep
-
-npm-debug.log*
-.DS_Store
