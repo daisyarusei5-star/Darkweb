@@ -1,3 +1,13 @@
+"use strict";
+
+/* =========================================================
+   DARK WEB STORE
+   Complete Express + SQLite Backend
+   Paystack + Binance Pay
+   Admin Users + Orders + Products
+   WhatsApp Support
+   ========================================================= */
+
 require("dotenv").config();
 
 const express = require("express");
@@ -10,11 +20,16 @@ const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
 
+/* =========================================================
+   APP CONFIG
+   ========================================================= */
+
 const app = express();
 
-const PORT = process.env.PORT || 3000;
-const ROOT = __dirname;
-const PUBLIC_DIR = path.join(ROOT, "public");
+const PORT = Number(process.env.PORT || 3000);
+
+const PUBLIC_DIR = path.join(__dirname, "public");
+
 const UPLOAD_DIR = path.join(
   PUBLIC_DIR,
   "uploads",
@@ -25,20 +40,338 @@ fs.mkdirSync(UPLOAD_DIR, {
   recursive: true
 });
 
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.set("trust proxy", 1);
+
+/* =========================================================
+   ENVIRONMENT
+   ========================================================= */
+
+const ADMIN_EMAIL = String(
+  process.env.ADMIN_EMAIL ||
+  "admin@example.com"
+)
+  .trim()
+  .toLowerCase();
+
+const ADMIN_PASSWORD = String(
+  process.env.ADMIN_PASSWORD ||
+  "ChangeMe123!"
+);
+
+const SESSION_SECRET = String(
+  process.env.SESSION_SECRET ||
+  "CHANGE_THIS_SESSION_SECRET"
+);
+
+const PUBLIC_BASE_URL = String(
+  process.env.PUBLIC_BASE_URL ||
+  ""
+)
+  .trim()
+  .replace(/\/+$/, "");
+
+const SUPPORT_WHATSAPP = String(
+  process.env.SUPPORT_WHATSAPP ||
+  "254781601410"
+)
+  .replace(/\D/g, "");
+
+const PAYSTACK_SECRET_KEY = String(
+  process.env.PAYSTACK_SECRET_KEY ||
+  ""
+).trim();
+
+const PAYSTACK_CURRENCY = String(
+  process.env.PAYSTACK_CURRENCY ||
+  "KES"
+)
+  .trim()
+  .toUpperCase();
+
+const PAYSTACK_CHANNELS = String(
+  process.env.PAYSTACK_CHANNELS ||
+  ""
+)
+  .split(",")
+  .map(x => x.trim())
+  .filter(Boolean);
+
+const BINANCE_API_KEY = String(
+  process.env.BINANCE_PAY_API_KEY ||
+  ""
+).trim();
+
+const BINANCE_SECRET_KEY = String(
+  process.env.BINANCE_PAY_SECRET_KEY ||
+  ""
+).trim();
+
+const BINANCE_CURRENCY = String(
+  process.env.BINANCE_PAY_CURRENCY ||
+  "USDT"
+)
+  .trim()
+  .toUpperCase();
+
+const BINANCE_BASE_URL = String(
+  process.env.BINANCE_PAY_BASE_URL ||
+  "https://bpay.binanceapi.com"
+)
+  .trim()
+  .replace(/\/+$/, "");
+
+const DB_PATH = String(
+  process.env.DB_PATH ||
+  path.join(__dirname, "darkweb.db")
+);
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+if (ADMIN_PASSWORD.length < 6) {
+  throw new Error(
+    "ADMIN_PASSWORD must contain at least 6 characters."
+  );
+}
+
+/* =========================================================
+   DATABASE
+   ========================================================= */
+
+const db = new Database(DB_PATH);
+
+db.pragma("journal_mode = WAL");
+db.pragma("foreign_keys = ON");
+
+/* =========================================================
+   DATABASE HELPERS
+   ========================================================= */
+
+function addColumnIfMissing(
+  table,
+  column,
+  definition
+) {
+  const columns = db
+    .prepare(`PRAGMA table_info(${table})`)
+    .all();
+
+  const exists = columns.some(
+    c => c.name === column
+  );
+
+  if (!exists) {
+    db.exec(
+      `ALTER TABLE ${table}
+       ADD COLUMN ${column} ${definition}`
+    );
+  }
+}
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+
+db.exec(`
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    is_admin INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT DEFAULT '',
+    price_kes REAL NOT NULL DEFAULT 0,
+    binance_price REAL DEFAULT 0,
+    delivery_content TEXT DEFAULT '',
+    image_url TEXT DEFAULT '',
+    active INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    order_number TEXT NOT NULL UNIQUE,
+
+    user_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+
+    amount_kes REAL NOT NULL DEFAULT 0,
+    amount_crypto REAL DEFAULT 0,
+
+    payment_method TEXT NOT NULL DEFAULT '',
+    payment_status TEXT NOT NULL DEFAULT 'pending',
+
+    delivery_method TEXT NOT NULL DEFAULT 'email',
+    delivery_target TEXT NOT NULL DEFAULT '',
+    phone TEXT DEFAULT '',
+
+    paystack_reference TEXT DEFAULT '',
+    paystack_transaction_id TEXT DEFAULT '',
+    paystack_receipt TEXT DEFAULT '',
+
+    binance_merchant_trade_no TEXT DEFAULT '',
+    binance_prepay_id TEXT DEFAULT '',
+    binance_transaction_id TEXT DEFAULT '',
+
+    delivery_status TEXT NOT NULL DEFAULT 'pending',
+    delivery_notes TEXT DEFAULT '',
+
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    paid_at TEXT DEFAULT '',
+    delivered_at TEXT DEFAULT '',
+
+    FOREIGN KEY(user_id)
+      REFERENCES users(id),
+
+    FOREIGN KEY(product_id)
+      REFERENCES products(id)
+  );
+`);
+
+/* =========================================================
+   OLD DATABASE MIGRATIONS
+   ========================================================= */
+
+addColumnIfMissing(
+  "products",
+  "image_url",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "products",
+  "binance_price",
+  "REAL DEFAULT 0"
+);
+
+addColumnIfMissing(
+  "orders",
+  "paystack_reference",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "orders",
+  "paystack_transaction_id",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "orders",
+  "paystack_receipt",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "orders",
+  "binance_merchant_trade_no",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "orders",
+  "binance_prepay_id",
+  "TEXT DEFAULT ''"
+);
+
+addColumnIfMissing(
+  "orders",
+  "binance_transaction_id",
+  "TEXT DEFAULT ''"
+);
+
+/* =========================================================
+   ADMIN ACCOUNT
+   ========================================================= */
+
+const adminHash = bcrypt.hashSync(
+  ADMIN_PASSWORD,
+  12
+);
+
+const existingAdmin = db
+  .prepare(
+    `SELECT *
+     FROM users
+     WHERE email = ?`
+  )
+  .get(ADMIN_EMAIL);
+
+if (!existingAdmin) {
+  db.prepare(`
+    INSERT INTO users
+      (name, email, password_hash, is_admin)
+    VALUES
+      (?, ?, ?, 1)
+  `).run(
+    "Administrator",
+    ADMIN_EMAIL,
+    adminHash
+  );
+
+  console.log(
+    "ADMIN CREATED:",
+    ADMIN_EMAIL
+  );
+} else {
+  db.prepare(`
+    UPDATE users
+    SET
+      password_hash = ?,
+      is_admin = 1,
+      name = 'Administrator'
+    WHERE email = ?
+  `).run(
+    adminHash,
+    ADMIN_EMAIL
+  );
+
+  console.log(
+    "ADMIN UPDATED:",
+    ADMIN_EMAIL
+  );
+}
+
+/* =========================================================
+   EXPRESS MIDDLEWARE
+   ========================================================= */
+
+app.use(
+  express.json({
+    limit: "2mb",
+
+    verify: (
+      req,
+      res,
+      buffer
+    ) => {
+      req.rawBody = Buffer.from(buffer);
+    }
+  })
+);
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: "2mb"
+  })
+);
 
 /* =========================================================
    SESSION
-========================================================= */
-
-app.set("trust proxy", 1);
+   ========================================================= */
 
 app.use(
   session({
-    secret:
-      process.env.SESSION_SECRET ||
-      "CHANGE_THIS_SESSION_SECRET",
+    secret: SESSION_SECRET,
 
     resave: false,
 
@@ -46,9 +379,13 @@ app.use(
 
     cookie: {
       httpOnly: true,
+
       sameSite: "lax",
+
       secure:
-        process.env.NODE_ENV === "production",
+        process.env.NODE_ENV ===
+        "production",
+
       maxAge:
         1000 *
         60 *
@@ -61,12 +398,15 @@ app.use(
 
 /* =========================================================
    STATIC FILES
-========================================================= */
+   ========================================================= */
 
 app.use(
   "/uploads",
   express.static(
-    path.join(PUBLIC_DIR, "uploads")
+    path.join(
+      PUBLIC_DIR,
+      "uploads"
+    )
   )
 );
 
@@ -75,193 +415,8 @@ app.use(
 );
 
 /* =========================================================
-   DATABASE
-========================================================= */
-
-const DB_PATH =
-  process.env.DB_PATH ||
-  path.join(ROOT, "darkweb.db");
-
-const db = new Database(DB_PATH);
-
-db.pragma("journal_mode = WAL");
-
-db.exec(`
-CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,
-  is_admin INTEGER NOT NULL DEFAULT 0,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS products (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  description TEXT DEFAULT '',
-  price_kes REAL NOT NULL DEFAULT 0,
-  binance_price REAL NOT NULL DEFAULT 0,
-  delivery_content TEXT DEFAULT '',
-  image_url TEXT DEFAULT '',
-  active INTEGER NOT NULL DEFAULT 1,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS orders (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  order_number TEXT NOT NULL UNIQUE,
-
-  user_id INTEGER NOT NULL,
-  product_id INTEGER NOT NULL,
-
-  amount_kes REAL NOT NULL DEFAULT 0,
-  amount_crypto REAL NOT NULL DEFAULT 0,
-
-  payment_method TEXT NOT NULL,
-  payment_status TEXT NOT NULL DEFAULT 'pending',
-
-  delivery_method TEXT DEFAULT 'email',
-  delivery_target TEXT DEFAULT '',
-
-  phone TEXT DEFAULT '',
-
-  binance_txid TEXT DEFAULT '',
-  binance_verified INTEGER NOT NULL DEFAULT 0,
-
-  checkout_request_id TEXT DEFAULT '',
-  merchant_request_id TEXT DEFAULT '',
-  mpesa_receipt TEXT DEFAULT '',
-
-  delivery_status TEXT NOT NULL DEFAULT 'pending',
-  delivery_notes TEXT DEFAULT '',
-
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  paid_at TEXT DEFAULT '',
-  delivered_at TEXT DEFAULT ''
-);
-`);
-
-/* =========================================================
-   SAFE MIGRATIONS
-========================================================= */
-
-function addColumnIfMissing(
-  table,
-  column,
-  definition
-) {
-  try {
-    db.exec(
-      `ALTER TABLE ${table}
-       ADD COLUMN ${column} ${definition}`
-    );
-  } catch (error) {
-    if (
-      !String(error.message).includes(
-        "duplicate column"
-      )
-    ) {
-      console.log(
-        "Migration:",
-        error.message
-      );
-    }
-  }
-}
-
-addColumnIfMissing(
-  "products",
-  "image_url",
-  "TEXT DEFAULT ''"
-);
-
-addColumnIfMissing(
-  "orders",
-  "delivery_notes",
-  "TEXT DEFAULT ''"
-);
-
-addColumnIfMissing(
-  "orders",
-  "paid_at",
-  "TEXT DEFAULT ''"
-);
-
-addColumnIfMissing(
-  "orders",
-  "delivered_at",
-  "TEXT DEFAULT ''"
-);
-
-/* =========================================================
-   ADMIN
-========================================================= */
-
-const adminEmail = String(
-  process.env.ADMIN_EMAIL ||
-    "admin@example.com"
-)
-  .trim()
-  .toLowerCase();
-
-const adminPassword = String(
-  process.env.ADMIN_PASSWORD ||
-    "ChangeMe123!"
-);
-
-if (adminPassword.length < 6) {
-  throw new Error(
-    "ADMIN_PASSWORD must contain at least 6 characters."
-  );
-}
-
-const existingAdmin = db
-  .prepare(
-    "SELECT * FROM users WHERE email = ?"
-  )
-  .get(adminEmail);
-
-const adminHash =
-  bcrypt.hashSync(adminPassword, 12);
-
-if (!existingAdmin) {
-  db.prepare(`
-    INSERT INTO users
-    (name, email, password_hash, is_admin)
-    VALUES (?, ?, ?, 1)
-  `).run(
-    "Administrator",
-    adminEmail,
-    adminHash
-  );
-
-  console.log(
-    "ADMIN CREATED:",
-    adminEmail
-  );
-} else {
-  db.prepare(`
-    UPDATE users
-    SET
-      password_hash = ?,
-      is_admin = 1,
-      name = 'Administrator'
-    WHERE email = ?
-  `).run(
-    adminHash,
-    adminEmail
-  );
-
-  console.log(
-    "ADMIN UPDATED:",
-    adminEmail
-  );
-}
-
-/* =========================================================
-   HELPERS
-========================================================= */
+   GENERAL HELPERS
+   ========================================================= */
 
 function cleanEmail(email) {
   return String(email || "")
@@ -273,25 +428,68 @@ function cleanText(value) {
   return String(value || "").trim();
 }
 
-function makeOrderNumber() {
-  const date =
-    new Date()
-      .toISOString()
-      .replace(/\D/g, "")
-      .slice(0, 14);
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+    email
+  );
+}
 
-  const random =
+function isValidWhatsApp(value) {
+  return /^\d{9,15}$/.test(
+    String(value || "").replace(/\D/g, "")
+  );
+}
+
+function makeOrderNumber() {
+  return (
+    "DW" +
+    Date.now().toString() +
+    crypto
+      .randomBytes(4)
+      .toString("hex")
+      .toUpperCase()
+  );
+}
+
+function makeBinanceTradeNo() {
+  return (
+    "DW" +
+    Date.now().toString() +
     crypto
       .randomBytes(3)
       .toString("hex")
-      .toUpperCase();
-
-  return `DW-${date}-${random}`;
+      .toUpperCase()
+  ).slice(0, 32);
 }
 
-function now() {
-  return new Date().toISOString();
+function getBaseUrl(req) {
+  if (PUBLIC_BASE_URL) {
+    return PUBLIC_BASE_URL;
+  }
+
+  const protocol =
+    req.headers["x-forwarded-proto"] ||
+    req.protocol;
+
+  const host =
+    req.headers["x-forwarded-host"] ||
+    req.get("host");
+
+  return `${protocol}://${host}`;
 }
+
+function whatsappUrl(message = "") {
+  return (
+    "https://wa.me/" +
+    SUPPORT_WHATSAPP +
+    "?text=" +
+    encodeURIComponent(message)
+  );
+}
+
+/* =========================================================
+   AUTH MIDDLEWARE
+   ========================================================= */
 
 function requireLogin(
   req,
@@ -319,7 +517,7 @@ function requireAdmin(
   ) {
     return res.status(403).json({
       success: false,
-      message: "Admin access required."
+      message: "Administrator access required."
     });
   }
 
@@ -327,80 +525,137 @@ function requireAdmin(
 }
 
 /* =========================================================
-   IMAGE UPLOAD
-========================================================= */
+   CURRENT USER
+   ========================================================= */
 
-const storage =
-  multer.diskStorage({
-    destination: (
-      req,
-      file,
-      cb
-    ) => {
-      cb(null, UPLOAD_DIR);
-    },
-
-    filename: (
-      req,
-      file,
-      cb
-    ) => {
-      const ext =
-        path.extname(
-          file.originalname
-        ).toLowerCase();
-
-      const filename =
-        Date.now() +
-        "-" +
-        crypto
-          .randomBytes(5)
-          .toString("hex") +
-        ext;
-
-      cb(null, filename);
-    }
-  });
-
-const upload = multer({
-  storage,
-
-  limits: {
-    fileSize:
-      5 * 1024 * 1024
-  },
-
-  fileFilter: (
-    req,
-    file,
-    cb
-  ) => {
-    const allowed = [
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-      "image/gif"
-    ];
-
-    if (
-      allowed.includes(
-        file.mimetype
-      )
-    ) {
-      cb(null, true);
-    } else {
-      cb(
-        new Error(
-          "Only JPG, PNG, WEBP and GIF images are allowed."
-        )
-      );
-    }
-  }
-});
+function publicUser(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    is_admin: Number(user.is_admin)
+  };
+}
 
 /* =========================================================
-   AUTH
-========================================================= */
+   ORDER ACCESS
+   ========================================================= */
+
+function getOrderForUser(
+  orderNumber,
+  user
+) {
+  const order = db
+    .prepare(`
+      SELECT
+        o.*,
+
+        p.name AS product_name,
+        p.description AS product_description,
+        p.image_url AS product_image,
+        p.delivery_content AS product_delivery,
+
+        u.name AS buyer_name,
+        u.email AS buyer_email
+
+      FROM orders o
+
+      JOIN products p
+        ON p.id = o.product_id
+
+      JOIN users u
+        ON u.id = o.user_id
+
+      WHERE o.order_number = ?
+    `)
+    .get(orderNumber);
+
+  if (!order) {
+    return null;
+  }
+
+  if (
+    Number(user.is_admin) !== 1 &&
+    Number(order.user_id) !==
+      Number(user.id)
+  ) {
+    return null;
+  }
+
+  return order;
+}
+
+function publicOrder(order) {
+  const result = {
+    id: order.id,
+    order_number: order.order_number,
+
+    product_id: order.product_id,
+    product_name: order.product_name,
+    product_description:
+      order.product_description,
+    product_image:
+      order.product_image,
+
+    amount_kes: Number(
+      order.amount_kes
+    ),
+
+    amount_crypto:
+      Number(order.amount_crypto || 0),
+
+    payment_method:
+      order.payment_method,
+
+    payment_status:
+      order.payment_status,
+
+    delivery_method:
+      order.delivery_method,
+
+    delivery_target:
+      order.delivery_target,
+
+    phone:
+      order.phone,
+
+    delivery_status:
+      order.delivery_status,
+
+    delivery_notes:
+      order.delivery_notes,
+
+    created_at:
+      order.created_at,
+
+    paid_at:
+      order.paid_at,
+
+    delivered_at:
+      order.delivered_at
+  };
+
+  /*
+    Never expose the digital product content
+    until payment AND delivery are confirmed.
+  */
+
+  if (
+    order.payment_status === "paid" &&
+    order.delivery_status === "delivered"
+  ) {
+    result.delivery_content =
+      order.product_delivery || "";
+  } else {
+    result.delivery_content = "";
+  }
+
+  return result;
+}
+
+/* =========================================================
+   AUTH API
+   ========================================================= */
 
 app.post(
   "/api/register",
@@ -413,87 +668,79 @@ app.post(
         cleanEmail(req.body.email);
 
       const password =
-        String(
-          req.body.password || ""
-        );
+        String(req.body.password || "");
 
       if (
-        name.length < 2
-      ) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Please enter your name."
-        });
-      }
-
-      if (
-        !email.includes("@")
-      ) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Please enter a valid email."
-        });
-      }
-
-      if (
+        name.length < 2 ||
+        email.length < 5 ||
         password.length < 6
       ) {
         return res.status(400).json({
           success: false,
           message:
-            "Password must be at least 6 characters."
+            "Enter a valid name, email and password of at least 6 characters."
         });
       }
 
-      const exists =
-        db
-          .prepare(
-            "SELECT id FROM users WHERE email = ?"
-          )
-          .get(email);
+      if (!isValidEmail(email)) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Please enter a valid email address."
+        });
+      }
 
-      if (exists) {
+      const existing = db
+        .prepare(
+          `SELECT id
+           FROM users
+           WHERE email = ?`
+        )
+        .get(email);
+
+      if (existing) {
         return res.status(409).json({
           success: false,
           message:
-            "Email already registered."
+            "An account with this email already exists."
         });
       }
 
-      const hash =
+      const passwordHash =
         await bcrypt.hash(
           password,
           12
         );
 
-      const result =
-        db
-          .prepare(`
-            INSERT INTO users
-            (name,email,password_hash,is_admin)
-            VALUES (?,?,?,0)
-          `)
-          .run(
-            name,
-            email,
-            hash
-          );
+      const result = db
+        .prepare(`
+          INSERT INTO users
+            (name, email, password_hash)
+          VALUES
+            (?, ?, ?)
+        `)
+        .run(
+          name,
+          email,
+          passwordHash
+        );
 
-      const user = {
-        id: result.lastInsertRowid,
-        name,
-        email,
-        is_admin: 0
-      };
+      const user = db
+        .prepare(
+          `SELECT *
+           FROM users
+           WHERE id = ?`
+        )
+        .get(result.lastInsertRowid);
 
       req.session.user =
-        user;
+        publicUser(user);
 
-      res.json({
+      return res.json({
         success: true,
-        user
+        message:
+          "Account created successfully.",
+        user: publicUser(user)
       });
     } catch (error) {
       console.error(
@@ -501,7 +748,7 @@ app.post(
         error
       );
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message:
           "Registration failed."
@@ -509,6 +756,10 @@ app.post(
     }
   }
 );
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
 
 app.post(
   "/api/login",
@@ -518,27 +769,28 @@ app.post(
         cleanEmail(req.body.email);
 
       const password =
-        String(
-          req.body.password || ""
-        );
+        String(req.body.password || "");
 
-      console.log(
-        "LOGIN ATTEMPT:",
-        email
-      );
+      if (
+        !email ||
+        !password
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Email and password are required."
+        });
+      }
 
-      const user =
-        db
-          .prepare(
-            "SELECT * FROM users WHERE email = ?"
-          )
-          .get(email);
+      const user = db
+        .prepare(`
+          SELECT *
+          FROM users
+          WHERE email = ?
+        `)
+        .get(email);
 
       if (!user) {
-        console.log(
-          "LOGIN USER FOUND: false"
-        );
-
         return res.status(401).json({
           success: false,
           message:
@@ -552,11 +804,6 @@ app.post(
           user.password_hash
         );
 
-      console.log(
-        "LOGIN USER FOUND: true PASSWORD VALID:",
-        valid
-      );
-
       if (!valid) {
         return res.status(401).json({
           success: false,
@@ -565,17 +812,13 @@ app.post(
         });
       }
 
-      req.session.user = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        is_admin:
-          Number(user.is_admin)
-      };
+      req.session.user =
+        publicUser(user);
 
-      res.json({
+      return res.json({
         success: true,
-        user: req.session.user
+        message: "Login successful.",
+        user: publicUser(user)
       });
     } catch (error) {
       console.error(
@@ -583,7 +826,7 @@ app.post(
         error
       );
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message:
           "Login failed."
@@ -592,40 +835,56 @@ app.post(
   }
 );
 
+/* =========================================================
+   ME
+   ========================================================= */
+
 app.get(
   "/api/me",
   (req, res) => {
-    res.json({
+    if (!req.session.user) {
+      return res.json({
+        success: true,
+        authenticated: false,
+        user: null
+      });
+    }
+
+    return res.json({
       success: true,
-      user:
-        req.session.user ||
-        null
+      authenticated: true,
+      user: req.session.user
     });
   }
 );
 
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
 app.post(
   "/api/logout",
   (req, res) => {
-    req.session.destroy(
-      () => {
-        res.json({
-          success: true
-        });
-      }
-    );
+    req.session.destroy(() => {
+      res.clearCookie("connect.sid");
+
+      return res.json({
+        success: true,
+        message: "Logged out."
+      });
+    });
   }
 );
 
 /* =========================================================
    PUBLIC PRODUCTS
-========================================================= */
+   ========================================================= */
 
 app.get(
   "/api/products",
   (req, res) => {
-    const products =
-      db
+    try {
+      const products = db
         .prepare(`
           SELECT
             id,
@@ -636,123 +895,37 @@ app.get(
             image_url,
             active,
             created_at
+
           FROM products
+
           WHERE active = 1
+
           ORDER BY id DESC
         `)
         .all();
 
-    res.json({
-      success: true,
-      products
-    });
-  }
-);
+      return res.json({
+        success: true,
+        products
+      });
+    } catch (error) {
+      console.error(
+        "PRODUCT ERROR:",
+        error
+      );
 
-/* =========================================================
-   CUSTOMER ACCOUNT
-========================================================= */
-
-app.get(
-  "/api/account",
-  requireLogin,
-  (req, res) => {
-    const user =
-      db
-        .prepare(`
-          SELECT
-            id,
-            name,
-            email,
-            is_admin,
-            created_at
-          FROM users
-          WHERE id = ?
-        `)
-        .get(
-          req.session.user.id
-        );
-
-    res.json({
-      success: true,
-      user
-    });
-  }
-);
-
-/* =========================================================
-   CUSTOMER ORDERS
-========================================================= */
-
-app.get(
-  "/api/my-orders",
-  requireLogin,
-  (req, res) => {
-    const orders =
-      db
-        .prepare(`
-          SELECT
-            o.*,
-            p.name AS product_name,
-            p.description AS product_description
-          FROM orders o
-          LEFT JOIN products p
-            ON p.id = o.product_id
-          WHERE o.user_id = ?
-          ORDER BY o.id DESC
-        `)
-        .all(
-          req.session.user.id
-        );
-
-    res.json({
-      success: true,
-      orders
-    });
-  }
-);
-
-app.get(
-  "/api/orders/:id",
-  requireLogin,
-  (req, res) => {
-    const order =
-      db
-        .prepare(`
-          SELECT
-            o.*,
-            p.name AS product_name,
-            p.description AS product_description,
-            p.delivery_content
-          FROM orders o
-          LEFT JOIN products p
-            ON p.id = o.product_id
-          WHERE o.id = ?
-            AND o.user_id = ?
-        `)
-        .get(
-          Number(req.params.id),
-          req.session.user.id
-        );
-
-    if (!order) {
-      return res.status(404).json({
+      return res.status(500).json({
         success: false,
         message:
-          "Order not found."
+          "Unable to load products."
       });
     }
-
-    res.json({
-      success: true,
-      order
-    });
   }
 );
 
 /* =========================================================
    CREATE ORDER
-========================================================= */
+   ========================================================= */
 
 app.post(
   "/api/orders",
@@ -760,198 +933,271 @@ app.post(
   (req, res) => {
     try {
       const productId =
-        Number(
-          req.body.product_id
-        );
+        Number(req.body.productId);
 
-      const paymentMethod =
+      const deliveryMethod =
         cleanText(
-          req.body.payment_method
+          req.body.deliveryMethod
         ).toLowerCase();
 
       const deliveryTarget =
         cleanText(
-          req.body.delivery_target
+          req.body.deliveryTarget
         );
 
       const phone =
+        String(
+          req.body.phone || ""
+        ).replace(/\D/g, "");
+
+      const paymentMethod =
         cleanText(
-          req.body.phone
-        );
+          req.body.paymentMethod
+        ).toLowerCase();
 
-      const deliveryMethod =
-        cleanText(
-          req.body.delivery_method ||
-            "email"
-        );
-
-      const product =
-        db
-          .prepare(
-            "SELECT * FROM products WHERE id = ? AND active = 1"
-          )
-          .get(productId);
-
-      if (!product) {
-        return res.status(404).json({
+      if (
+        !Number.isInteger(productId) ||
+        productId <= 0
+      ) {
+        return res.status(400).json({
           success: false,
           message:
-            "Product not found."
+            "Invalid product."
         });
       }
 
       if (
-        ![
-          "mpesa",
-          "binance"
-        ].includes(
+        !["email", "whatsapp"].includes(
+          deliveryMethod
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Choose email or WhatsApp delivery."
+        });
+      }
+
+      if (
+        !["paystack", "binance"].includes(
           paymentMethod
         )
       ) {
         return res.status(400).json({
           success: false,
           message:
-            "Select a valid payment method."
+            "Choose Paystack or Binance Pay."
+        });
+      }
+
+      if (!deliveryTarget) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Delivery contact is required."
         });
       }
 
       if (
-        deliveryTarget.length < 3
+        deliveryMethod === "email" &&
+        !isValidEmail(deliveryTarget)
       ) {
         return res.status(400).json({
           success: false,
           message:
-            "Enter your delivery email/contact."
+            "Enter a valid delivery email."
         });
       }
 
-      const amountKes =
-        Number(
-          product.price_kes
-        );
+      if (
+        deliveryMethod === "whatsapp" &&
+        !isValidWhatsApp(
+          deliveryTarget
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Enter a valid WhatsApp number with country code."
+        });
+      }
 
-      const amountCrypto =
-        Number(
-          product.binance_price
-        );
+      const product = db
+        .prepare(`
+          SELECT *
+          FROM products
+          WHERE id = ?
+            AND active = 1
+        `)
+        .get(productId);
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Product is no longer available."
+        });
+      }
+
+      if (
+        paymentMethod === "binance" &&
+        Number(product.binance_price || 0) <= 0
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Binance payment is not configured for this product."
+        });
+      }
 
       const orderNumber =
         makeOrderNumber();
 
-      const result =
-        db
-          .prepare(`
-            INSERT INTO orders (
-              order_number,
-              user_id,
-              product_id,
-              amount_kes,
-              amount_crypto,
-              payment_method,
-              payment_status,
-              delivery_method,
-              delivery_target,
-              phone
-            )
-            VALUES (?,?,?,?,?,?,?,?,?,?)
-          `)
-          .run(
-            orderNumber,
-            req.session.user.id,
-            product.id,
-            amountKes,
-            amountCrypto,
-            paymentMethod,
-            "pending",
-            deliveryMethod,
-            deliveryTarget,
-            phone
-          );
+      const amountKes =
+        Number(product.price_kes);
+
+      const amountCrypto =
+        Number(
+          product.binance_price || 0
+        );
+
+      db.prepare(`
+        INSERT INTO orders
+        (
+          order_number,
+          user_id,
+          product_id,
+          amount_kes,
+          amount_crypto,
+          payment_method,
+          payment_status,
+          delivery_method,
+          delivery_target,
+          phone,
+          delivery_status
+        )
+
+        VALUES
+        (
+          ?, ?, ?, ?, ?, ?, 'pending',
+          ?, ?, ?, 'pending'
+        )
+      `).run(
+        orderNumber,
+        req.session.user.id,
+        product.id,
+        amountKes,
+        amountCrypto,
+        paymentMethod,
+        deliveryMethod,
+        deliveryTarget,
+        phone
+      );
 
       const order =
-        db
-          .prepare(
-            "SELECT * FROM orders WHERE id = ?"
-          )
-          .get(
-            result.lastInsertRowid
-          );
+        db.prepare(`
+          SELECT *
+          FROM orders
+          WHERE order_number = ?
+        `).get(orderNumber);
 
-      res.json({
+      return res.json({
         success: true,
-        order
+        message:
+          "Order created.",
+        order: {
+          order_number:
+            order.order_number,
+          amount_kes:
+            order.amount_kes,
+          amount_crypto:
+            order.amount_crypto,
+          payment_method:
+            order.payment_method
+        }
       });
     } catch (error) {
       console.error(
-        "CREATE ORDER ERROR:",
+        "ORDER CREATE ERROR:",
         error
       );
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message:
-          "Could not create order."
+          "Unable to create order."
       });
     }
   }
 );
 
 /* =========================================================
-   BINANCE INFO
-========================================================= */
+   CUSTOMER ORDERS
+   ========================================================= */
 
 app.get(
-  "/api/binance-info",
+  "/api/orders",
+  requireLogin,
   (req, res) => {
-    res.json({
-      success: true,
+    try {
+      const orders = db
+        .prepare(`
+          SELECT
+            o.*,
 
-      address:
-        process.env.BINANCE_USDT_ADDRESS ||
-        "",
+            p.name AS product_name,
+            p.description AS product_description,
+            p.image_url AS product_image,
+            p.delivery_content AS product_delivery
 
-      network:
-        process.env.BINANCE_NETWORK ||
-        "TRC20"
-    });
+          FROM orders o
+
+          JOIN products p
+            ON p.id = o.product_id
+
+          WHERE o.user_id = ?
+
+          ORDER BY o.id DESC
+        `)
+        .all(
+          req.session.user.id
+        );
+
+      return res.json({
+        success: true,
+        orders:
+          orders.map(
+            publicOrder
+          )
+      });
+    } catch (error) {
+      console.error(
+        "ORDERS ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Unable to load orders."
+      });
+    }
   }
 );
 
 /* =========================================================
-   BINANCE TXID
-========================================================= */
+   SINGLE CUSTOMER ORDER
+   ========================================================= */
 
-app.post(
-  "/api/orders/:id/binance-txid",
+app.get(
+  "/api/orders/:orderNumber",
   requireLogin,
   (req, res) => {
-    const txid =
-      cleanText(
-        req.body.txid
-      );
-
-    if (
-      txid.length < 8
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Enter a valid transaction hash."
-      });
-    }
-
     const order =
-      db
-        .prepare(`
-          SELECT *
-          FROM orders
-          WHERE id = ?
-            AND user_id = ?
-        `)
-        .get(
-          Number(req.params.id),
-          req.session.user.id
-        );
+      getOrderForUser(
+        req.params.orderNumber,
+        req.session.user
+      );
 
     if (!order) {
       return res.status(404).json({
@@ -961,152 +1207,1451 @@ app.post(
       });
     }
 
-    if (
-      order.payment_method !==
-      "binance"
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "This order is not a Binance order."
-      });
-    }
-
-    db.prepare(`
-      UPDATE orders
-      SET
-        binance_txid = ?,
-        payment_status = 'payment_submitted'
-      WHERE id = ?
-    `).run(
-      txid,
-      order.id
-    );
-
-    res.json({
+    return res.json({
       success: true,
-      message:
-        "Transaction submitted for admin verification."
+      order:
+        publicOrder(order)
     });
   }
 );
 
 /* =========================================================
-   ADMIN DASHBOARD
-========================================================= */
+   PAYSTACK HELPERS
+   ========================================================= */
+
+function requirePaystack() {
+  if (!PAYSTACK_SECRET_KEY) {
+    throw new Error(
+      "PAYSTACK_SECRET_KEY is not configured."
+    );
+  }
+}
+
+async function paystackRequest(
+  method,
+  endpoint,
+  data
+) {
+  requirePaystack();
+
+  const response =
+    await axios({
+      method,
+      url:
+        "https://api.paystack.co" +
+        endpoint,
+
+      data,
+
+      headers: {
+        Authorization:
+          `Bearer ${PAYSTACK_SECRET_KEY}`,
+
+        "Content-Type":
+          "application/json"
+      },
+
+      timeout: 30000
+    });
+
+  return response.data;
+}
+
+/* =========================================================
+   PAYSTACK INITIALIZE
+   ========================================================= */
+
+app.post(
+  "/api/paystack/init",
+  requireLogin,
+  async (req, res) => {
+    try {
+      requirePaystack();
+
+      const orderNumber =
+        cleanText(
+          req.body.orderNumber
+        );
+
+      const order =
+        getOrderForUser(
+          orderNumber,
+          req.session.user
+        );
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Order not found."
+        });
+      }
+
+      if (
+        order.payment_method !==
+        "paystack"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "This order is not a Paystack order."
+        });
+      }
+
+      if (
+        order.payment_status ===
+        "paid"
+      ) {
+        return res.json({
+          success: true,
+          paid: true,
+          message:
+            "This order has already been paid."
+        });
+      }
+
+      const reference =
+        order.order_number;
+
+      const baseUrl =
+        getBaseUrl(req);
+
+      const callbackUrl =
+        `${baseUrl}/?payment=paystack&reference=${encodeURIComponent(
+          reference
+        )}`;
+
+      const payload = {
+        email:
+          req.session.user.email,
+
+        amount: String(
+          Math.round(
+            Number(order.amount_kes) *
+              100
+          )
+        ),
+
+        currency:
+          PAYSTACK_CURRENCY,
+
+        reference,
+
+        callback_url:
+          callbackUrl,
+
+        metadata: JSON.stringify({
+          order_number:
+            order.order_number,
+
+          user_id:
+            req.session.user.id,
+
+          product_id:
+            order.product_id
+        })
+      };
+
+      if (
+        PAYSTACK_CHANNELS.length
+      ) {
+        payload.channels =
+          PAYSTACK_CHANNELS;
+      }
+
+      const result =
+        await paystackRequest(
+          "POST",
+          "/transaction/initialize",
+          payload
+        );
+
+      if (
+        !result ||
+        !result.status ||
+        !result.data
+      ) {
+        throw new Error(
+          result?.message ||
+            "Paystack initialization failed."
+        );
+      }
+
+      db.prepare(`
+        UPDATE orders
+
+        SET
+          paystack_reference = ?
+
+        WHERE order_number = ?
+      `).run(
+        result.data.reference ||
+          reference,
+
+        order.order_number
+      );
+
+      return res.json({
+        success: true,
+
+        authorization_url:
+          result.data
+            .authorization_url,
+
+        access_code:
+          result.data
+            .access_code,
+
+        reference:
+          result.data.reference ||
+          reference
+      });
+    } catch (error) {
+      console.error(
+        "PAYSTACK INIT ERROR:",
+        error.response?.data ||
+          error.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.response?.data?.message ||
+          error.message ||
+          "Paystack initialization failed."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   PAYSTACK VERIFY
+   ========================================================= */
+
+async function verifyPaystackPayment(
+  reference
+) {
+  const result =
+    await paystackRequest(
+      "GET",
+      `/transaction/verify/${encodeURIComponent(
+        reference
+      )}`
+    );
+
+  if (
+    !result ||
+    !result.status ||
+    !result.data
+  ) {
+    return {
+      paid: false,
+      data: null
+    };
+  }
+
+  const data =
+    result.data;
+
+  const order =
+    db.prepare(`
+      SELECT *
+      FROM orders
+      WHERE
+        order_number = ?
+        OR paystack_reference = ?
+    `).get(
+      reference,
+      reference
+    );
+
+  if (!order) {
+    return {
+      paid: false,
+      data
+    };
+  }
+
+  const expectedAmount =
+    Math.round(
+      Number(order.amount_kes) *
+        100
+    );
+
+  const receivedAmount =
+    Number(data.amount);
+
+  const currency =
+    String(
+      data.currency || ""
+    ).toUpperCase();
+
+  const successful =
+    String(data.status)
+      .toLowerCase() ===
+      "success";
+
+  const amountMatches =
+    receivedAmount ===
+    expectedAmount;
+
+  const currencyMatches =
+    currency ===
+    PAYSTACK_CURRENCY;
+
+  if (
+    successful &&
+    amountMatches &&
+    currencyMatches
+  ) {
+    db.prepare(`
+      UPDATE orders
+
+      SET
+        payment_status = 'paid',
+        paystack_reference = ?,
+        paystack_transaction_id = ?,
+        paystack_receipt = ?,
+        paid_at = COALESCE(
+          paid_at,
+          CURRENT_TIMESTAMP
+        )
+
+      WHERE id = ?
+    `).run(
+      data.reference ||
+        reference,
+
+      String(
+        data.id || ""
+      ),
+
+      String(
+        data.receipt_number ||
+          ""
+      ),
+
+      order.id
+    );
+
+    return {
+      paid: true,
+      data
+    };
+  }
+
+  return {
+    paid: false,
+    data
+  };
+}
 
 app.get(
-  "/api/admin/stats",
-  requireAdmin,
-  (req, res) => {
-    const users =
-      db
-        .prepare(
-          "SELECT COUNT(*) AS count FROM users WHERE is_admin = 0"
-        )
-        .get().count;
+  "/api/paystack/verify/:reference",
+  requireLogin,
+  async (req, res) => {
+    try {
+      const reference =
+        cleanText(
+          req.params.reference
+        );
 
-    const products =
-      db
-        .prepare(
-          "SELECT COUNT(*) AS count FROM products WHERE active = 1"
-        )
-        .get().count;
+      const order =
+        getOrderForUser(
+          reference,
+          req.session.user
+        );
 
-    const orders =
-      db
-        .prepare(
-          "SELECT COUNT(*) AS count FROM orders"
-        )
-        .get().count;
-
-    const paid =
-      db
-        .prepare(`
-          SELECT COUNT(*) AS count
-          FROM orders
-          WHERE payment_status = 'paid'
-        `)
-        .get().count;
-
-    const revenue =
-      db
-        .prepare(`
-          SELECT
-            COALESCE(
-              SUM(amount_kes),
-              0
-            ) AS total
-          FROM orders
-          WHERE payment_status = 'paid'
-        `)
-        .get().total;
-
-    res.json({
-      success: true,
-      stats: {
-        users,
-        products,
-        orders,
-        paid,
-        revenue
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Order not found."
+        });
       }
-    });
+
+      const result =
+        await verifyPaystackPayment(
+          reference
+        );
+
+      const updated =
+        db.prepare(`
+          SELECT *
+
+          FROM orders
+
+          WHERE id = ?
+        `).get(order.id);
+
+      return res.json({
+        success: true,
+
+        paid:
+          result.paid,
+
+        order:
+          publicOrder({
+            ...updated,
+
+            product_name:
+              order.product_name,
+
+            product_description:
+              order.product_description,
+
+            product_image:
+              order.product_image,
+
+            product_delivery:
+              order.product_delivery
+          })
+      });
+    } catch (error) {
+      console.error(
+        "PAYSTACK VERIFY ERROR:",
+        error.response?.data ||
+          error.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Unable to verify Paystack payment."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   PAYSTACK WEBHOOK
+   ========================================================= */
+
+function safeSignatureCompare(
+  received,
+  calculated
+) {
+  if (!received) {
+    return false;
+  }
+
+  const receivedBuffer =
+    Buffer.from(
+      String(received),
+      "utf8"
+    );
+
+  const calculatedBuffer =
+    Buffer.from(
+      String(calculated),
+      "utf8"
+    );
+
+  if (
+    receivedBuffer.length !==
+    calculatedBuffer.length
+  ) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(
+    receivedBuffer,
+    calculatedBuffer
+  );
+}
+
+app.post(
+  "/api/paystack/webhook",
+  async (req, res) => {
+    try {
+      if (!PAYSTACK_SECRET_KEY) {
+        return res.sendStatus(200);
+      }
+
+      const rawBody =
+        req.rawBody ||
+        Buffer.from(
+          JSON.stringify(
+            req.body || {}
+          )
+        );
+
+      const receivedSignature =
+        req.headers[
+          "x-paystack-signature"
+        ];
+
+      const calculatedSignature =
+        crypto
+          .createHmac(
+            "sha512",
+            PAYSTACK_SECRET_KEY
+          )
+          .update(rawBody)
+          .digest("hex");
+
+      if (
+        !safeSignatureCompare(
+          receivedSignature,
+          calculatedSignature
+        )
+      ) {
+        return res.sendStatus(401);
+      }
+
+      const event =
+        req.body || {};
+
+      if (
+        event.event ===
+        "charge.success"
+      ) {
+        const reference =
+          event.data?.reference;
+
+        if (reference) {
+          try {
+            await verifyPaystackPayment(
+              reference
+            );
+          } catch (error) {
+            console.error(
+              "PAYSTACK WEBHOOK VERIFY:",
+              error.message
+            );
+          }
+        }
+      }
+
+      return res.sendStatus(200);
+    } catch (error) {
+      console.error(
+        "PAYSTACK WEBHOOK ERROR:",
+        error.message
+      );
+
+      return res.sendStatus(200);
+    }
+  }
+);
+
+/* =========================================================
+   BINANCE PAY HELPERS
+   ========================================================= */
+
+function requireBinance() {
+  if (
+    !BINANCE_API_KEY ||
+    !BINANCE_SECRET_KEY
+  ) {
+    throw new Error(
+      "BINANCE_PAY_API_KEY and BINANCE_PAY_SECRET_KEY are not configured."
+    );
+  }
+}
+
+function createBinanceHeaders(
+  bodyString
+) {
+  requireBinance();
+
+  const timestamp =
+    Date.now().toString();
+
+  const nonce =
+    crypto
+      .randomBytes(16)
+      .toString("hex");
+
+  const payload =
+    timestamp +
+    "\n" +
+    nonce +
+    "\n" +
+    bodyString +
+    "\n";
+
+  const signature =
+    crypto
+      .createHmac(
+        "sha512",
+        BINANCE_SECRET_KEY
+      )
+      .update(payload)
+      .digest("hex")
+      .toUpperCase();
+
+  return {
+    "Content-Type":
+      "application/json",
+
+    "BinancePay-Timestamp":
+      timestamp,
+
+    "BinancePay-Nonce":
+      nonce,
+
+    "BinancePay-Certificate-SN":
+      BINANCE_API_KEY,
+
+    "BinancePay-Signature":
+      signature
+  };
+}
+
+async function binanceRequest(
+  endpoint,
+  payload
+) {
+  requireBinance();
+
+  const bodyString =
+    JSON.stringify(payload);
+
+  const headers =
+    createBinanceHeaders(
+      bodyString
+    );
+
+  const response =
+    await axios.post(
+      BINANCE_BASE_URL +
+        endpoint,
+
+      bodyString,
+
+      {
+        headers,
+        timeout: 30000
+      }
+    );
+
+  return response.data;
+}
+
+/* =========================================================
+   BINANCE CREATE ORDER
+   ========================================================= */
+
+app.post(
+  "/api/binance/create",
+  requireLogin,
+  async (req, res) => {
+    try {
+      requireBinance();
+
+      const orderNumber =
+        cleanText(
+          req.body.orderNumber
+        );
+
+      const order =
+        getOrderForUser(
+          orderNumber,
+          req.session.user
+        );
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Order not found."
+        });
+      }
+
+      if (
+        order.payment_method !==
+        "binance"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "This order is not a Binance order."
+        });
+      }
+
+      if (
+        order.payment_status ===
+        "paid"
+      ) {
+        return res.json({
+          success: true,
+          paid: true,
+          message:
+            "This order is already paid."
+        });
+      }
+
+      const merchantTradeNo =
+        order.binance_merchant_trade_no ||
+        makeBinanceTradeNo();
+
+      const amount =
+        Number(
+          order.amount_crypto
+        );
+
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid Binance amount."
+        });
+      }
+
+      const baseUrl =
+        getBaseUrl(req);
+
+      const returnUrl =
+        `${baseUrl}/?payment=binance&order=${encodeURIComponent(
+          order.order_number
+        )}`;
+
+      const cancelUrl =
+        `${baseUrl}/?payment=binance_cancelled&order=${encodeURIComponent(
+          order.order_number
+        )}`;
+
+      /*
+        Binance Pay order structure.
+        The merchant API credentials remain
+        server-side only.
+      */
+
+      const payload = {
+        env: {
+          terminalType: "WEB"
+        },
+
+        merchantTradeNo:
+          merchantTradeNo,
+
+        orderAmount:
+          Number(amount.toFixed(8)),
+
+        currency:
+          BINANCE_CURRENCY,
+
+        goods: {
+          goodsType: "01",
+
+          goodsCategory: "0000",
+
+          referenceGoodsId:
+            String(
+              order.product_id
+            ),
+
+          goodsName:
+            String(
+              order.product_name
+            ).slice(0, 256),
+
+          goodsDetail:
+            String(
+              order.product_description ||
+                ""
+            ).slice(0, 256),
+
+          goodsUnitAmount: {
+            currency:
+              BINANCE_CURRENCY,
+
+            amount:
+              Number(
+                amount.toFixed(8)
+              )
+          }
+        },
+
+        returnUrl,
+
+        cancelUrl
+      };
+
+      const result =
+        await binanceRequest(
+          "/binancepay/openapi/v2/order",
+          payload
+        );
+
+      if (
+        !result ||
+        result.status !==
+          "SUCCESS" ||
+        !result.data
+      ) {
+        throw new Error(
+          result?.errorMessage ||
+            result?.message ||
+            "Binance Pay order creation failed."
+        );
+      }
+
+      db.prepare(`
+        UPDATE orders
+
+        SET
+          binance_merchant_trade_no = ?,
+          binance_prepay_id = ?
+
+        WHERE id = ?
+      `).run(
+        merchantTradeNo,
+
+        String(
+          result.data.prepayId ||
+            ""
+        ),
+
+        order.id
+      );
+
+      return res.json({
+        success: true,
+
+        merchantTradeNo,
+
+        prepayId:
+          result.data.prepayId ||
+          "",
+
+        checkoutUrl:
+          result.data.checkoutUrl ||
+          "",
+
+        qrCodeLink:
+          result.data.qrcodeLink ||
+          "",
+
+        qrContent:
+          result.data.qrContent ||
+          "",
+
+        deeplink:
+          result.data.deeplink ||
+          ""
+      });
+    } catch (error) {
+      console.error(
+        "BINANCE CREATE ERROR:",
+        error.response?.data ||
+          error.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.response?.data?.errorMessage ||
+          error.response?.data?.message ||
+          error.message ||
+          "Binance Pay order creation failed."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   BINANCE QUERY
+   ========================================================= */
+
+async function queryBinanceOrder(
+  order
+) {
+  const payload = {
+    merchantTradeNo:
+      order.binance_merchant_trade_no ||
+      null,
+
+    prepayId:
+      order.binance_prepay_id ||
+      null
+  };
+
+  const result =
+    await binanceRequest(
+      "/binancepay/openapi/order/query",
+      payload
+    );
+
+  return result;
+}
+
+function extractBinanceStatus(
+  result
+) {
+  return String(
+    result?.data?.status ||
+      result?.data?.orderStatus ||
+      ""
+  ).toUpperCase();
+}
+
+/* =========================================================
+   BINANCE CHECK
+   ========================================================= */
+
+app.get(
+  "/api/binance/check/:orderNumber",
+  requireLogin,
+  async (req, res) => {
+    try {
+      requireBinance();
+
+      const order =
+        getOrderForUser(
+          req.params.orderNumber,
+          req.session.user
+        );
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Order not found."
+        });
+      }
+
+      if (
+        order.payment_method !==
+        "binance"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "This is not a Binance order."
+        });
+      }
+
+      const result =
+        await queryBinanceOrder(
+          order
+        );
+
+      const status =
+        extractBinanceStatus(
+          result
+        );
+
+      const paid =
+        status === "PAID";
+
+      if (paid) {
+        db.prepare(`
+          UPDATE orders
+
+          SET
+            payment_status = 'paid',
+            paid_at = COALESCE(
+              paid_at,
+              CURRENT_TIMESTAMP
+            ),
+            binance_transaction_id = ?
+
+          WHERE id = ?
+        `).run(
+          String(
+            result.data?.transactionId ||
+              result.data?.transactId ||
+              ""
+          ),
+
+          order.id
+        );
+      }
+
+      const updated =
+        db.prepare(`
+          SELECT *
+
+          FROM orders
+
+          WHERE id = ?
+        `).get(order.id);
+
+      return res.json({
+        success: true,
+
+        paid,
+
+        status,
+
+        order:
+          publicOrder({
+            ...updated,
+
+            product_name:
+              order.product_name,
+
+            product_description:
+              order.product_description,
+
+            product_image:
+              order.product_image,
+
+            product_delivery:
+              order.product_delivery
+          })
+      });
+    } catch (error) {
+      console.error(
+        "BINANCE CHECK ERROR:",
+        error.response?.data ||
+          error.message
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          error.response?.data?.errorMessage ||
+          error.response?.data?.message ||
+          error.message ||
+          "Unable to check Binance payment."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   BINANCE WEBHOOK
+   ========================================================= */
+
+function verifyBinanceIncomingSignature(
+  req
+) {
+  if (!BINANCE_SECRET_KEY) {
+    return false;
+  }
+
+  const timestamp =
+    req.headers[
+      "binancepay-timestamp"
+    ];
+
+  const nonce =
+    req.headers[
+      "binancepay-nonce"
+    ];
+
+  const receivedSignature =
+    req.headers[
+      "binancepay-signature"
+    ];
+
+  if (
+    !timestamp ||
+    !nonce ||
+    !receivedSignature
+  ) {
+    return false;
+  }
+
+  const rawBody =
+    req.rawBody ||
+    Buffer.from(
+      JSON.stringify(
+        req.body || {}
+      )
+    );
+
+  const payload =
+    timestamp +
+    "\n" +
+    nonce +
+    "\n" +
+    rawBody.toString("utf8") +
+    "\n";
+
+  const calculated =
+    crypto
+      .createHmac(
+        "sha512",
+        BINANCE_SECRET_KEY
+      )
+      .update(payload)
+      .digest("hex")
+      .toUpperCase();
+
+  return safeSignatureCompare(
+    receivedSignature,
+    calculated
+  );
+}
+
+app.post(
+  "/api/binance/webhook",
+  async (req, res) => {
+    try {
+      if (!BINANCE_SECRET_KEY) {
+        return res.json({
+          returnCode: "SUCCESS",
+          returnMessage: "OK"
+        });
+      }
+
+      /*
+        Reject unsigned notifications.
+      */
+
+      if (
+        !verifyBinanceIncomingSignature(
+          req
+        )
+      ) {
+        return res.status(401).json({
+          returnCode:
+            "FAIL",
+          returnMessage:
+            "Invalid signature"
+        });
+      }
+
+      let notification =
+        req.body || {};
+
+      /*
+        Binance can provide nested data
+        as a JSON string.
+      */
+
+      let data =
+        notification.data;
+
+      if (
+        typeof data ===
+        "string"
+      ) {
+        try {
+          data = JSON.parse(data);
+        } catch {
+          data = {};
+        }
+      }
+
+      const merchantTradeNo =
+        data?.merchantTradeNo ||
+        notification?.merchantTradeNo;
+
+      if (merchantTradeNo) {
+        const order =
+          db.prepare(`
+            SELECT *
+
+            FROM orders
+
+            WHERE
+              binance_merchant_trade_no = ?
+          `).get(
+            merchantTradeNo
+          );
+
+        /*
+          Confirm payment with Binance
+          instead of trusting only the webhook.
+        */
+
+        if (
+          order &&
+          order.payment_status !==
+            "paid"
+        ) {
+          try {
+            const result =
+              await queryBinanceOrder(
+                order
+              );
+
+            const status =
+              extractBinanceStatus(
+                result
+              );
+
+            if (
+              status === "PAID"
+            ) {
+              db.prepare(`
+                UPDATE orders
+
+                SET
+                  payment_status = 'paid',
+                  paid_at = COALESCE(
+                    paid_at,
+                    CURRENT_TIMESTAMP
+                  ),
+                  binance_transaction_id = ?
+
+                WHERE id = ?
+              `).run(
+                String(
+                  result.data
+                    ?.transactionId ||
+                    result.data
+                      ?.transactId ||
+                    ""
+                ),
+
+                order.id
+              );
+            }
+          } catch (error) {
+            console.error(
+              "BINANCE WEBHOOK QUERY ERROR:",
+              error.message
+            );
+          }
+        }
+      }
+
+      return res.json({
+        returnCode: "SUCCESS",
+        returnMessage: "OK"
+      });
+    } catch (error) {
+      console.error(
+        "BINANCE WEBHOOK ERROR:",
+        error.message
+      );
+
+      return res.json({
+        returnCode: "SUCCESS",
+        returnMessage: "OK"
+      });
+    }
   }
 );
 
 /* =========================================================
    ADMIN USERS
-========================================================= */
+   ========================================================= */
 
 app.get(
   "/api/admin/users",
   requireAdmin,
   (req, res) => {
-    const users =
-      db
+    try {
+      const users = db
         .prepare(`
           SELECT
-            id,
-            name,
-            email,
-            is_admin,
-            created_at
-          FROM users
-          ORDER BY id DESC
+            u.id,
+            u.name,
+            u.email,
+            u.is_admin,
+            u.created_at,
+
+            COUNT(o.id)
+              AS order_count,
+
+            COALESCE(
+              SUM(
+                CASE
+                  WHEN o.payment_status =
+                    'paid'
+                  THEN o.amount_kes
+                  ELSE 0
+                END
+              ),
+              0
+            ) AS total_paid
+
+          FROM users u
+
+          LEFT JOIN orders o
+            ON o.user_id = u.id
+
+          GROUP BY u.id
+
+          ORDER BY u.id DESC
         `)
         .all();
 
-    res.json({
-      success: true,
-      users
-    });
+      return res.json({
+        success: true,
+        users
+      });
+    } catch (error) {
+      console.error(
+        "ADMIN USERS ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Unable to load users."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN ORDERS
+   ========================================================= */
+
+app.get(
+  "/api/admin/orders",
+  requireAdmin,
+  (req, res) => {
+    try {
+      const orders = db
+        .prepare(`
+          SELECT
+            o.*,
+
+            p.name AS product_name,
+            p.image_url AS product_image,
+            p.delivery_content AS product_delivery,
+
+            u.name AS buyer_name,
+            u.email AS buyer_email
+
+          FROM orders o
+
+          JOIN products p
+            ON p.id = o.product_id
+
+          JOIN users u
+            ON u.id = o.user_id
+
+          ORDER BY o.id DESC
+        `)
+        .all();
+
+      return res.json({
+        success: true,
+        orders
+      });
+    } catch (error) {
+      console.error(
+        "ADMIN ORDERS ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Unable to load orders."
+      });
+    }
   }
 );
 
 /* =========================================================
    ADMIN PRODUCTS
-========================================================= */
+   ========================================================= */
 
 app.get(
   "/api/admin/products",
   requireAdmin,
   (req, res) => {
     const products =
-      db
-        .prepare(`
-          SELECT *
-          FROM products
-          ORDER BY id DESC
-        `)
-        .all();
+      db.prepare(`
+        SELECT *
+        FROM products
+        ORDER BY id DESC
+      `).all();
 
-    res.json({
+    return res.json({
       success: true,
       products
     });
   }
 );
+
+/* =========================================================
+   MULTER
+   ========================================================= */
+
+const storage =
+  multer.diskStorage({
+    destination:
+      function (
+        req,
+        file,
+        cb
+      ) {
+        cb(
+          null,
+          UPLOAD_DIR
+        );
+      },
+
+    filename:
+      function (
+        req,
+        file,
+        cb
+      ) {
+        const extension =
+          path
+            .extname(
+              file.originalname
+            )
+            .toLowerCase();
+
+        const filename =
+          "product-" +
+          Date.now() +
+          "-" +
+          crypto
+            .randomBytes(4)
+            .toString("hex") +
+          extension;
+
+        cb(
+          null,
+          filename
+        );
+      }
+  });
+
+const upload =
+  multer({
+    storage,
+
+    limits: {
+      fileSize:
+        5 * 1024 * 1024
+    },
+
+    fileFilter:
+      function (
+        req,
+        file,
+        cb
+      ) {
+        const allowed =
+          [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/gif"
+          ];
+
+        if (
+          allowed.includes(
+            file.mimetype
+          )
+        ) {
+          cb(
+            null,
+            true
+          );
+        } else {
+          cb(
+            new Error(
+              "Only JPG, PNG, WEBP and GIF images are allowed."
+            )
+          );
+        }
+      }
+  });
+
+/* =========================================================
+   ADMIN ADD PRODUCT
+   ========================================================= */
 
 app.post(
   "/api/admin/products",
@@ -1124,21 +2669,21 @@ app.post(
           req.body.description
         );
 
-      const deliveryContent =
-        String(
-          req.body.delivery_content ||
-            ""
-        );
-
       const priceKes =
         Number(
-          req.body.price_kes
+          req.body.priceKes
         );
 
       const binancePrice =
         Number(
-          req.body.binance_price ||
+          req.body.binancePrice ||
             0
+        );
+
+      const deliveryContent =
+        String(
+          req.body.deliveryContent ||
+            ""
         );
 
       if (!name) {
@@ -1158,7 +2703,20 @@ app.post(
         return res.status(400).json({
           success: false,
           message:
-            "Enter a valid KSh price."
+            "Enter a valid KES price."
+        });
+      }
+
+      if (
+        binancePrice < 0 ||
+        !Number.isFinite(
+          binancePrice
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid Binance price."
         });
       }
 
@@ -1171,448 +2729,267 @@ app.post(
       }
 
       const result =
-        db
-          .prepare(`
-            INSERT INTO products (
-              name,
-              description,
-              price_kes,
-              binance_price,
-              delivery_content,
-              image_url,
-              active
-            )
-            VALUES (?,?,?,?,?,?,1)
-          `)
-          .run(
+        db.prepare(`
+          INSERT INTO products
+          (
             name,
             description,
-            priceKes,
-            binancePrice,
-            deliveryContent,
-            imageUrl
-          );
+            price_kes,
+            binance_price,
+            delivery_content,
+            image_url,
+            active
+          )
 
-      res.json({
+          VALUES
+          (?, ?, ?, ?, ?, ?, 1)
+        `).run(
+          name,
+          description,
+          priceKes,
+          binancePrice,
+          deliveryContent,
+          imageUrl
+        );
+
+      const product =
+        db.prepare(`
+          SELECT *
+          FROM products
+          WHERE id = ?
+        `).get(
+          result.lastInsertRowid
+        );
+
+      return res.json({
         success: true,
-        product:
-          db
-            .prepare(
-              "SELECT * FROM products WHERE id = ?"
-            )
-            .get(
-              result.lastInsertRowid
-            )
+        message:
+          "Product added successfully.",
+        product
       });
     } catch (error) {
       console.error(
-        "PRODUCT ERROR:",
+        "ADMIN PRODUCT ERROR:",
         error
       );
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message:
           error.message ||
-          "Product creation failed."
+          "Unable to add product."
       });
     }
   }
 );
+
+/* =========================================================
+   ADMIN TOGGLE PRODUCT
+   ========================================================= */
 
 app.post(
   "/api/admin/products/:id/toggle",
   requireAdmin,
   (req, res) => {
-    const product =
-      db
-        .prepare(
-          "SELECT * FROM products WHERE id = ?"
-        )
-        .get(
-          Number(req.params.id)
-        );
+    try {
+      const id =
+        Number(req.params.id);
 
-    if (!product) {
-      return res.status(404).json({
+      const product =
+        db.prepare(`
+          SELECT *
+          FROM products
+          WHERE id = ?
+        `).get(id);
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Product not found."
+        });
+      }
+
+      const newStatus =
+        Number(product.active) ===
+        1
+          ? 0
+          : 1;
+
+      db.prepare(`
+        UPDATE products
+        SET active = ?
+        WHERE id = ?
+      `).run(
+        newStatus,
+        id
+      );
+
+      return res.json({
+        success: true,
+        active: newStatus
+      });
+    } catch (error) {
+      console.error(
+        "PRODUCT TOGGLE ERROR:",
+        error
+      );
+
+      return res.status(500).json({
         success: false,
         message:
-          "Product not found."
+          "Unable to update product."
       });
     }
-
-    db.prepare(`
-      UPDATE products
-      SET active = ?
-      WHERE id = ?
-    `).run(
-      product.active ? 0 : 1,
-      product.id
-    );
-
-    res.json({
-      success: true
-    });
   }
 );
+
+/* =========================================================
+   ADMIN DELETE PRODUCT
+   ========================================================= */
 
 app.delete(
   "/api/admin/products/:id",
   requireAdmin,
   (req, res) => {
-    const product =
-      db
-        .prepare(
-          "SELECT * FROM products WHERE id = ?"
-        )
-        .get(
-          Number(req.params.id)
-        );
+    try {
+      const id =
+        Number(req.params.id);
 
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message:
-          "Product not found."
-      });
-    }
+      const product =
+        db.prepare(`
+          SELECT *
+          FROM products
+          WHERE id = ?
+        `).get(id);
 
-    db.prepare(`
-      DELETE FROM products
-      WHERE id = ?
-    `).run(
-      product.id
-    );
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Product not found."
+        });
+      }
 
-    res.json({
-      success: true
-    });
-  }
-);
+      const existingOrders =
+        db.prepare(`
+          SELECT COUNT(*) AS count
+          FROM orders
+          WHERE product_id = ?
+        `).get(id);
 
-/* =========================================================
-   ADMIN ORDERS
-========================================================= */
+      if (
+        Number(
+          existingOrders.count
+        ) > 0
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "This product has orders. Disable it instead of deleting it."
+        });
+      }
 
-app.get(
-  "/api/admin/orders",
-  requireAdmin,
-  (req, res) => {
-    const orders =
-      db
-        .prepare(`
-          SELECT
-            o.*,
-            u.name AS customer_name,
-            u.email AS customer_email,
-            p.name AS product_name
-          FROM orders o
-          LEFT JOIN users u
-            ON u.id = o.user_id
-          LEFT JOIN products p
-            ON p.id = o.product_id
-          ORDER BY o.id DESC
-        `)
-        .all();
+      db.prepare(`
+        DELETE FROM products
+        WHERE id = ?
+      `).run(id);
 
-    res.json({
-      success: true,
-      orders
-    });
-  }
-);
+      if (
+        product.image_url
+      ) {
+        const imagePath =
+          path.join(
+            PUBLIC_DIR,
+            product.image_url
+              .replace(
+                /^\//,
+                ""
+              )
+          );
 
-/* =========================================================
-   ADMIN BINANCE VERIFY
-========================================================= */
-
-app.post(
-  "/api/admin/orders/:id/verify-binance",
-  requireAdmin,
-  (req, res) => {
-    const order =
-      db
-        .prepare(
-          "SELECT * FROM orders WHERE id = ?"
-        )
-        .get(
-          Number(req.params.id)
-        );
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message:
-          "Order not found."
-      });
-    }
-
-    db.prepare(`
-      UPDATE orders
-      SET
-        binance_verified = 1,
-        payment_status = 'paid',
-        paid_at = ?
-      WHERE id = ?
-    `).run(
-      now(),
-      order.id
-    );
-
-    res.json({
-      success: true,
-      message:
-        "Binance payment marked as paid."
-    });
-  }
-);
-
-/* =========================================================
-   ADMIN MARK PAYMENT
-========================================================= */
-
-app.post(
-  "/api/admin/orders/:id/payment",
-  requireAdmin,
-  (req, res) => {
-    const status =
-      cleanText(
-        req.body.status
-      );
-
-    const allowed = [
-      "pending",
-      "payment_submitted",
-      "paid",
-      "failed",
-      "cancelled"
-    ];
-
-    if (
-      !allowed.includes(
-        status
-      )
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid payment status."
-      });
-    }
-
-    const order =
-      db
-        .prepare(
-          "SELECT * FROM orders WHERE id = ?"
-        )
-        .get(
-          Number(req.params.id)
-        );
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message:
-          "Order not found."
-      });
-    }
-
-    db.prepare(`
-      UPDATE orders
-      SET
-        payment_status = ?,
-        paid_at = CASE
-          WHEN ? = 'paid'
-          THEN ?
-          ELSE paid_at
-        END
-      WHERE id = ?
-    `).run(
-      status,
-      status,
-      now(),
-      order.id
-    );
-
-    res.json({
-      success: true
-    });
-  }
-);
-
-/* =========================================================
-   ADMIN DELIVERY
-========================================================= */
-
-app.post(
-  "/api/admin/orders/:id/delivery",
-  requireAdmin,
-  (req, res) => {
-    const status =
-      cleanText(
-        req.body.status
-      );
-
-    const notes =
-      cleanText(
-        req.body.notes
-      );
-
-    const allowed = [
-      "pending",
-      "processing",
-      "delivered",
-      "cancelled"
-    ];
-
-    if (
-      !allowed.includes(
-        status
-      )
-    ) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid delivery status."
-      });
-    }
-
-    const order =
-      db
-        .prepare(
-          "SELECT * FROM orders WHERE id = ?"
-        )
-        .get(
-          Number(req.params.id)
-        );
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message:
-          "Order not found."
-      });
-    }
-
-    db.prepare(`
-      UPDATE orders
-      SET
-        delivery_status = ?,
-        delivery_notes = ?,
-        delivered_at = CASE
-          WHEN ? = 'delivered'
-          THEN ?
-          ELSE delivered_at
-        END
-      WHERE id = ?
-    `).run(
-      status,
-      notes,
-      status,
-      now(),
-      order.id
-    );
-
-    res.json({
-      success: true
-    });
-  }
-);
-
-/* =========================================================
-   MPESA
-========================================================= */
-
-function mpesaBaseUrl() {
-  return (
-    process.env.MPESA_ENV ===
-    "production"
-  )
-    ? "https://api.safaricom.co.ke"
-    : "https://sandbox.safaricom.co.ke";
-}
-
-async function getMpesaToken() {
-  const key =
-    process.env.MPESA_CONSUMER_KEY;
-
-  const secret =
-    process.env.MPESA_CONSUMER_SECRET;
-
-  if (!key || !secret) {
-    throw new Error(
-      "M-Pesa credentials are not configured."
-    );
-  }
-
-  const auth =
-    Buffer.from(
-      `${key}:${secret}`
-    ).toString(
-      "base64"
-    );
-
-  const response =
-    await axios.get(
-      `${mpesaBaseUrl()}/oauth/v1/generate?grant_type=client_credentials`,
-      {
-        headers: {
-          Authorization:
-            `Basic ${auth}`
+        if (
+          fs.existsSync(
+            imagePath
+          )
+        ) {
+          try {
+            fs.unlinkSync(
+              imagePath
+            );
+          } catch {}
         }
       }
-    );
 
-  return response.data.access_token;
-}
-
-function mpesaTimestamp() {
-  const d = new Date();
-
-  const pad =
-    n =>
-      String(n).padStart(
-        2,
-        "0"
+      return res.json({
+        success: true,
+        message:
+          "Product deleted."
+      });
+    } catch (error) {
+      console.error(
+        "PRODUCT DELETE ERROR:",
+        error
       );
 
-  return (
-    d.getFullYear() +
-    pad(d.getMonth() + 1) +
-    pad(d.getDate()) +
-    pad(d.getHours()) +
-    pad(d.getMinutes()) +
-    pad(d.getSeconds())
-  );
-}
+      return res.status(500).json({
+        success: false,
+        message:
+          "Unable to delete product."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN DELIVERY UPDATE
+   ========================================================= */
 
 app.post(
-  "/api/mpesa/stk",
-  requireLogin,
-  async (req, res) => {
+  "/api/admin/orders/:orderNumber/delivery",
+  requireAdmin,
+  (req, res) => {
     try {
-      const orderId =
-        Number(
-          req.body.order_id
+      const orderNumber =
+        cleanText(
+          req.params.orderNumber
         );
 
-      const phone =
+      const status =
         cleanText(
-          req.body.phone
+          req.body.status
+        ).toLowerCase();
+
+      const notes =
+        cleanText(
+          req.body.notes
         );
+
+      const allowedStatuses =
+        [
+          "pending",
+          "processing",
+          "delivered"
+        ];
+
+      if (
+        !allowedStatuses.includes(
+          status
+        )
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid delivery status."
+        });
+      }
 
       const order =
-        db
-          .prepare(`
-            SELECT *
-            FROM orders
-            WHERE id = ?
-              AND user_id = ?
-          `)
-          .get(
-            orderId,
-            req.session.user.id
-          );
+        db.prepare(`
+          SELECT *
+          FROM orders
+          WHERE order_number = ?
+        `).get(orderNumber);
 
       if (!order) {
         return res.status(404).json({
@@ -1623,282 +3000,285 @@ app.post(
       }
 
       if (
-        order.payment_method !==
-        "mpesa"
+        status === "delivered" &&
+        order.payment_status !==
+          "paid"
       ) {
         return res.status(400).json({
           success: false,
           message:
-            "This is not an M-Pesa order."
+            "You cannot mark an unpaid order as delivered."
         });
       }
-
-      if (!phone) {
-        return res.status(400).json({
-          success: false,
-          message:
-            "Enter your M-Pesa phone number."
-        });
-      }
-
-      const shortcode =
-        process.env.MPESA_SHORTCODE;
-
-      const passkey =
-        process.env.MPESA_PASSKEY;
-
-      const callback =
-        process.env.MPESA_CALLBACK_URL;
-
-      if (
-        !shortcode ||
-        !passkey ||
-        !callback
-      ) {
-        return res.status(500).json({
-          success: false,
-          message:
-            "M-Pesa is not fully configured in Render."
-        });
-      }
-
-      const token =
-        await getMpesaToken();
-
-      const timestamp =
-        mpesaTimestamp();
-
-      const password =
-        Buffer.from(
-          shortcode +
-          passkey +
-          timestamp
-        ).toString(
-          "base64"
-        );
-
-      const amount =
-        Math.round(
-          Number(
-            order.amount_kes
-          )
-        );
-
-      const response =
-        await axios.post(
-          `${mpesaBaseUrl()}/mpesa/stkpush/v1/processrequest`,
-          {
-            BusinessShortCode:
-              shortcode,
-
-            Password:
-              password,
-
-            Timestamp:
-              timestamp,
-
-            TransactionType:
-              "CustomerPayBillOnline",
-
-            Amount:
-              amount,
-
-            PartyA:
-              phone,
-
-            PartyB:
-              shortcode,
-
-            PhoneNumber:
-              phone,
-
-            CallBackURL:
-              callback,
-
-            AccountReference:
-              order.order_number,
-
-            TransactionDesc:
-              `DARK WEB ${order.order_number}`
-          },
-          {
-            headers: {
-              Authorization:
-                `Bearer ${token}`
-            }
-          }
-        );
 
       db.prepare(`
         UPDATE orders
+
         SET
-          checkout_request_id = ?,
-          merchant_request_id = ?,
-          phone = ?,
-          payment_status = 'payment_submitted'
-        WHERE id = ?
+          delivery_status = ?,
+          delivery_notes = ?,
+          delivered_at =
+            CASE
+              WHEN ? = 'delivered'
+              THEN COALESCE(
+                delivered_at,
+                CURRENT_TIMESTAMP
+              )
+              ELSE delivered_at
+            END
+
+        WHERE order_number = ?
       `).run(
-        response.data.CheckoutRequestID ||
-          "",
-        response.data.MerchantRequestID ||
-          "",
-        phone,
-        order.id
+        status,
+        notes,
+        status,
+        orderNumber
       );
 
-      res.json({
+      return res.json({
         success: true,
         message:
-          response.data.CustomerMessage ||
-          "Check your phone for the M-Pesa payment prompt."
+          "Delivery status updated."
       });
     } catch (error) {
       console.error(
-        "MPESA STK ERROR:",
+        "DELIVERY UPDATE ERROR:",
+        error
+      );
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Unable to update delivery."
+      });
+    }
+  }
+);
+
+/* =========================================================
+   ADMIN PAYMENT RECHECK
+   ========================================================= */
+
+app.post(
+  "/api/admin/orders/:orderNumber/check-payment",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const orderNumber =
+        cleanText(
+          req.params.orderNumber
+        );
+
+      const order =
+        db.prepare(`
+          SELECT *
+          FROM orders
+          WHERE order_number = ?
+        `).get(orderNumber);
+
+      if (!order) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Order not found."
+        });
+      }
+
+      let result;
+
+      if (
+        order.payment_method ===
+        "paystack"
+      ) {
+        result =
+          await verifyPaystackPayment(
+            order.paystack_reference ||
+              order.order_number
+          );
+      } else if (
+        order.payment_method ===
+        "binance"
+      ) {
+        const binance =
+          await queryBinanceOrder(
+            order
+          );
+
+        if (
+          extractBinanceStatus(
+            binance
+          ) === "PAID"
+        ) {
+          db.prepare(`
+            UPDATE orders
+
+            SET
+              payment_status = 'paid',
+              paid_at = COALESCE(
+                paid_at,
+                CURRENT_TIMESTAMP
+              ),
+              binance_transaction_id = ?
+
+            WHERE id = ?
+          `).run(
+            String(
+              binance.data
+                ?.transactionId ||
+                binance.data
+                  ?.transactId ||
+                ""
+            ),
+
+            order.id
+          );
+        }
+
+        result = {
+          paid:
+            extractBinanceStatus(
+              binance
+            ) === "PAID"
+        };
+      } else {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Unsupported payment method."
+        });
+      }
+
+      return res.json({
+        success: true,
+        paid:
+          Boolean(result.paid)
+      });
+    } catch (error) {
+      console.error(
+        "ADMIN PAYMENT CHECK ERROR:",
         error.response?.data ||
           error.message
       );
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message:
-          error.response?.data?.errorMessage ||
-          "Could not start M-Pesa payment."
+          error.response?.data?.message ||
+          error.message ||
+          "Payment check failed."
       });
     }
   }
 );
 
 /* =========================================================
-   MPESA CALLBACK
-========================================================= */
-
-app.post(
-  "/api/mpesa/callback",
-  (req, res) => {
-    try {
-      const callback =
-        req.body?.Body?.stkCallback;
-
-      if (!callback) {
-        return res.json({
-          ResultCode: 0,
-          ResultDesc:
-            "Accepted"
-        });
-      }
-
-      const checkoutId =
-        callback.CheckoutRequestID;
-
-      const resultCode =
-        Number(
-          callback.ResultCode
-        );
-
-      const order =
-        db
-          .prepare(`
-            SELECT *
-            FROM orders
-            WHERE checkout_request_id = ?
-          `)
-          .get(
-            checkoutId
-          );
-
-      if (!order) {
-        return res.json({
-          ResultCode: 0,
-          ResultDesc:
-            "Accepted"
-        });
-      }
-
-      if (
-        resultCode === 0
-      ) {
-        const metadata =
-          callback.CallbackMetadata
-            ?.Item || [];
-
-        let receipt = "";
-
-        for (
-          const item of metadata
-        ) {
-          if (
-            item.Name ===
-            "MpesaReceiptNumber"
-          ) {
-            receipt =
-              item.Value || "";
-          }
-        }
-
-        db.prepare(`
-          UPDATE orders
-          SET
-            payment_status = 'paid',
-            mpesa_receipt = ?,
-            paid_at = ?
-          WHERE id = ?
-        `).run(
-          receipt,
-          now(),
-          order.id
-        );
-      } else {
-        db.prepare(`
-          UPDATE orders
-          SET
-            payment_status = 'failed'
-          WHERE id = ?
-        `).run(
-          order.id
-        );
-      }
-
-      return res.json({
-        ResultCode: 0,
-        ResultDesc:
-          "Accepted"
-      });
-    } catch (error) {
-      console.error(
-        "MPESA CALLBACK ERROR:",
-        error
-      );
-
-      res.json({
-        ResultCode: 0,
-        ResultDesc:
-          "Accepted"
-      });
-    }
-  }
-);
-
-/* =========================================================
-   HEALTH
-========================================================= */
+   SUPPORT INFORMATION
+   ========================================================= */
 
 app.get(
-  "/api/health",
+  "/api/support",
   (req, res) => {
-    res.json({
+    return res.json({
       success: true,
-      status: "online",
-      service:
-        "DARK WEB STORE",
-      time: now()
+
+      whatsapp:
+        SUPPORT_WHATSAPP,
+
+      whatsapp_url:
+        whatsappUrl(
+          "Hello DARK WEB support, I need help with my order."
+        )
     });
   }
 );
 
 /* =========================================================
-   SPA FALLBACK - EXPRESS 5
-========================================================= */
+   HEALTH CHECK
+   ========================================================= */
+
+app.get(
+  "/api/health",
+  (req, res) => {
+    return res.json({
+      success: true,
+
+      app:
+        "DARK WEB STORE",
+
+      status:
+        "online",
+
+      payments: {
+        paystack:
+          Boolean(
+            PAYSTACK_SECRET_KEY
+          ),
+
+        binance:
+          Boolean(
+            BINANCE_API_KEY &&
+            BINANCE_SECRET_KEY
+          )
+      },
+
+      admin:
+        ADMIN_EMAIL,
+
+      support:
+        SUPPORT_WHATSAPP,
+
+      time:
+        new Date().toISOString()
+    });
+  }
+);
+
+/* =========================================================
+   ERROR HANDLER
+   ========================================================= */
+
+app.use(
+  (error, req, res, next) => {
+    console.error(
+      "SERVER ERROR:",
+      error
+    );
+
+    if (
+      error instanceof
+      multer.MulterError
+    ) {
+      if (
+        error.code ===
+        "LIMIT_FILE_SIZE"
+      ) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Image is too large. Maximum size is 5MB."
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message:
+          error.message
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message:
+        error.message ||
+        "Internal server error."
+    });
+  }
+);
+
+/* =========================================================
+   FRONTEND FALLBACK
+   Express 5 syntax
+   ========================================================= */
 
 app.get(
   "*splat",
@@ -1913,33 +3293,8 @@ app.get(
 );
 
 /* =========================================================
-   ERROR HANDLER
-========================================================= */
-
-app.use(
-  (
-    error,
-    req,
-    res,
-    next
-  ) => {
-    console.error(
-      "SERVER ERROR:",
-      error
-    );
-
-    res.status(500).json({
-      success: false,
-      message:
-        error.message ||
-        "Server error."
-    });
-  }
-);
-
-/* =========================================================
-   START
-========================================================= */
+   START SERVER
+   ========================================================= */
 
 app.listen(
   PORT,
@@ -1959,13 +3314,27 @@ app.listen(
 
     console.log(
       "ADMIN:",
-      adminEmail
+      ADMIN_EMAIL
+    );
+
+    console.log(
+      "PAYSTACK:",
+      PAYSTACK_SECRET_KEY
+        ? "CONFIGURED"
+        : "NOT CONFIGURED"
+    );
+
+    console.log(
+      "BINANCE PAY:",
+      BINANCE_API_KEY &&
+        BINANCE_SECRET_KEY
+        ? "CONFIGURED"
+        : "NOT CONFIGURED"
     );
 
     console.log(
       "WHATSAPP:",
-      process.env.SUPPORT_WHATSAPP ||
-        "254781601410"
+      SUPPORT_WHATSAPP
     );
 
     console.log(
