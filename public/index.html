@@ -6,7 +6,7 @@
 <meta name="viewport"
       content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
-<meta name="theme-color" content="#07100c">
+<meta name="theme-color" content="#050807">
 
 <title>DARK WEB — Digital Store</title>
 
@@ -19,33 +19,22 @@
 
 :root{
   --bg:#050807;
-  --panel:#0b120f;
-  --panel2:#101a15;
-  --border:#1d3328;
-  --green:#19e878;
-  --green2:#0dbb5b;
-  --text:#f4fff8;
-  --muted:#8ea398;
+  --panel:#0b100e;
+  --panel2:#101713;
+  --border:#1c2b23;
+  --green:#19e56d;
+  --green2:#0cae4d;
+  --text:#f4f8f5;
+  --muted:#8d9b93;
   --danger:#ff4d5e;
-  --warning:#ffc857;
+  --yellow:#ffc857;
   --blue:#4da3ff;
-  --shadow:0 15px 45px rgba(0,0,0,.35);
 }
 
 body{
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
+  font-family:Arial,Helvetica,sans-serif;
   background:
-    radial-gradient(
-      circle at top right,
-      rgba(25,232,120,.08),
-      transparent 35%
-    ),
-    var(--bg);
-
+    radial-gradient(circle at top,#102219 0,#050807 42%,#030504 100%);
   color:var(--text);
   min-height:100vh;
 }
@@ -74,23 +63,16 @@ header{
   position:sticky;
   top:0;
   z-index:1000;
-
-  background:
-    rgba(5,8,7,.94);
-
-  backdrop-filter:blur(16px);
-
+  background:rgba(5,8,7,.96);
+  backdrop-filter:blur(15px);
   border-bottom:1px solid var(--border);
 }
 
 .header-inner{
   max-width:1200px;
   margin:auto;
-
   min-height:70px;
-
-  padding:12px 16px;
-
+  padding:12px 18px;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -104,89 +86,66 @@ header{
 }
 
 .brand-logo{
-  width:42px;
-  height:42px;
-
-  border-radius:12px;
-
+  width:43px;
+  height:43px;
+  border-radius:13px;
   display:flex;
   align-items:center;
   justify-content:center;
-
-  font-weight:900;
   font-size:18px;
-
-  color:#031108;
-
-  background:
-    linear-gradient(
-      135deg,
-      var(--green),
-      #8affbd
-    );
-
-  box-shadow:
-    0 0 25px rgba(25,232,120,.18);
+  font-weight:900;
+  color:#001508;
+  background:linear-gradient(135deg,#24ff79,#0db650);
+  box-shadow:0 0 25px rgba(25,229,109,.2);
 }
 
-.brand-text{
-  line-height:1.05;
+.brand-text h1{
+  font-size:19px;
+  letter-spacing:2px;
 }
 
-.brand-text strong{
+.brand-text small{
   display:block;
-  font-size:17px;
-  letter-spacing:1.5px;
-}
-
-.brand-text span{
-  display:block;
-  margin-top:4px;
+  margin-top:3px;
   color:var(--green);
-  font-size:10px;
-  letter-spacing:1.2px;
-  font-weight:bold;
+  font-size:9px;
+  letter-spacing:2px;
 }
 
-.nav{
+nav{
   display:flex;
   align-items:center;
   gap:7px;
-  flex-wrap:wrap;
-  justify-content:flex-end;
 }
 
-.nav button{
-  border:1px solid var(--border);
-  background:var(--panel);
+.nav-btn{
+  border:1px solid transparent;
+  background:transparent;
   color:var(--muted);
-
-  padding:9px 12px;
-  border-radius:10px;
-
-  font-weight:bold;
+  padding:10px 12px;
+  border-radius:9px;
   font-size:12px;
+  font-weight:700;
 }
 
-.nav button:hover,
-.nav button.active{
+.nav-btn:hover,
+.nav-btn.active{
   color:var(--green);
-  border-color:rgba(25,232,120,.45);
-  background:#0d1a13;
+  background:#0d1712;
+  border-color:var(--border);
 }
 
-#logoutBtn{
+#mobileMenuBtn{
   display:none;
 }
 
 /* =========================
-   MAIN
+   LAYOUT
 ========================= */
 
-main{
-  max-width:1200px;
-  margin:auto;
-  padding:25px 15px 90px;
+.container{
+  width:min(1200px,calc(100% - 28px));
+  margin:25px auto 60px;
 }
 
 .page{
@@ -202,42 +161,46 @@ main{
 ========================= */
 
 .hero{
-  padding:35px 20px;
   border:1px solid var(--border);
-  border-radius:22px;
-
+  border-radius:20px;
+  padding:35px 25px;
   background:
-    linear-gradient(
-      145deg,
-      rgba(17,30,23,.95),
-      rgba(7,12,9,.98)
-    );
-
-  box-shadow:var(--shadow);
-
+    linear-gradient(135deg,rgba(20,45,31,.9),rgba(7,12,9,.96));
   margin-bottom:25px;
+  overflow:hidden;
+  position:relative;
 }
 
-.hero h1{
-  font-size:clamp(30px,7vw,58px);
-  line-height:1;
-  margin-bottom:13px;
+.hero:after{
+  content:"";
+  position:absolute;
+  width:250px;
+  height:250px;
+  right:-80px;
+  top:-100px;
+  border-radius:50%;
+  background:rgba(25,229,109,.07);
 }
 
-.hero h1 span{
+.hero h2{
+  font-size:clamp(27px,5vw,45px);
+  margin-bottom:10px;
+}
+
+.hero h2 span{
   color:var(--green);
 }
 
 .hero p{
-  max-width:700px;
   color:var(--muted);
-  line-height:1.7;
+  max-width:650px;
+  line-height:1.6;
 }
 
 .hero-actions{
   display:flex;
-  gap:10px;
   flex-wrap:wrap;
+  gap:10px;
   margin-top:22px;
 }
 
@@ -247,12 +210,10 @@ main{
 
 .btn{
   border:0;
-  border-radius:11px;
-  padding:12px 17px;
-
+  border-radius:10px;
+  padding:12px 16px;
   font-weight:800;
-  font-size:13px;
-
+  font-size:12px;
   transition:.2s;
 }
 
@@ -261,97 +222,83 @@ main{
 }
 
 .btn-primary{
-  background:var(--green);
-  color:#031108;
-}
-
-.btn-primary:hover{
-  background:#42f590;
+  background:linear-gradient(135deg,var(--green),var(--green2));
+  color:#001408;
 }
 
 .btn-secondary{
-  background:#101b15;
-  color:var(--text);
+  background:#101914;
+  color:#dfe9e3;
   border:1px solid var(--border);
 }
 
 .btn-danger{
-  background:#311016;
-  color:#ff8d99;
-  border:1px solid #5a1b24;
+  background:#321014;
+  color:#ff7180;
+  border:1px solid #5a1a23;
+}
+
+.btn-warning{
+  background:#30250d;
+  color:#ffd35e;
+  border:1px solid #5d4712;
 }
 
 .btn-blue{
   background:#0d2033;
-  color:#78baff;
-  border:1px solid #1a4368;
+  color:#65b4ff;
+  border:1px solid #183d5f;
 }
 
-.btn-small{
-  padding:8px 11px;
-  font-size:11px;
+.btn-block{
+  width:100%;
 }
 
 /* =========================
-   SECTION
+   STORE
 ========================= */
 
-.section-title{
+.section-head{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  gap:10px;
-
-  margin:25px 0 15px;
+  justify-content:space-between;
+  gap:15px;
+  margin-bottom:16px;
 }
 
-.section-title h2{
-  font-size:20px;
+.section-head h3{
+  font-size:18px;
 }
 
-.section-title span{
+.section-head span{
   color:var(--muted);
   font-size:12px;
 }
 
-/* =========================
-   PRODUCTS
-========================= */
-
-.products-grid{
+.products{
   display:grid;
-
-  grid-template-columns:
-    repeat(
-      auto-fit,
-      minmax(230px,1fr)
-    );
-
-  gap:16px;
+  grid-template-columns:repeat(3,1fr);
+  gap:17px;
 }
 
 .product-card{
-  background:var(--panel);
+  background:linear-gradient(145deg,#0d1410,#080c0a);
   border:1px solid var(--border);
-
-  border-radius:18px;
+  border-radius:17px;
   overflow:hidden;
-
-  box-shadow:0 10px 30px rgba(0,0,0,.22);
-
   transition:.2s;
 }
 
 .product-card:hover{
-  transform:translateY(-3px);
-  border-color:rgba(25,232,120,.3);
+  border-color:#2b503b;
+  transform:translateY(-2px);
 }
 
 .product-image{
   width:100%;
   height:190px;
   object-fit:cover;
-  background:#0d1511;
+  background:#050806;
   display:block;
 }
 
@@ -359,281 +306,168 @@ main{
   display:flex;
   align-items:center;
   justify-content:center;
-
-  color:#506359;
-  font-weight:bold;
+  color:#34443b;
+  font-size:45px;
 }
 
 .product-body{
-  padding:16px;
+  padding:17px;
 }
 
-.product-body h3{
+.product-body h4{
   font-size:17px;
   margin-bottom:8px;
 }
 
 .product-description{
   color:var(--muted);
-  line-height:1.5;
   font-size:12px;
-
-  min-height:54px;
+  line-height:1.5;
+  min-height:38px;
 }
 
 .price-row{
+  margin:16px 0;
   display:flex;
   justify-content:space-between;
-  align-items:end;
-
   gap:10px;
-
-  margin:17px 0;
+  align-items:center;
 }
 
-.price-kes{
-  color:var(--green);
+.price{
   font-size:20px;
   font-weight:900;
+  color:var(--green);
 }
 
-.price-usdt{
-  color:#9caea4;
-  font-size:11px;
-  text-align:right;
+.crypto-price{
+  color:#f5c84c;
+  font-size:12px;
+  font-weight:700;
+}
+
+.badge{
+  display:inline-flex;
+  padding:5px 8px;
+  border-radius:20px;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.5px;
+  background:#102218;
+  color:var(--green);
+  border:1px solid #1d412b;
 }
 
 /* =========================
-   AUTH
+   FORMS
 ========================= */
 
 .auth-wrap{
   max-width:470px;
-  margin:25px auto;
+  margin:35px auto;
 }
 
-.panel{
-  background:var(--panel);
+.card{
+  background:linear-gradient(145deg,#0c130f,#070b09);
   border:1px solid var(--border);
-  border-radius:18px;
-
-  padding:20px;
-
-  box-shadow:var(--shadow);
+  border-radius:17px;
+  padding:22px;
 }
 
-.panel h2{
-  margin-bottom:7px;
-}
-
-.panel-subtitle{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.5;
-  margin-bottom:20px;
+.card h3{
+  margin-bottom:18px;
 }
 
 .form-group{
-  margin-bottom:14px;
+  margin-bottom:15px;
 }
 
 .form-group label{
   display:block;
-  color:#b8c8bf;
+  color:#c4cec8;
   font-size:11px;
-  font-weight:bold;
+  font-weight:800;
   margin-bottom:7px;
 }
 
-.form-control{
+input,
+textarea,
+select{
   width:100%;
-
-  background:#070d09;
-
   border:1px solid var(--border);
-  border-radius:10px;
-
-  color:var(--text);
-
-  padding:12px 13px;
-
   outline:none;
+  background:#070c09;
+  color:var(--text);
+  border-radius:10px;
+  padding:12px;
 }
 
-.form-control:focus{
-  border-color:var(--green);
-  box-shadow:0 0 0 3px rgba(25,232,120,.07);
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:#28663e;
+  box-shadow:0 0 0 3px rgba(25,229,109,.05);
 }
 
-textarea.form-control{
-  min-height:100px;
+textarea{
+  min-height:120px;
   resize:vertical;
 }
 
-.auth-switch{
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-  margin-top:15px;
-}
-
-.auth-switch button{
-  background:none;
-  border:0;
-  color:var(--green);
-  font-weight:bold;
-}
-
-/* =========================
-   STATUS
-========================= */
-
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-
-  padding:5px 8px;
-
-  border-radius:99px;
-
-  font-size:10px;
-  font-weight:900;
-
-  text-transform:uppercase;
-}
-
-.badge-pending{
-  color:#ffd878;
-  background:#33280e;
-}
-
-.badge-paid{
-  color:#54f89a;
-  background:#0d321f;
-}
-
-.badge-failed{
-  color:#ff7582;
-  background:#361017;
-}
-
-.badge-delivered{
-  color:#6db8ff;
-  background:#102942;
-}
-
-.badge-processing{
-  color:#d2b7ff;
-  background:#261936;
-}
-
-/* =========================
-   ORDERS
-========================= */
-
-.orders-list{
+.form-row{
   display:grid;
-  gap:14px;
-}
-
-.order-card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:17px;
-  padding:16px;
-}
-
-.order-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
+  grid-template-columns:1fr 1fr;
   gap:12px;
-
-  margin-bottom:13px;
 }
 
-.order-number{
-  color:var(--green);
-  font-size:14px;
-  font-weight:900;
-}
-
-.order-date{
+.help-text{
   color:var(--muted);
   font-size:10px;
-  margin-top:4px;
-}
-
-.order-product{
-  font-size:15px;
-  font-weight:bold;
-}
-
-.order-meta{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:9px;
-  margin:13px 0;
-}
-
-.meta-box{
-  padding:10px;
-  border-radius:10px;
-  background:#08100c;
-  border:1px solid #14251c;
-}
-
-.meta-box span{
-  display:block;
-  color:var(--muted);
-  font-size:9px;
-  text-transform:uppercase;
-  margin-bottom:4px;
-}
-
-.meta-box strong{
-  font-size:12px;
-}
-
-.order-actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
+  line-height:1.5;
+  margin-top:6px;
 }
 
 /* =========================
    ADMIN
 ========================= */
 
+.admin-header{
+  margin-bottom:18px;
+}
+
+.admin-header h2{
+  font-size:25px;
+}
+
+.admin-header p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
 .admin-tabs{
   display:flex;
   gap:7px;
   overflow-x:auto;
-  padding-bottom:5px;
-  margin-bottom:17px;
+  padding-bottom:10px;
+  margin-bottom:18px;
 }
 
-.admin-tabs button{
+.admin-tab{
   white-space:nowrap;
-
-  background:#0a110d;
-  color:var(--muted);
-
+  background:#0b110e;
   border:1px solid var(--border);
-
+  color:var(--muted);
   border-radius:9px;
-
-  padding:9px 13px;
-
+  padding:10px 13px;
   font-size:11px;
-  font-weight:bold;
+  font-weight:800;
 }
 
-.admin-tabs button.active{
-  color:#031108;
-  background:var(--green);
-  border-color:var(--green);
+.admin-tab.active{
+  background:#10251a;
+  color:var(--green);
+  border-color:#245637;
 }
 
 .admin-section{
@@ -644,111 +478,166 @@ textarea.form-control{
   display:block;
 }
 
-.admin-grid{
+.stats{
   display:grid;
-  grid-template-columns:
-    repeat(
-      auto-fit,
-      minmax(220px,1fr)
-    );
-  gap:14px;
-  margin-bottom:18px;
+  grid-template-columns:repeat(4,1fr);
+  gap:13px;
+  margin-bottom:20px;
 }
 
-.stat-card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:15px;
+.stat{
   padding:17px;
+  border-radius:14px;
+  background:#0a110d;
+  border:1px solid var(--border);
 }
 
-.stat-card span{
+.stat small{
   color:var(--muted);
   font-size:10px;
+}
+
+.stat strong{
+  display:block;
+  margin-top:7px;
+  font-size:23px;
+  color:var(--green);
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+
+th,
+td{
+  padding:12px 9px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  font-size:11px;
+}
+
+th{
+  color:#8e9d94;
+  font-size:9px;
   text-transform:uppercase;
 }
 
-.stat-card strong{
-  display:block;
-  color:var(--green);
-  font-size:27px;
-  margin-top:6px;
+td{
+  color:#dce5df;
 }
 
-.admin-list{
+.status{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:20px;
+  font-size:9px;
+  font-weight:900;
+}
+
+.status.paid{
+  color:#5cff98;
+  background:#0d2818;
+}
+
+.status.pending{
+  color:#ffd35e;
+  background:#2b230d;
+}
+
+.status.failed{
+  color:#ff6878;
+  background:#2c1014;
+}
+
+.status.delivered{
+  color:#65b4ff;
+  background:#0d2033;
+}
+
+/* =========================
+   IMAGE UPLOAD
+========================= */
+
+.upload-box{
+  border:1px dashed #294235;
+  background:#08100b;
+  padding:17px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.preview{
+  width:100%;
+  max-height:220px;
+  object-fit:contain;
+  border-radius:10px;
+  margin-top:12px;
+  display:none;
+  background:#030504;
+}
+
+/* =========================
+   ORDERS
+========================= */
+
+.order-list{
   display:grid;
-  gap:10px;
+  gap:13px;
 }
 
-.user-row,
-.admin-order-row,
-.admin-product-row{
-  background:var(--panel);
+.order-card{
+  background:#0b120e;
   border:1px solid var(--border);
   border-radius:14px;
-  padding:14px;
+  padding:17px;
 }
 
-.user-row{
+.order-top{
   display:flex;
+  align-items:flex-start;
   justify-content:space-between;
-  gap:12px;
-  align-items:center;
+  gap:10px;
 }
 
-.row-title{
+.order-number{
+  color:var(--green);
   font-weight:900;
-  font-size:13px;
 }
 
-.row-sub{
+.order-info{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:15px 0;
+}
+
+.order-info div{
+  background:#080d0a;
+  padding:10px;
+  border-radius:9px;
+}
+
+.order-info small{
+  display:block;
   color:var(--muted);
-  font-size:10px;
-  margin-top:4px;
-  line-height:1.5;
+  font-size:9px;
+  margin-bottom:4px;
 }
 
-.admin-order-row{
-  display:grid;
-  gap:10px;
+.order-info strong{
+  font-size:11px;
 }
 
-.admin-order-head{
+.order-actions{
   display:flex;
-  justify-content:space-between;
-  gap:10px;
   flex-wrap:wrap;
-}
-
-.admin-order-info{
-  display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(140px,1fr));
-  gap:8px;
-}
-
-.admin-product-row{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.admin-product-thumb{
-  width:65px;
-  height:65px;
-  border-radius:10px;
-  object-fit:cover;
-  background:#0b130f;
-}
-
-.admin-product-info{
-  flex:1;
-}
-
-.admin-actions{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
+  gap:7px;
 }
 
 /* =========================
@@ -758,18 +647,13 @@ textarea.form-control{
 .modal{
   position:fixed;
   inset:0;
-
-  z-index:2000;
-
+  z-index:3000;
   display:none;
   align-items:center;
   justify-content:center;
-
   padding:15px;
-
   background:rgba(0,0,0,.78);
-
-  backdrop-filter:blur(8px);
+  backdrop-filter:blur(7px);
 }
 
 .modal.show{
@@ -777,180 +661,31 @@ textarea.form-control{
 }
 
 .modal-box{
-  width:100%;
-  max-width:540px;
-
-  max-height:
-    calc(100vh - 30px);
-
-  overflow:auto;
-
-  background:#0a110d;
-
-  border:1px solid var(--border);
-
-  border-radius:20px;
-
-  padding:20px;
-
-  box-shadow:0 25px 80px rgba(0,0,0,.55);
+  width:min(560px,100%);
+  max-height:92vh;
+  overflow-y:auto;
+  background:#09100c;
+  border:1px solid #26392d;
+  border-radius:17px;
+  padding:21px;
+  box-shadow:0 25px 80px rgba(0,0,0,.5);
 }
 
 .modal-head{
   display:flex;
+  align-items:center;
   justify-content:space-between;
-  align-items:center;
   gap:10px;
-
-  margin-bottom:17px;
+  margin-bottom:18px;
 }
 
-.modal-head h2{
-  font-size:19px;
-}
-
-.close-btn{
-  width:34px;
-  height:34px;
-
+.close{
+  width:35px;
+  height:35px;
   border-radius:9px;
-
   border:1px solid var(--border);
-
-  background:#101913;
-
-  color:#b9c7bf;
-
-  font-size:18px;
-}
-
-/* =========================
-   PAYMENT
-========================= */
-
-.payment-methods{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-  margin-bottom:14px;
-}
-
-.payment-option{
-  position:relative;
-}
-
-.payment-option input{
-  position:absolute;
-  opacity:0;
-}
-
-.payment-label{
-  display:block;
-
-  padding:13px;
-
-  border:1px solid var(--border);
-
-  border-radius:11px;
-
-  background:#080f0b;
-
-  cursor:pointer;
-}
-
-.payment-label strong{
-  display:block;
-  font-size:13px;
-}
-
-.payment-label span{
-  display:block;
-  color:var(--muted);
-  font-size:10px;
-  margin-top:4px;
-}
-
-.payment-option input:checked + .payment-label{
-  border-color:var(--green);
-  background:#0b1d13;
-}
-
-/* =========================
-   BINANCE
-========================= */
-
-.crypto-box{
-  background:#07110c;
-  border:1px solid #183425;
-  border-radius:13px;
-  padding:13px;
-  margin-top:10px;
-}
-
-.crypto-box strong{
-  color:var(--green);
-}
-
-.crypto-link{
-  display:block;
-  word-break:break-all;
-  color:#75b8ff;
-  font-size:11px;
-  margin-top:7px;
-}
-
-/* =========================
-   DELIVERY
-========================= */
-
-.delivery-note{
-  color:var(--muted);
-  font-size:10px;
-  line-height:1.5;
-
-  padding:10px;
-
-  background:#080e0a;
-
-  border:1px solid #132219;
-
-  border-radius:9px;
-
-  margin-bottom:13px;
-}
-
-/* =========================
-   HELP
-========================= */
-
-.whatsapp-help{
-  position:fixed;
-
-  right:16px;
-  bottom:18px;
-
-  z-index:1500;
-
-  display:flex;
-  align-items:center;
-  gap:7px;
-
-  background:#19d66e;
-  color:#021008;
-
-  padding:12px 15px;
-
-  border-radius:99px;
-
-  font-size:12px;
-  font-weight:900;
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,.4);
-}
-
-.whatsapp-help:hover{
-  background:#45f58d;
+  background:#101812;
+  color:#aaa;
 }
 
 /* =========================
@@ -959,40 +694,32 @@ textarea.form-control{
 
 #toast{
   position:fixed;
-
   left:50%;
-  bottom:85px;
-
-  transform:
-    translate(-50%,20px);
-
-  z-index:3000;
-
-  opacity:0;
-  pointer-events:none;
-
-  max-width:
-    calc(100vw - 30px);
-
-  background:#101a15;
-
-  border:1px solid var(--border);
-
+  bottom:22px;
+  transform:translateX(-50%) translateY(100px);
+  z-index:5000;
+  min-width:250px;
+  max-width:calc(100% - 30px);
+  padding:13px 17px;
   border-radius:11px;
-
-  padding:12px 15px;
-
-  color:var(--text);
-
+  background:#101913;
+  border:1px solid #294635;
+  color:#eef7f1;
   font-size:12px;
-  font-weight:bold;
-
+  font-weight:700;
+  text-align:center;
+  opacity:0;
   transition:.25s;
 }
 
 #toast.show{
   opacity:1;
-  transform:translate(-50%,0);
+  transform:translateX(-50%) translateY(0);
+}
+
+#toast.error{
+  border-color:#64202a;
+  color:#ff7b88;
 }
 
 /* =========================
@@ -1000,39 +727,11 @@ textarea.form-control{
 ========================= */
 
 .empty{
-  padding:30px;
   text-align:center;
-
+  padding:45px 20px;
   color:var(--muted);
-
   border:1px dashed var(--border);
   border-radius:15px;
-
-  font-size:12px;
-}
-
-/* =========================
-   LOADER
-========================= */
-
-.loader{
-  display:inline-block;
-
-  width:15px;
-  height:15px;
-
-  border:2px solid #355343;
-  border-top-color:var(--green);
-
-  border-radius:50%;
-
-  animation:spin .7s linear infinite;
-}
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
 }
 
 /* =========================
@@ -1041,183 +740,196 @@ textarea.form-control{
 
 footer{
   border-top:1px solid var(--border);
-  padding:25px 15px 35px;
-
+  padding:25px 15px;
   text-align:center;
-
-  color:#65766c;
-
+  color:#68766e;
   font-size:10px;
-  line-height:1.8;
+  line-height:1.7;
 }
 
 footer strong{
-  color:#a4b4aa;
+  color:#9ba79f;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+  padding:35px;
+  text-align:center;
+  color:var(--muted);
 }
 
 /* =========================
    RESPONSIVE
 ========================= */
 
-@media(max-width:650px){
+@media(max-width:850px){
+
+  .products{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  nav{
+    gap:3px;
+  }
+
+  .nav-btn{
+    padding:9px 8px;
+    font-size:10px;
+  }
+}
+
+@media(max-width:620px){
 
   .header-inner{
-    align-items:flex-start;
+    min-height:62px;
   }
 
-  .brand-text strong{
-    font-size:14px;
+  .brand-text h1{
+    font-size:15px;
   }
 
-  .brand-text span{
-    font-size:8px;
+  .brand-text small{
+    font-size:7px;
   }
 
   .brand-logo{
     width:37px;
     height:37px;
-    border-radius:10px;
   }
 
-  .nav{
-    max-width:230px;
-  }
-
-  .nav button{
-    padding:7px 9px;
-    font-size:10px;
-  }
-
-  main{
-    padding-top:17px;
-  }
-
-  .hero{
-    padding:25px 17px;
-  }
-
-  .products-grid{
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-
-  .product-image{
-    height:140px;
-  }
-
-  .product-body{
-    padding:12px;
-  }
-
-  .product-body h3{
-    font-size:14px;
-  }
-
-  .product-description{
-    font-size:10px;
-  }
-
-  .price-kes{
-    font-size:16px;
-  }
-
-  .price-row{
+  #mobileMenuBtn{
     display:block;
   }
 
-  .price-usdt{
-    text-align:left;
-    margin-top:4px;
-  }
-
-  .product-body .btn{
-    width:100%;
-  }
-
-  .payment-methods{
-    grid-template-columns:1fr;
-  }
-
-  .user-row{
-    align-items:flex-start;
+  nav{
+    position:absolute;
+    left:10px;
+    right:10px;
+    top:67px;
+    display:none;
     flex-direction:column;
+    align-items:stretch;
+    padding:10px;
+    background:#080e0a;
+    border:1px solid var(--border);
+    border-radius:12px;
   }
 
-  .admin-product-row{
-    align-items:flex-start;
+  nav.open{
+    display:flex;
   }
 
-  .admin-product-thumb{
-    width:55px;
-    height:55px;
+  .nav-btn{
+    text-align:left;
+    padding:12px;
   }
 
-  .whatsapp-help{
-    right:12px;
-    bottom:12px;
+  .container{
+    width:calc(100% - 18px);
+    margin-top:15px;
   }
-}
 
-@media(max-width:390px){
+  .hero{
+    padding:25px 18px;
+  }
 
-  .products-grid{
+  .products{
     grid-template-columns:1fr;
+  }
+
+  .form-row{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .order-info{
+    grid-template-columns:1fr 1fr;
   }
 
   .product-image{
-    height:180px;
+    height:210px;
   }
+}
+
+/* =========================
+   HIDDEN
+========================= */
+
+.hidden{
+  display:none !important;
 }
 </style>
 </head>
 
 <body>
 
+<!-- =========================
+     HEADER
+========================= -->
+
 <header>
   <div class="header-inner">
 
-    <a href="#" class="brand" onclick="showPage('store');return false;">
-
-      <div class="brand-logo">
-        DW
-      </div>
+    <div class="brand">
+      <div class="brand-logo">DW</div>
 
       <div class="brand-text">
-        <strong>DARK WEB</strong>
-        <span>POWERED BY DARK WEB</span>
+        <h1>DARK WEB</h1>
+        <small>POWERED BY DARK WEB</small>
       </div>
+    </div>
 
-    </a>
+    <button
+      class="nav-btn"
+      id="mobileMenuBtn"
+      onclick="toggleMobileMenu()">
+      ☰
+    </button>
 
-    <nav class="nav">
+    <nav id="mainNav">
 
       <button
-        id="navStore"
-        class="active"
+        class="nav-btn active"
+        data-page="store"
         onclick="showPage('store')">
         STORE
       </button>
 
       <button
-        id="navOrders"
+        class="nav-btn"
+        data-page="orders"
         onclick="showPage('orders')">
         ORDERS
       </button>
 
       <button
-        id="navAdmin"
-        onclick="showPage('admin')"
-        style="display:none">
+        class="nav-btn hidden"
+        id="adminNav"
+        data-page="admin"
+        onclick="showPage('admin')">
         ADMIN
       </button>
 
       <button
-        id="navAuth"
+        class="nav-btn"
+        id="authNav"
+        data-page="auth"
         onclick="showPage('auth')">
         LOGIN
       </button>
 
       <button
+        class="nav-btn hidden"
         id="logoutBtn"
         onclick="logout()">
         LOGOUT
@@ -1229,67 +941,59 @@ footer strong{
 </header>
 
 
-<main>
+<main class="container">
 
 <!-- =========================
-     STORE
+     STORE PAGE
 ========================= -->
 
-<section
-  id="storePage"
-  class="page active">
+<section id="storePage" class="page active">
 
   <div class="hero">
 
-    <h1>
-      DIGITAL PRODUCTS.
-      <span>FAST DELIVERY.</span>
-    </h1>
+    <h2>
+      PREMIUM <span>DIGITAL PRODUCTS</span>
+    </h2>
 
     <p>
-      Browse digital products, place your order,
-      complete payment securely through the available
-      payment provider, then track your order from
-      your dashboard.
+      Browse our digital products, choose your product,
+      complete payment securely and receive your purchase
+      through your selected delivery method.
     </p>
 
     <div class="hero-actions">
 
       <button
         class="btn btn-primary"
-        onclick="scrollToProducts()">
+        onclick="document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})">
         SHOP NOW
       </button>
 
-      <button
+      <a
         class="btn btn-secondary"
-        onclick="showPage('orders')">
-        MY ORDERS
-      </button>
+        href="https://wa.me/254781601410"
+        target="_blank">
+        WHATSAPP SUPPORT
+      </a>
 
     </div>
 
   </div>
 
 
-  <div class="section-title">
+  <div id="productsSection">
 
-    <h2>Available Products</h2>
+    <div class="section-head">
+      <h3>AVAILABLE PRODUCTS</h3>
+      <span id="productCount">0 PRODUCTS</span>
+    </div>
 
-    <span id="productCount">
-      Loading...
-    </span>
-
-  </div>
-
-
-  <div
-    id="productsGrid"
-    class="products-grid">
-
-    <div class="empty">
-      <span class="loader"></span>
-      Loading products...
+    <div
+      id="products"
+      class="products">
+      <div class="loading">
+        Loading products...
+      </div>
     </div>
 
   </div>
@@ -1298,116 +1002,109 @@ footer strong{
 
 
 <!-- =========================
-     AUTH
+     AUTH PAGE
 ========================= -->
 
-<section
-  id="authPage"
-  class="page">
+<section id="authPage" class="page">
 
   <div class="auth-wrap">
 
-    <div class="panel">
+    <div class="card">
 
-      <h2 id="authTitle">
-        Customer Login
-      </h2>
+      <div id="loginBox">
 
-      <p
-        id="authSubtitle"
-        class="panel-subtitle">
+        <h3>LOGIN</h3>
 
-        Login to order products and track
-        your payments and deliveries.
+        <form onsubmit="login(event)">
 
-      </p>
+          <div class="form-group">
+            <label>EMAIL</label>
+            <input
+              id="loginEmail"
+              type="email"
+              autocomplete="email"
+              required>
+          </div>
 
+          <div class="form-group">
+            <label>PASSWORD</label>
+            <input
+              id="loginPassword"
+              type="password"
+              autocomplete="current-password"
+              required>
+          </div>
 
-      <form
-        id="authForm"
-        onsubmit="submitAuth(event)">
+          <button
+            class="btn btn-primary btn-block"
+            type="submit">
+            LOGIN
+          </button>
 
-        <div
-          id="nameGroup"
-          class="form-group"
-          style="display:none">
+        </form>
 
-          <label>
-            FULL NAME
-          </label>
-
-          <input
-            id="name"
-            class="form-control"
-            type="text"
-            autocomplete="name"
-            placeholder="Your name">
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label>
-            EMAIL
-          </label>
-
-          <input
-            id="email"
-            class="form-control"
-            type="email"
-            autocomplete="email"
-            required
-            placeholder="you@example.com">
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label>
-            PASSWORD
-          </label>
-
-          <input
-            id="password"
-            class="form-control"
-            type="password"
-            autocomplete="current-password"
-            required
-            minlength="6"
-            placeholder="Enter password">
-
-        </div>
-
-
-        <button
-          id="authSubmit"
-          class="btn btn-primary"
-          style="width:100%"
-          type="submit">
-
-          LOGIN
-
-        </button>
-
-      </form>
-
-
-      <div class="auth-switch">
-
-        <span id="authSwitchText">
+        <p class="help-text">
           Don't have an account?
-        </span>
+          <button
+            class="btn-secondary"
+            style="border:0;background:none;padding:0;color:#19e56d"
+            onclick="showRegister()">
+            Create account
+          </button>
+        </p>
 
-        <button
-          type="button"
-          onclick="toggleAuth()"
-          id="authSwitchBtn">
+      </div>
 
-          Create account
 
-        </button>
+      <div id="registerBox" class="hidden">
+
+        <h3>CREATE ACCOUNT</h3>
+
+        <form onsubmit="register(event)">
+
+          <div class="form-group">
+            <label>FULL NAME</label>
+            <input
+              id="registerName"
+              type="text"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label>EMAIL</label>
+            <input
+              id="registerEmail"
+              type="email"
+              autocomplete="email"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label>PASSWORD</label>
+            <input
+              id="registerPassword"
+              type="password"
+              minlength="6"
+              required>
+          </div>
+
+          <button
+            class="btn btn-primary btn-block"
+            type="submit">
+            CREATE ACCOUNT
+          </button>
+
+        </form>
+
+        <p class="help-text">
+          Already have an account?
+          <button
+            class="btn-secondary"
+            style="border:0;background:none;padding:0;color:#19e56d"
+            onclick="showLogin()">
+            Login
+          </button>
+        </p>
 
       </div>
 
@@ -1419,64 +1116,46 @@ footer strong{
 
 
 <!-- =========================
-     ORDERS
+     ORDERS PAGE
 ========================= -->
 
-<section
-  id="ordersPage"
-  class="page">
+<section id="ordersPage" class="page">
 
-  <div class="section-title">
-
+  <div class="section-head">
     <div>
-      <h2>My Orders</h2>
-
-      <span>
-        Track payment and delivery
-      </span>
+      <h3>MY ORDERS</h3>
+      <span>Track your purchases and payments</span>
     </div>
 
     <button
-      class="btn btn-secondary btn-small"
+      class="btn btn-secondary"
       onclick="loadOrders()">
-
       REFRESH
-
     </button>
-
   </div>
 
-
-  <div
-    id="ordersList"
-    class="orders-list">
-
+  <div id="ordersList">
     <div class="empty">
-      Loading orders...
+      Login to view your orders.
     </div>
-
   </div>
 
 </section>
 
 
 <!-- =========================
-     ADMIN
+     ADMIN PAGE
 ========================= -->
 
-<section
-  id="adminPage"
-  class="page">
+<section id="adminPage" class="page">
 
-  <div class="section-title">
+  <div class="admin-header">
 
-    <div>
-      <h2>Admin Dashboard</h2>
+    <h2>ADMIN DASHBOARD</h2>
 
-      <span>
-        Store management
-      </span>
-    </div>
+    <p>
+      Manage products, users, orders and delivery.
+    </p>
 
   </div>
 
@@ -1484,29 +1163,38 @@ footer strong{
   <div class="admin-tabs">
 
     <button
-      class="active"
-      onclick="showAdminSection('overview',this)">
+      class="admin-tab active"
+      data-tab="overview"
+      onclick="showAdminTab('overview')">
       OVERVIEW
     </button>
 
     <button
-      onclick="showAdminSection('users',this)">
+      class="admin-tab"
+      data-tab="users"
+      onclick="showAdminTab('users')">
       USERS
     </button>
 
     <button
-      onclick="showAdminSection('adminOrders',this)">
+      class="admin-tab"
+      data-tab="adminOrders"
+      onclick="showAdminTab('adminOrders')">
       ORDERS
     </button>
 
     <button
-      onclick="showAdminSection('products',this)">
+      class="admin-tab"
+      data-tab="productsAdmin"
+      onclick="showAdminTab('productsAdmin')">
       PRODUCTS
     </button>
 
     <button
-      onclick="showAdminSection('addProduct',this)">
-      ADD PRODUCT
+      class="admin-tab"
+      data-tab="addProduct"
+      onclick="showAdminTab('addProduct')">
+      + ADD PRODUCT
     </button>
 
   </div>
@@ -1515,58 +1203,42 @@ footer strong{
   <!-- OVERVIEW -->
 
   <div
-    id="adminOverview"
+    id="overviewTab"
     class="admin-section active">
 
-    <div class="admin-grid">
+    <div class="stats">
 
-      <div class="stat-card">
-
-        <span>
-          Users
-        </span>
-
-        <strong id="statUsers">
-          0
-        </strong>
-
+      <div class="stat">
+        <small>USERS</small>
+        <strong id="statUsers">0</strong>
       </div>
 
-      <div class="stat-card">
-
-        <span>
-          Products
-        </span>
-
-        <strong id="statProducts">
-          0
-        </strong>
-
+      <div class="stat">
+        <small>PRODUCTS</small>
+        <strong id="statProducts">0</strong>
       </div>
 
-      <div class="stat-card">
-
-        <span>
-          Orders
-        </span>
-
-        <strong id="statOrders">
-          0
-        </strong>
-
+      <div class="stat">
+        <small>ORDERS</small>
+        <strong id="statOrders">0</strong>
       </div>
 
-      <div class="stat-card">
-
-        <span>
-          Paid Orders
-        </span>
-
-        <strong id="statPaid">
-          0
-        </strong>
-
+      <div class="stat">
+        <small>PAID</small>
+        <strong id="statPaid">0</strong>
       </div>
+
+    </div>
+
+    <div class="card">
+
+      <h3>STORE STATUS</h3>
+
+      <p class="help-text">
+        Your store is connected to the backend API.
+        Products, orders, users and payments are handled
+        through the server.
+      </p>
 
     </div>
 
@@ -1576,30 +1248,40 @@ footer strong{
   <!-- USERS -->
 
   <div
-    id="adminUsers"
+    id="usersTab"
     class="admin-section">
 
-    <div class="section-title">
+    <div class="card">
 
-      <h2>Users</h2>
+      <div class="section-head">
+        <h3>REGISTERED USERS</h3>
 
-      <button
-        class="btn btn-secondary btn-small"
-        onclick="loadAdminUsers()">
+        <button
+          class="btn btn-secondary"
+          onclick="loadAdminUsers()">
+          REFRESH
+        </button>
+      </div>
 
-        REFRESH
+      <div class="table-wrap">
 
-      </button>
+        <table>
 
-    </div>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>ADMIN</th>
+              <th>CREATED</th>
+            </tr>
+          </thead>
 
+          <tbody id="usersTable">
+          </tbody>
 
-    <div
-      id="usersList"
-      class="admin-list">
+        </table>
 
-      <div class="empty">
-        Loading users...
       </div>
 
     </div>
@@ -1610,30 +1292,44 @@ footer strong{
   <!-- ADMIN ORDERS -->
 
   <div
-    id="adminOrders"
+    id="adminOrdersTab"
     class="admin-section">
 
-    <div class="section-title">
+    <div class="card">
 
-      <h2>All Orders</h2>
+      <div class="section-head">
 
-      <button
-        class="btn btn-secondary btn-small"
-        onclick="loadAdminOrders()">
+        <h3>ALL ORDERS</h3>
 
-        REFRESH
+        <button
+          class="btn btn-secondary"
+          onclick="loadAdminOrders()">
+          REFRESH
+        </button>
 
-      </button>
+      </div>
 
-    </div>
+      <div class="table-wrap">
 
+        <table>
 
-    <div
-      id="adminOrdersList"
-      class="admin-list">
+          <thead>
+            <tr>
+              <th>ORDER</th>
+              <th>PRODUCT</th>
+              <th>BUYER</th>
+              <th>AMOUNT</th>
+              <th>PAYMENT</th>
+              <th>STATUS</th>
+              <th>ACTION</th>
+            </tr>
+          </thead>
 
-      <div class="empty">
-        Loading orders...
+          <tbody id="adminOrdersTable">
+          </tbody>
+
+        </table>
+
       </div>
 
     </div>
@@ -1641,33 +1337,45 @@ footer strong{
   </div>
 
 
-  <!-- PRODUCTS -->
+  <!-- PRODUCTS ADMIN -->
 
   <div
-    id="adminProducts"
+    id="productsAdminTab"
     class="admin-section">
 
-    <div class="section-title">
+    <div class="card">
 
-      <h2>Products</h2>
+      <div class="section-head">
 
-      <button
-        class="btn btn-secondary btn-small"
-        onclick="loadAdminProducts()">
+        <h3>PRODUCT MANAGEMENT</h3>
 
-        REFRESH
+        <button
+          class="btn btn-secondary"
+          onclick="loadAdminProducts()">
+          REFRESH
+        </button>
 
-      </button>
+      </div>
 
-    </div>
+      <div class="table-wrap">
 
+        <table>
 
-    <div
-      id="adminProductsList"
-      class="admin-list">
+          <thead>
+            <tr>
+              <th>PRODUCT</th>
+              <th>KSH</th>
+              <th>BINANCE</th>
+              <th>STATUS</th>
+              <th>ACTION</th>
+            </tr>
+          </thead>
 
-      <div class="empty">
-        Loading products...
+          <tbody id="adminProductsTable">
+          </tbody>
+
+        </table>
+
       </div>
 
     </div>
@@ -1678,21 +1386,17 @@ footer strong{
   <!-- ADD PRODUCT -->
 
   <div
-    id="adminAddProduct"
+    id="addProductTab"
     class="admin-section">
 
-    <div class="panel">
+    <div class="card">
 
-      <h2>
-        Add New Product
-      </h2>
+      <h3>ADD NEW PRODUCT</h3>
 
-      <p class="panel-subtitle">
-        Create a digital product and define
-        the content that will be delivered after
-        the order is successfully paid and delivered.
+      <p class="help-text" style="margin-bottom:18px">
+        Add a digital product. The KSh price or Binance
+        price must be greater than zero.
       </p>
-
 
       <form
         id="productForm"
@@ -1700,69 +1404,57 @@ footer strong{
 
         <div class="form-group">
 
-          <label>
-            PRODUCT NAME
-          </label>
+          <label>PRODUCT NAME</label>
 
           <input
             id="productName"
-            class="form-control"
-            required
-            placeholder="Example: Premium Digital Guide">
+            type="text"
+            placeholder="Example: Premium Account"
+            required>
 
         </div>
 
 
         <div class="form-group">
 
-          <label>
-            DESCRIPTION
-          </label>
+          <label>DESCRIPTION</label>
 
           <textarea
             id="productDescription"
-            class="form-control"
-            required
-            placeholder="Describe your product"></textarea>
+            placeholder="Describe the product..."
+            required></textarea>
 
         </div>
 
 
-        <div
-          class="admin-grid"
-          style="margin-bottom:0">
+        <div class="form-row">
 
           <div class="form-group">
 
-            <label>
-              PRICE — KES
-            </label>
+            <label>KSH PRICE</label>
 
             <input
               id="productPriceKes"
-              class="form-control"
               type="number"
-              min="1"
+              min="0"
               step="0.01"
-              required
-              placeholder="1000">
+              placeholder="100"
+              required>
 
           </div>
 
 
           <div class="form-group">
 
-            <label>
-              BINANCE PRICE — USDT
-            </label>
+            <label>BINANCE PRICE — USDT</label>
 
             <input
               id="productBinancePrice"
-              class="form-control"
               type="number"
               min="0"
               step="0.01"
-              placeholder="10">
+              placeholder="1"
+              required>
 
           </div>
 
@@ -1771,60 +1463,48 @@ footer strong{
 
         <div class="form-group">
 
-          <label>
-            DELIVERY CONTENT
-          </label>
+          <label>DELIVERY CONTENT</label>
 
           <textarea
             id="productDelivery"
-            class="form-control"
-            required
-            placeholder="Digital content delivered to the buyer"></textarea>
+            placeholder="Enter the digital content/details that will be delivered after payment."
+            required></textarea>
+
+          <div class="help-text">
+            Keep this information private. It is intended
+            for the buyer after successful payment.
+          </div>
 
         </div>
 
 
         <div class="form-group">
 
-          <label>
-            PRODUCT IMAGE
-          </label>
+          <label>PRODUCT IMAGE</label>
 
-          <input
-            id="productImage"
-            class="form-control"
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/gif"
-            onchange="previewProductImage(event)">
+          <div class="upload-box">
 
-        </div>
+            <input
+              id="productImage"
+              type="file"
+              accept="image/*"
+              onchange="previewProductImage(event)">
 
+            <img
+              id="imagePreview"
+              class="preview"
+              alt="Product preview">
 
-        <div
-          id="imagePreviewBox"
-          style="display:none;margin-bottom:15px">
-
-          <img
-            id="imagePreview"
-            style="
-              width:100%;
-              max-height:240px;
-              object-fit:cover;
-              border-radius:12px;
-              border:1px solid var(--border);
-            ">
+          </div>
 
         </div>
 
 
         <button
           id="addProductBtn"
-          class="btn btn-primary"
-          type="submit"
-          style="width:100%">
-
+          class="btn btn-primary btn-block"
+          type="submit">
           ADD PRODUCT
-
         </button>
 
       </form>
@@ -1850,169 +1530,120 @@ footer strong{
 
     <div class="modal-head">
 
-      <h2>
-        Complete Order
-      </h2>
+      <div>
+        <h3>CHECKOUT</h3>
+        <p
+          id="checkoutProductName"
+          class="help-text">
+        </p>
+      </div>
 
       <button
-        class="close-btn"
-        onclick="closeModal('checkoutModal')">
-
-        ×
-
+        class="close"
+        onclick="closeCheckout()">
+        ✕
       </button>
 
     </div>
 
 
-    <div
-      id="checkoutProduct"
-      class="delivery-note">
+    <div class="card" style="margin-bottom:15px">
 
-      Product
+      <div class="price-row" style="margin:0">
 
-    </div>
+        <span>Price</span>
 
-
-    <div class="form-group">
-
-      <label>
-        DELIVERY METHOD
-      </label>
-
-      <select
-        id="deliveryMethod"
-        class="form-control"
-        onchange="updateDeliveryPlaceholder()">
-
-        <option value="email">
-          Email
-        </option>
-
-        <option value="whatsapp">
-          WhatsApp
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label id="deliveryTargetLabel">
-        EMAIL ADDRESS
-      </label>
-
-      <input
-        id="deliveryTarget"
-        class="form-control"
-        type="email"
-        required
-        placeholder="your@email.com">
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label>
-        PHONE / WHATSAPP
-      </label>
-
-      <input
-        id="deliveryPhone"
-        class="form-control"
-        type="tel"
-        placeholder="+254...">
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label>
-        PAYMENT METHOD
-      </label>
-
-      <div class="payment-methods">
-
-        <div class="payment-option">
-
-          <input
-            type="radio"
-            name="paymentMethod"
-            id="paystackMethod"
-            value="paystack"
-            checked
-            onchange="updatePaymentInfo()">
-
-          <label
-            for="paystackMethod"
-            class="payment-label">
-
-            <strong>
-              PAYSTACK
-            </strong>
-
-            <span>
-              Card / mobile money where enabled
-            </span>
-
-          </label>
-
-        </div>
-
-
-        <div class="payment-option">
-
-          <input
-            type="radio"
-            name="paymentMethod"
-            id="binanceMethod"
-            value="binance"
-            onchange="updatePaymentInfo()">
-
-          <label
-            for="binanceMethod"
-            class="payment-label">
-
-            <strong>
-              BINANCE PAY
-            </strong>
-
-            <span>
-              Pay using supported crypto
-            </span>
-
-          </label>
-
-        </div>
+        <strong
+          id="checkoutPrice"
+          class="price">
+          KSh 0
+        </strong>
 
       </div>
 
     </div>
 
 
-    <div
-      id="paymentInfo"
-      class="delivery-note">
+    <form onsubmit="createOrder(event)">
 
-      You will be redirected to Paystack
-      to complete your payment securely.
+      <div class="form-group">
 
-    </div>
+        <label>DELIVERY METHOD</label>
+
+        <select
+          id="deliveryMethod"
+          required>
+
+          <option value="email">
+            EMAIL
+          </option>
+
+          <option value="whatsapp">
+            WHATSAPP
+          </option>
+
+        </select>
+
+      </div>
 
 
-    <button
-      id="checkoutBtn"
-      class="btn btn-primary"
-      style="width:100%"
-      onclick="createOrderAndPay()">
+      <div class="form-group">
 
-      CONTINUE TO PAYMENT
+        <label>DELIVERY EMAIL / WHATSAPP</label>
 
-    </button>
+        <input
+          id="deliveryTarget"
+          type="text"
+          placeholder="Email or WhatsApp number"
+          required>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>PHONE / WHATSAPP NUMBER</label>
+
+        <input
+          id="checkoutPhone"
+          type="tel"
+          placeholder="07XXXXXXXX"
+          required>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>PAYMENT METHOD</label>
+
+        <select
+          id="paymentMethod"
+          required>
+
+          <option value="paystack">
+            PAYSTACK — KSh
+          </option>
+
+          <option value="binance">
+            BINANCE PAY — USDT
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <button
+        id="checkoutBtn"
+        class="btn btn-primary btn-block"
+        type="submit">
+
+        CONTINUE TO PAYMENT
+
+      </button>
+
+    </form>
 
   </div>
 
@@ -2020,53 +1651,28 @@ footer strong{
 
 
 <!-- =========================
-     PAYMENT RESULT MODAL
+     ORDER VIEW MODAL
 ========================= -->
 
 <div
-  id="paymentResultModal"
+  id="orderModal"
   class="modal">
 
   <div class="modal-box">
 
     <div class="modal-head">
 
-      <h2>
-        Payment Status
-      </h2>
+      <h3>ORDER DETAILS</h3>
 
       <button
-        class="close-btn"
-        onclick="closeModal('paymentResultModal')">
-
-        ×
-
+        class="close"
+        onclick="closeOrderModal()">
+        ✕
       </button>
 
     </div>
 
-
-    <div
-      id="paymentResult"
-      class="delivery-note">
-
-      Checking payment...
-
-    </div>
-
-
-    <div
-      id="paymentResultActions"
-      class="order-actions">
-
-      <button
-        class="btn btn-primary"
-        onclick="closeModal('paymentResultModal');showPage('orders')">
-
-        VIEW MY ORDERS
-
-      </button>
-
+    <div id="orderDetails">
     </div>
 
   </div>
@@ -2075,226 +1681,32 @@ footer strong{
 
 
 <!-- =========================
-     BINANCE PAYMENT MODAL
+     FOOTER
 ========================= -->
-
-<div
-  id="binanceModal"
-  class="modal">
-
-  <div class="modal-box">
-
-    <div class="modal-head">
-
-      <h2>
-        Binance Pay
-      </h2>
-
-      <button
-        class="close-btn"
-        onclick="closeModal('binanceModal')">
-
-        ×
-
-      </button>
-
-    </div>
-
-
-    <div
-      id="binancePaymentContent"
-      class="delivery-note">
-
-      Creating Binance payment...
-
-    </div>
-
-
-    <button
-      id="binanceCheckoutBtn"
-      class="btn btn-primary"
-      style="width:100%;display:none"
-      onclick="openBinanceCheckout()">
-
-      OPEN BINANCE CHECKOUT
-
-    </button>
-
-
-    <button
-      class="btn btn-secondary"
-      style="width:100%;margin-top:8px"
-      onclick="checkCurrentBinancePayment()">
-
-      CHECK PAYMENT STATUS
-
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- =========================
-     DELIVERY MODAL
-========================= -->
-
-<div
-  id="deliveryModal"
-  class="modal">
-
-  <div class="modal-box">
-
-    <div class="modal-head">
-
-      <h2>
-        Order Details
-      </h2>
-
-      <button
-        class="close-btn"
-        onclick="closeModal('deliveryModal')">
-
-        ×
-
-      </button>
-
-    </div>
-
-
-    <div id="orderDetails"></div>
-
-  </div>
-
-</div>
-
-
-<!-- =========================
-     ADMIN DELIVERY MODAL
-========================= -->
-
-<div
-  id="adminDeliveryModal"
-  class="modal">
-
-  <div class="modal-box">
-
-    <div class="modal-head">
-
-      <h2>
-        Update Delivery
-      </h2>
-
-      <button
-        class="close-btn"
-        onclick="closeModal('adminDeliveryModal')">
-
-        ×
-
-      </button>
-
-    </div>
-
-
-    <input
-      id="deliveryOrderNumber"
-      type="hidden">
-
-
-    <div class="form-group">
-
-      <label>
-        DELIVERY STATUS
-      </label>
-
-      <select
-        id="adminDeliveryStatus"
-        class="form-control">
-
-        <option value="pending">
-          Pending
-        </option>
-
-        <option value="processing">
-          Processing
-        </option>
-
-        <option value="delivered">
-          Delivered
-        </option>
-
-      </select>
-
-    </div>
-
-
-    <div class="form-group">
-
-      <label>
-        DELIVERY NOTES
-      </label>
-
-      <textarea
-        id="adminDeliveryNotes"
-        class="form-control"
-        placeholder="Delivery notes for this order"></textarea>
-
-    </div>
-
-
-    <button
-      class="btn btn-primary"
-      style="width:100%"
-      onclick="saveDeliveryUpdate()">
-
-      SAVE DELIVERY
-
-    </button>
-
-  </div>
-
-</div>
-
-
-<!-- =========================
-     WHATSAPP HELP
-========================= -->
-
-<a
-  class="whatsapp-help"
-  href="https://wa.me/254781601410?text=Hello%20DARK%20WEB%20Support%2C%20I%20need%20help%20with%20my%20order."
-  target="_blank"
-  rel="noopener">
-
-  WhatsApp Help
-
-</a>
-
-
-<div id="toast"></div>
-
 
 <footer>
 
-  <strong>
-    DARK WEB
-  </strong>
+  <strong>DARK WEB</strong><br>
 
-  <br>
+  DIGITAL PRODUCTS • SECURE CHECKOUT • ONLINE DELIVERY<br>
 
-  POWERED BY DARK WEB
-
-  <br>
-
-  Secure checkout • Order tracking • Digital delivery
+  ANALYSIS / INFORMATION PROVIDED BY THE STORE IS NOT A GUARANTEE OF RESULTS.
 
   <br><br>
 
-  Analysis and payment status are handled by the
-  configured payment providers. No payment is confirmed
-  by the frontend alone.
+  <a
+    href="https://wa.me/254781601410"
+    target="_blank"
+    style="color:#19e56d">
+
+    WhatsApp Support
+
+  </a>
 
 </footer>
+
+
+<div id="toast"></div>
 
 
 <script>
@@ -2305,11 +1717,8 @@ footer strong{
 ========================================================= */
 
 let currentUser = null;
-let authRegister = false;
+let productsCache = [];
 let selectedProduct = null;
-let currentOrder = null;
-let currentBinanceCheckoutUrl = "";
-let currentBinanceOrderNumber = "";
 
 
 /* =========================================================
@@ -2318,70 +1727,46 @@ let currentBinanceOrderNumber = "";
 
 async function api(url, options = {}){
 
-  try{
+  const config = {
+    credentials:"include",
+    ...options
+  };
 
-    const config = {
-      credentials:"include",
-      ...options
-    };
+  config.headers = {
+    ...(options.headers || {})
+  };
 
-    if(
-      config.body &&
-      !(config.body instanceof FormData)
-    ){
+  if(
+    config.body &&
+    !(config.body instanceof FormData)
+  ){
 
-      config.headers = {
-        "Content-Type":"application/json",
-        ...(config.headers || {})
-      };
-
-    }
-
-    const response =
-      await fetch(url, config);
-
-    let data = null;
-
-    const contentType =
-      response.headers.get("content-type") || "";
-
-    if(contentType.includes("application/json")){
-
-      data = await response.json();
-
-    }else{
-
-      const text =
-        await response.text();
-
-      data = {
-        success:response.ok,
-        message:text
-      };
-
-    }
-
-    if(response.status === 401){
-
-      currentUser = null;
-      updateNav();
-
-    }
-
-    return data;
-
-  }catch(error){
-
-    console.error(error);
-
-    return {
-      success:false,
-      message:
-        "Unable to connect to the server."
-    };
+    config.headers["Content-Type"] =
+      "application/json";
 
   }
 
+  const response = await fetch(url, config);
+
+  let data = null;
+
+  try{
+    data = await response.json();
+  }catch(e){
+    data = {};
+  }
+
+  if(!response.ok){
+
+    throw new Error(
+      data.message ||
+      data.error ||
+      `Request failed (${response.status})`
+    );
+
+  }
+
+  return data;
 }
 
 
@@ -2391,46 +1776,21 @@ async function api(url, options = {}){
 
 let toastTimer;
 
-function alertUser(message){
+function toast(message,isError=false){
 
-  const toast =
+  const el =
     document.getElementById("toast");
 
-  toast.textContent =
-    message || "Done";
+  el.textContent = message;
 
-  toast.classList.add("show");
+  el.classList.toggle("error",isError);
+  el.classList.add("show");
 
   clearTimeout(toastTimer);
 
-  toastTimer =
-    setTimeout(
-      ()=>{
-        toast.classList.remove("show");
-      },
-      3200
-    );
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHtml(value){
-
-  if(value === null || value === undefined){
-    return "";
-  }
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
+  toastTimer = setTimeout(()=>{
+    el.classList.remove("show");
+  },3500);
 }
 
 
@@ -2440,93 +1800,57 @@ function escapeHtml(value){
 
 function showPage(page){
 
-  if(
-    page === "orders" &&
-    !currentUser
-  ){
-
-    alertUser("Please login first.");
-
-    showPage("auth");
-
-    return;
-
-  }
-
-
-  if(
-    page === "admin" &&
-    (!currentUser ||
-     Number(currentUser.is_admin) !== 1)
-  ){
-
-    alertUser("Admin access required.");
-
-    showPage("auth");
-
-    return;
-
-  }
-
-
   document
     .querySelectorAll(".page")
-    .forEach(
-      p=>p.classList.remove("active")
-    );
+    .forEach(el=>{
+      el.classList.remove("active");
+    });
 
+  const target =
+    document.getElementById(page+"Page");
 
-  const pageElement =
-    document.getElementById(
-      page + "Page"
-    );
-
-  if(pageElement){
-    pageElement.classList.add("active");
+  if(target){
+    target.classList.add("active");
   }
 
+  document
+    .querySelectorAll(".nav-btn[data-page]")
+    .forEach(btn=>{
+      btn.classList.toggle(
+        "active",
+        btn.dataset.page === page
+      );
+    });
 
   document
-    .querySelectorAll(".nav button")
-    .forEach(
-      b=>b.classList.remove("active")
-    );
-
+    .getElementById("mainNav")
+    .classList.remove("open");
 
   if(page === "store"){
-    document
-      .getElementById("navStore")
-      .classList.add("active");
+    loadProducts();
   }
 
   if(page === "orders"){
-    document
-      .getElementById("navOrders")
-      .classList.add("active");
-
     loadOrders();
   }
 
   if(page === "admin"){
-
-    document
-      .getElementById("navAdmin")
-      .classList.add("active");
+    if(!currentUser || !currentUser.is_admin){
+      toast("Admin access required.",true);
+      showPage("auth");
+      return;
+    }
 
     loadAdminDashboard();
-
   }
+}
 
-  if(page === "auth"){
-    document
-      .getElementById("navAuth")
-      .classList.add("active");
-  }
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+function toggleMobileMenu(){
+
+  document
+    .getElementById("mainNav")
+    .classList.toggle("open");
 
 }
 
@@ -2535,192 +1859,116 @@ function showPage(page){
    AUTH UI
 ========================================================= */
 
-function toggleAuth(){
+function showRegister(){
 
-  authRegister =
-    !authRegister;
+  document
+    .getElementById("loginBox")
+    .classList.add("hidden");
 
+  document
+    .getElementById("registerBox")
+    .classList.remove("hidden");
 
-  const title =
-    document.getElementById("authTitle");
-
-  const subtitle =
-    document.getElementById("authSubtitle");
-
-  const nameGroup =
-    document.getElementById("nameGroup");
-
-  const submit =
-    document.getElementById("authSubmit");
-
-  const switchText =
-    document.getElementById("authSwitchText");
-
-  const switchBtn =
-    document.getElementById("authSwitchBtn");
+}
 
 
-  if(authRegister){
+function showLogin(){
 
-    title.textContent =
-      "Create Account";
+  document
+    .getElementById("registerBox")
+    .classList.add("hidden");
 
-    subtitle.textContent =
-      "Create an account to order products and track delivery.";
+  document
+    .getElementById("loginBox")
+    .classList.remove("hidden");
 
-    nameGroup.style.display =
-      "block";
+}
 
-    document
-      .getElementById("name")
-      .required = true;
 
-    submit.textContent =
-      "CREATE ACCOUNT";
+/* =========================================================
+   REGISTER
+========================================================= */
 
-    switchText.textContent =
-      "Already have an account?";
+async function register(event){
 
-    switchBtn.textContent =
-      "Login";
+  event.preventDefault();
 
-  }else{
+  const name =
+    document.getElementById("registerName").value.trim();
 
-    title.textContent =
-      "Customer Login";
+  const email =
+    document.getElementById("registerEmail").value.trim();
 
-    subtitle.textContent =
-      "Login to order products and track your payments and deliveries.";
+  const password =
+    document.getElementById("registerPassword").value;
 
-    nameGroup.style.display =
-      "none";
+  try{
 
-    document
-      .getElementById("name")
-      .required = false;
+    const data = await api("/api/register",{
+      method:"POST",
+      body:JSON.stringify({
+        name,
+        email,
+        password
+      })
+    });
 
-    submit.textContent =
-      "LOGIN";
+    currentUser = data.user || data;
 
-    switchText.textContent =
-      "Don't have an account?";
+    updateAuthUI();
 
-    switchBtn.textContent =
-      "Create account";
+    toast("Account created successfully.");
+
+    showPage("store");
+
+  }catch(error){
+
+    toast(error.message,true);
 
   }
 
 }
 
 
-async function submitAuth(event){
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login(event){
 
   event.preventDefault();
 
-
-  const name =
-    document
-      .getElementById("name")
-      .value
-      .trim();
-
   const email =
-    document
-      .getElementById("email")
-      .value
-      .trim();
+    document.getElementById("loginEmail").value.trim();
 
   const password =
-    document
-      .getElementById("password")
-      .value;
+    document.getElementById("loginPassword").value;
 
+  try{
 
-  const endpoint =
-    authRegister
-      ? "/api/register"
-      : "/api/login";
+    const data = await api("/api/login",{
+      method:"POST",
+      body:JSON.stringify({
+        email,
+        password
+      })
+    });
 
+    currentUser = data.user || data;
 
-  const body =
-    authRegister
-      ? {
-          name,
-          email,
-          password
-        }
-      : {
-          email,
-          password
-        };
+    updateAuthUI();
 
+    toast("Login successful.");
 
-  const submit =
-    document.getElementById(
-      "authSubmit"
+    showPage(
+      currentUser.is_admin
+        ? "admin"
+        : "store"
     );
 
-  submit.disabled = true;
-  submit.textContent = "PLEASE WAIT...";
+  }catch(error){
 
-
-  const data =
-    await api(
-      endpoint,
-      {
-        method:"POST",
-        body:JSON.stringify(body)
-      }
-    );
-
-
-  submit.disabled = false;
-
-  submit.textContent =
-    authRegister
-      ? "CREATE ACCOUNT"
-      : "LOGIN";
-
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Authentication failed."
-    );
-
-    return;
-
-  }
-
-
-  currentUser =
-    data.user;
-
-
-  updateNav();
-
-
-  document
-    .getElementById("authForm")
-    .reset();
-
-
-  alertUser(
-    "Welcome, " +
-    currentUser.name
-  );
-
-
-  if(
-    Number(currentUser.is_admin) === 1
-  ){
-
-    showPage("admin");
-
-  }else{
-
-    showPage("store");
+    toast(error.message,true);
 
   }
 
@@ -2733,21 +1981,19 @@ async function submitAuth(event){
 
 async function logout(){
 
-  await api(
-    "/api/logout",
-    {
-      method:"POST"
-    }
-  );
+  try{
 
+    await api("/api/logout",{
+      method:"POST"
+    });
+
+  }catch(e){}
 
   currentUser = null;
 
-  updateNav();
+  updateAuthUI();
 
-  alertUser(
-    "You have been logged out."
-  );
+  toast("Logged out.");
 
   showPage("store");
 
@@ -2755,59 +2001,39 @@ async function logout(){
 
 
 /* =========================================================
-   NAVIGATION UPDATE
+   AUTH UI UPDATE
 ========================================================= */
 
-function updateNav(){
+function updateAuthUI(){
 
-  const navAuth =
-    document.getElementById(
-      "navAuth"
-    );
+  const authNav =
+    document.getElementById("authNav");
 
   const logoutBtn =
-    document.getElementById(
-      "logoutBtn"
-    );
+    document.getElementById("logoutBtn");
 
-  const navAdmin =
-    document.getElementById(
-      "navAdmin"
-    );
-
+  const adminNav =
+    document.getElementById("adminNav");
 
   if(currentUser){
 
-    navAuth.style.display =
-      "none";
+    authNav.classList.add("hidden");
 
-    logoutBtn.style.display =
-      "block";
+    logoutBtn.classList.remove("hidden");
 
-    if(
-      Number(currentUser.is_admin) === 1
-    ){
-
-      navAdmin.style.display =
-        "block";
-
+    if(currentUser.is_admin){
+      adminNav.classList.remove("hidden");
     }else{
-
-      navAdmin.style.display =
-        "none";
-
+      adminNav.classList.add("hidden");
     }
 
   }else{
 
-    navAuth.style.display =
-      "block";
+    authNav.classList.remove("hidden");
 
-    logoutBtn.style.display =
-      "none";
+    logoutBtn.classList.add("hidden");
 
-    navAdmin.style.display =
-      "none";
+    adminNav.classList.add("hidden");
 
   }
 
@@ -2815,144 +2041,69 @@ function updateNav(){
 
 
 /* =========================================================
-   PRODUCTS
+   CHECK SESSION
+========================================================= */
+
+async function checkSession(){
+
+  try{
+
+    const data =
+      await api("/api/me");
+
+    if(data && data.user){
+      currentUser = data.user;
+    }else if(data && data.email){
+      currentUser = data;
+    }
+
+  }catch(e){
+
+    currentUser = null;
+
+  }
+
+  updateAuthUI();
+
+}
+
+
+/* =========================================================
+   LOAD PRODUCTS
 ========================================================= */
 
 async function loadProducts(){
 
-  const grid =
-    document.getElementById(
-      "productsGrid"
-    );
+  const container =
+    document.getElementById("products");
 
+  container.innerHTML =
+    `<div class="loading">Loading products...</div>`;
 
-  const data =
-    await api(
-      "/api/products"
-    );
+  try{
 
+    const data =
+      await api("/api/products");
 
-  if(!data.success){
+    const products =
+      Array.isArray(data)
+        ? data
+        : data.products || [];
 
-    grid.innerHTML = `
+    productsCache = products;
+
+    renderProducts(products);
+
+  }catch(error){
+
+    container.innerHTML = `
       <div class="empty">
-        ${escapeHtml(
-          data.message ||
-          "Unable to load products."
-        )}
+        Unable to load products.<br><br>
+        ${escapeHtml(error.message)}
       </div>
     `;
 
-    return;
-
   }
-
-
-  const products =
-    data.products || [];
-
-
-  document.getElementById(
-    "productCount"
-  ).textContent =
-    products.length +
-    (
-      products.length === 1
-        ? " product"
-        : " products"
-    );
-
-
-  if(!products.length){
-
-    grid.innerHTML = `
-      <div class="empty">
-        No products are available right now.
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  grid.innerHTML =
-    products.map(
-      product => {
-
-        const image =
-          product.image_url
-            ? `
-              <img
-                class="product-image"
-                src="${escapeHtml(product.image_url)}"
-                alt="${escapeHtml(product.name)}"
-                loading="lazy">
-            `
-            : `
-              <div class="product-image empty">
-                DARK WEB
-              </div>
-            `;
-
-
-        const binance =
-          Number(product.binance_price) > 0
-            ? `
-              <div class="price-usdt">
-                Binance:
-                ${formatNumber(product.binance_price)}
-                USDT
-              </div>
-            `
-            : `
-              <div class="price-usdt">
-                Binance unavailable
-              </div>
-            `;
-
-
-        return `
-          <article class="product-card">
-
-            ${image}
-
-            <div class="product-body">
-
-              <h3>
-                ${escapeHtml(product.name)}
-              </h3>
-
-              <div class="product-description">
-                ${escapeHtml(product.description)}
-              </div>
-
-              <div class="price-row">
-
-                <div class="price-kes">
-                  KSh ${formatNumber(product.price_kes)}
-                </div>
-
-                ${binance}
-
-              </div>
-
-              <button
-                class="btn btn-primary"
-                style="width:100%"
-                onclick="openCheckout(${Number(product.id)})">
-
-                ORDER NOW
-
-              </button>
-
-            </div>
-
-          </article>
-        `;
-
-      }
-    ).join("");
 
 }
 
@@ -2961,29 +2112,141 @@ async function loadProducts(){
    PRODUCT CACHE
 ========================================================= */
 
-let productsCache = [];
-
-
 async function refreshProductsCache(){
 
-  const data =
-    await api("/api/products");
+  try{
 
-  if(data.success){
+    const data =
+      await api("/api/products");
 
     productsCache =
-      data.products || [];
+      Array.isArray(data)
+        ? data
+        : data.products || [];
 
-  }
+  }catch(e){}
 
 }
 
 
-function getProductById(id){
+/* =========================================================
+   RENDER PRODUCTS
+========================================================= */
 
-  return productsCache.find(
-    p=>Number(p.id) === Number(id)
-  );
+function renderProducts(products){
+
+  const container =
+    document.getElementById("products");
+
+  document.getElementById("productCount")
+    .textContent =
+      `${products.length} PRODUCT${products.length === 1 ? "" : "S"}`;
+
+  if(!products.length){
+
+    container.innerHTML = `
+      <div class="empty">
+        No products available yet.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML =
+    products.map(product=>{
+
+      const image =
+        product.image_url ||
+        product.image ||
+        "";
+
+      const name =
+        product.name || "Product";
+
+      const description =
+        product.description || "";
+
+      const priceKes =
+        Number(
+          product.price_kes ??
+          product.priceKes ??
+          0
+        );
+
+      const binance =
+        Number(
+          product.binance_price ??
+          product.binancePrice ??
+          0
+        );
+
+      return `
+        <article class="product-card">
+
+          ${
+            image
+            ?
+            `<img
+              class="product-image"
+              src="${escapeAttr(image)}"
+              alt="${escapeAttr(name)}">`
+            :
+            `<div class="product-image empty">DW</div>`
+          }
+
+          <div class="product-body">
+
+            <span class="badge">
+              DIGITAL PRODUCT
+            </span>
+
+            <h4 style="margin-top:10px">
+              ${escapeHtml(name)}
+            </h4>
+
+            <p class="product-description">
+              ${escapeHtml(description)}
+            </p>
+
+            <div class="price-row">
+
+              <div>
+                ${
+                  priceKes > 0
+                  ?
+                  `<div class="price">
+                    KSh ${formatMoney(priceKes)}
+                  </div>`
+                  :
+                  ""
+                }
+
+                ${
+                  binance > 0
+                  ?
+                  `<div class="crypto-price">
+                    Binance: ${formatMoney(binance)} USDT
+                  </div>`
+                  :
+                  ""
+                }
+              </div>
+
+            </div>
+
+            <button
+              class="btn btn-primary btn-block"
+              onclick="openCheckout('${escapeAttr(String(product.id))}')">
+              BUY NOW
+            </button>
+
+          </div>
+
+        </article>
+      `;
+
+    }).join("");
 
 }
 
@@ -2992,204 +2255,92 @@ function getProductById(id){
    CHECKOUT
 ========================================================= */
 
-async function openCheckout(productId){
+function openCheckout(productId){
 
   if(!currentUser){
 
-    alertUser(
-      "Login before placing an order."
-    );
+    toast("Please login before purchasing.",true);
 
     showPage("auth");
 
     return;
-
   }
 
-
-  await refreshProductsCache();
-
-
   selectedProduct =
-    getProductById(productId);
-
+    productsCache.find(
+      p => String(p.id) === String(productId)
+    );
 
   if(!selectedProduct){
 
-    alertUser(
-      "Product could not be found."
-    );
+    toast("Product not found.",true);
 
     return;
-
   }
 
-
-  document.getElementById(
-    "checkoutProduct"
-  ).innerHTML = `
-
-    <strong>
-      ${escapeHtml(selectedProduct.name)}
-    </strong>
-
-    <br>
-
-    KSh ${formatNumber(selectedProduct.price_kes)}
-
-    ${
-      Number(selectedProduct.binance_price) > 0
-        ? `
-          <br>
-          Binance:
-          ${formatNumber(selectedProduct.binance_price)}
-          USDT
-        `
-        : ""
-    }
-
-  `;
-
-
-  const binanceMethod =
-    document.getElementById(
-      "binanceMethod"
+  const priceKes =
+    Number(
+      selectedProduct.price_kes ??
+      selectedProduct.priceKes ??
+      0
     );
 
+  const binance =
+    Number(
+      selectedProduct.binance_price ??
+      selectedProduct.binancePrice ??
+      0
+    );
 
-  if(
-    Number(selectedProduct.binance_price) > 0
-  ){
+  document.getElementById(
+    "checkoutProductName"
+  ).textContent =
+    selectedProduct.name || "";
 
-    binanceMethod.disabled =
-      false;
+  document.getElementById(
+    "checkoutPrice"
+  ).textContent =
+    priceKes > 0
+      ? `KSh ${formatMoney(priceKes)}`
+      : `${formatMoney(binance)} USDT`;
 
-    binanceMethod.parentElement.style.opacity =
-      "1";
+  document.getElementById(
+    "deliveryTarget"
+  ).value =
+    currentUser.email || "";
 
-  }else{
+  document.getElementById(
+    "checkoutModal"
+  ).classList.add("show");
 
-    binanceMethod.disabled =
-      true;
-
-    binanceMethod.parentElement.style.opacity =
-      ".45";
-
-    document.getElementById(
-      "paystackMethod"
-    ).checked = true;
-
-  }
+}
 
 
-  updateDeliveryPlaceholder();
-  updatePaymentInfo();
-
+function closeCheckout(){
 
   document
     .getElementById("checkoutModal")
-    .classList.add("show");
+    .classList.remove("show");
 
-}
-
-
-function updateDeliveryPlaceholder(){
-
-  const method =
-    document.getElementById(
-      "deliveryMethod"
-    ).value;
-
-  const label =
-    document.getElementById(
-      "deliveryTargetLabel"
-    );
-
-  const input =
-    document.getElementById(
-      "deliveryTarget"
-    );
-
-
-  if(method === "whatsapp"){
-
-    label.textContent =
-      "WHATSAPP NUMBER";
-
-    input.type =
-      "tel";
-
-    input.placeholder =
-      "+254781601410";
-
-  }else{
-
-    label.textContent =
-      "EMAIL ADDRESS";
-
-    input.type =
-      "email";
-
-    input.placeholder =
-      "your@email.com";
-
-  }
-
-}
-
-
-function updatePaymentInfo(){
-
-  const method =
-    document.querySelector(
-      'input[name="paymentMethod"]:checked'
-    )?.value;
-
-
-  const info =
-    document.getElementById(
-      "paymentInfo"
-    );
-
-
-  if(method === "binance"){
-
-    info.innerHTML = `
-      You will be redirected to the official
-      Binance Pay checkout for this order.
-      Your order is marked paid only after the
-      server verifies the Binance payment.
-    `;
-
-  }else{
-
-    info.innerHTML = `
-      You will be redirected to Paystack to
-      complete payment securely using the payment
-      methods available on your Paystack account.
-    `;
-
-  }
+  selectedProduct = null;
 
 }
 
 
 /* =========================================================
-   CREATE ORDER + PAYMENT
+   CREATE ORDER
 ========================================================= */
 
-async function createOrderAndPay(){
+async function createOrder(event){
+
+  event.preventDefault();
 
   if(!selectedProduct){
 
-    alertUser(
-      "Select a product first."
-    );
+    toast("No product selected.",true);
 
     return;
-
   }
-
 
   const deliveryMethod =
     document.getElementById(
@@ -3203,137 +2354,77 @@ async function createOrderAndPay(){
 
   const phone =
     document.getElementById(
-      "deliveryPhone"
+      "checkoutPhone"
     ).value.trim();
 
   const paymentMethod =
-    document.querySelector(
-      'input[name="paymentMethod"]:checked'
-    )?.value;
-
+    document.getElementById(
+      "paymentMethod"
+    ).value;
 
   if(!deliveryTarget){
 
-    alertUser(
-      "Enter your delivery contact."
-    );
+    toast("Enter your delivery contact.",true);
 
     return;
-
   }
-
-
-  if(
-    deliveryMethod === "whatsapp" &&
-    !phone &&
-    !deliveryTarget
-  ){
-
-    alertUser(
-      "Enter a WhatsApp number."
-    );
-
-    return;
-
-  }
-
-
-  if(
-    paymentMethod === "binance" &&
-    Number(selectedProduct.binance_price) <= 0
-  ){
-
-    alertUser(
-      "Binance payment is unavailable for this product."
-    );
-
-    return;
-
-  }
-
 
   const btn =
-    document.getElementById(
-      "checkoutBtn"
-    );
+    document.getElementById("checkoutBtn");
 
   btn.disabled = true;
-  btn.textContent =
-    "CREATING ORDER...";
+  btn.textContent = "CREATING ORDER...";
 
+  try{
 
-  const orderData =
-    await api(
-      "/api/orders",
-      {
+    const data =
+      await api("/api/orders",{
         method:"POST",
         body:JSON.stringify({
-          product_id:
-            Number(selectedProduct.id),
 
-          delivery_method:
-            deliveryMethod,
+          productId:
+            selectedProduct.id,
 
-          delivery_target:
-            deliveryTarget,
+          paymentMethod,
 
-          phone:
+          deliveryMethod,
 
-            phone ||
-            (
-              deliveryMethod === "whatsapp"
-                ? deliveryTarget
-                : ""
-            ),
+          deliveryTarget,
 
-          payment_method:
-            paymentMethod
+          phone
+
         })
-      }
-    );
+      });
 
+    const order =
+      data.order || data;
 
-  if(!orderData.success){
+    closeCheckout();
+
+    if(paymentMethod === "paystack"){
+
+      await startPaystack(order);
+
+    }else if(paymentMethod === "binance"){
+
+      await startBinance(order);
+
+    }else{
+
+      toast("Unsupported payment method.",true);
+
+    }
+
+  }catch(error){
+
+    toast(error.message,true);
+
+  }finally{
 
     btn.disabled = false;
-    btn.textContent =
-      "CONTINUE TO PAYMENT";
-
-    alertUser(
-      orderData.message ||
-      "Unable to create order."
-    );
-
-    return;
+    btn.textContent = "CONTINUE TO PAYMENT";
 
   }
-
-
-  currentOrder =
-    orderData.order;
-
-
-  closeModal("checkoutModal");
-
-
-  if(paymentMethod === "paystack"){
-
-    await startPaystack(
-      currentOrder.order_number
-    );
-
-  }else{
-
-    await startBinance(
-      currentOrder.order_number
-    );
-
-  }
-
-
-  btn.disabled = false;
-  btn.textContent =
-    "CONTINUE TO PAYMENT";
 
 }
 
@@ -3342,88 +2433,549 @@ async function createOrderAndPay(){
    PAYSTACK
 ========================================================= */
 
-async function startPaystack(orderNumber){
+async function startPaystack(order){
 
-  const result =
-    document.getElementById(
-      "paymentResult"
+  try{
+
+    const data =
+      await api("/api/paystack/init",{
+        method:"POST",
+        body:JSON.stringify({
+          orderNumber:
+            order.orderNumber ||
+            order.order_number
+        })
+      });
+
+    if(!data.authorization_url){
+
+      throw new Error(
+        "Paystack checkout URL was not returned."
+      );
+
+    }
+
+    window.location.href =
+      data.authorization_url;
+
+  }catch(error){
+
+    toast(error.message,true);
+
+  }
+
+}
+
+
+/* =========================================================
+   BINANCE
+========================================================= */
+
+async function startBinance(order){
+
+  try{
+
+    const data =
+      await api("/api/binance/create",{
+        method:"POST",
+        body:JSON.stringify({
+          orderNumber:
+            order.orderNumber ||
+            order.order_number
+        })
+      });
+
+    if(!data.checkoutUrl){
+
+      throw new Error(
+        "Binance checkout URL was not returned."
+      );
+
+    }
+
+    window.location.href =
+      data.checkoutUrl;
+
+  }catch(error){
+
+    toast(error.message,true);
+
+  }
+
+}
+
+
+/* =========================================================
+   LOAD ORDERS
+========================================================= */
+
+async function loadOrders(){
+
+  const container =
+    document.getElementById("ordersList");
+
+  if(!currentUser){
+
+    container.innerHTML = `
+      <div class="empty">
+        Please login to view your orders.
+        <br><br>
+        <button
+          class="btn btn-primary"
+          onclick="showPage('auth')">
+          LOGIN
+        </button>
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML =
+    `<div class="loading">Loading orders...</div>`;
+
+  try{
+
+    const data =
+      await api("/api/orders");
+
+    const orders =
+      Array.isArray(data)
+        ? data
+        : data.orders || [];
+
+    if(!orders.length){
+
+      container.innerHTML = `
+        <div class="empty">
+          You have no orders yet.
+        </div>
+      `;
+
+      return;
+    }
+
+    container.innerHTML =
+      `<div class="order-list">
+        ${
+          orders.map(renderOrderCard).join("")
+        }
+      </div>`;
+
+  }catch(error){
+
+    container.innerHTML = `
+      <div class="empty">
+        ${escapeHtml(error.message)}
+      </div>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   ORDER CARD
+========================================================= */
+
+function renderOrderCard(order){
+
+  const orderNumber =
+    order.order_number ||
+    order.orderNumber ||
+    "N/A";
+
+  const productName =
+    order.product_name ||
+    order.productName ||
+    "Product";
+
+  const amount =
+    Number(
+      order.amount_kes ??
+      order.amountKes ??
+      0
     );
 
+  const status =
+    String(
+      order.payment_status ||
+      order.paymentStatus ||
+      "PENDING"
+    ).toUpperCase();
 
-  document
-    .getElementById("paymentResultModal")
-    .classList.add("show");
+  const paymentMethod =
+    String(
+      order.payment_method ||
+      order.paymentMethod ||
+      ""
+    ).toUpperCase();
 
+  const deliveryStatus =
+    String(
+      order.delivery_status ||
+      order.deliveryStatus ||
+      "PENDING"
+    ).toUpperCase();
 
-  result.innerHTML = `
-    Initializing Paystack payment...
+  let statusClass = "pending";
+
+  if(status === "PAID"){
+    statusClass = "paid";
+  }
+
+  if(
+    status === "FAILED" ||
+    status === "CANCELLED"
+  ){
+    statusClass = "failed";
+  }
+
+  return `
+    <div class="order-card">
+
+      <div class="order-top">
+
+        <div>
+          <div class="order-number">
+            ${escapeHtml(orderNumber)}
+          </div>
+
+          <div class="help-text">
+            ${escapeHtml(productName)}
+          </div>
+        </div>
+
+        <span class="status ${statusClass}">
+          ${escapeHtml(status)}
+        </span>
+
+      </div>
+
+      <div class="order-info">
+
+        <div>
+          <small>AMOUNT</small>
+          <strong>
+            KSh ${formatMoney(amount)}
+          </strong>
+        </div>
+
+        <div>
+          <small>PAYMENT</small>
+          <strong>
+            ${escapeHtml(paymentMethod)}
+          </strong>
+        </div>
+
+        <div>
+          <small>DELIVERY</small>
+          <strong>
+            ${escapeHtml(deliveryStatus)}
+          </strong>
+        </div>
+
+      </div>
+
+      <div class="order-actions">
+
+        ${
+          status !== "PAID"
+          ?
+          `<button
+            class="btn btn-primary"
+            onclick="payExistingOrder('${escapeAttr(orderNumber)}','${escapeAttr(paymentMethod)}')">
+            PAY NOW
+          </button>`
+          :
+          ""
+        }
+
+        ${
+          paymentMethod === "BINANCE"
+          ?
+          `<button
+            class="btn btn-warning"
+            onclick="checkBinancePayment('${escapeAttr(orderNumber)}')">
+            CHECK PAYMENT
+          </button>`
+          :
+          ""
+        }
+
+        <button
+          class="btn btn-secondary"
+          onclick="viewOrder('${escapeAttr(orderNumber)}')">
+          VIEW
+        </button>
+
+        <a
+          class="btn btn-secondary"
+          href="https://wa.me/254781601410"
+          target="_blank">
+          HELP
+        </a>
+
+      </div>
+
+    </div>
   `;
 
+}
 
-  const data =
-    await api(
-      "/api/paystack/init",
-      {
+
+/* =========================================================
+   EXISTING ORDER PAYMENT
+========================================================= */
+
+async function payExistingOrder(
+  orderNumber,
+  paymentMethod
+){
+
+  try{
+
+    if(
+      paymentMethod === "BINANCE"
+    ){
+
+      const data =
+        await api("/api/binance/create",{
+          method:"POST",
+          body:JSON.stringify({
+            orderNumber
+          })
+        });
+
+      if(data.checkoutUrl){
+        window.location.href =
+          data.checkoutUrl;
+      }else{
+        throw new Error(
+          "Binance checkout URL unavailable."
+        );
+      }
+
+      return;
+    }
+
+
+    const data =
+      await api("/api/paystack/init",{
         method:"POST",
         body:JSON.stringify({
           orderNumber
         })
-      }
-    );
+      });
 
+    if(data.authorization_url){
 
-  if(!data.success){
-
-    result.innerHTML = `
-      <strong>
-        Payment could not be started.
-      </strong>
-
-      <br><br>
-
-      ${escapeHtml(
-        data.message ||
-        "Paystack initialization failed."
-      )}
-    `;
-
-    return;
-
-  }
-
-
-  if(
-    !data.authorization_url
-  ){
-
-    result.innerHTML = `
-      Paystack did not return a checkout URL.
-    `;
-
-    return;
-
-  }
-
-
-  result.innerHTML = `
-    <strong>
-      Redirecting to Paystack...
-    </strong>
-
-    <br><br>
-
-    Order:
-    ${escapeHtml(orderNumber)}
-  `;
-
-
-  setTimeout(
-    ()=>{
       window.location.href =
         data.authorization_url;
-    },
-    500
-  );
+
+    }else{
+
+      throw new Error(
+        "Paystack checkout URL unavailable."
+      );
+
+    }
+
+  }catch(error){
+
+    toast(error.message,true);
+
+  }
+
+}
+
+
+/* =========================================================
+   CHECK BINANCE
+========================================================= */
+
+async function checkBinancePayment(orderNumber){
+
+  try{
+
+    const data =
+      await api(
+        `/api/binance/check/${encodeURIComponent(orderNumber)}`
+      );
+
+    if(data.paid){
+
+      toast("Binance payment confirmed.");
+
+      loadOrders();
+
+    }else{
+
+      toast(
+        data.message ||
+        "Payment is not confirmed yet.",
+        true
+      );
+
+    }
+
+  }catch(error){
+
+    toast(error.message,true);
+
+  }
+
+}
+
+
+/* =========================================================
+   VIEW ORDER
+========================================================= */
+
+async function viewOrder(orderNumber){
+
+  const modal =
+    document.getElementById("orderModal");
+
+  const details =
+    document.getElementById("orderDetails");
+
+  details.innerHTML =
+    `<div class="loading">Loading...</div>`;
+
+  modal.classList.add("show");
+
+  try{
+
+    const data =
+      await api(
+        `/api/orders/${encodeURIComponent(orderNumber)}`
+      );
+
+    const order =
+      data.order || data;
+
+    const status =
+      String(
+        order.payment_status ||
+        order.paymentStatus ||
+        "PENDING"
+      ).toUpperCase();
+
+    const delivery =
+      String(
+        order.delivery_status ||
+        order.deliveryStatus ||
+        "PENDING"
+      ).toUpperCase();
+
+    details.innerHTML = `
+
+      <div class="card">
+
+        <div class="order-number">
+          ${escapeHtml(
+            order.order_number ||
+            order.orderNumber ||
+            ""
+          )}
+        </div>
+
+        <br>
+
+        <div class="order-info">
+
+          <div>
+            <small>PRODUCT</small>
+            <strong>
+              ${escapeHtml(
+                order.product_name ||
+                order.productName ||
+                ""
+              )}
+            </strong>
+          </div>
+
+          <div>
+            <small>PAYMENT</small>
+            <strong>
+              ${escapeHtml(status)}
+            </strong>
+          </div>
+
+          <div>
+            <small>DELIVERY</small>
+            <strong>
+              ${escapeHtml(delivery)}
+            </strong>
+          </div>
+
+        </div>
+
+        ${
+          status === "PAID"
+          ?
+          `
+          <div
+            style="
+              padding:15px;
+              border:1px solid #245637;
+              border-radius:10px;
+              background:#091b10;
+            ">
+
+            <strong style="color:#19e56d">
+              PAYMENT CONFIRMED
+            </strong>
+
+            <p class="help-text">
+              Your digital product will be delivered
+              according to the selected delivery method.
+            </p>
+
+          </div>
+          `
+          :
+          `
+          <div
+            style="
+              padding:15px;
+              border:1px solid #594610;
+              border-radius:10px;
+              background:#171306;
+            ">
+
+            <strong style="color:#ffd35e">
+              PAYMENT PENDING
+            </strong>
+
+          </div>
+          `
+        }
+
+      </div>
+
+    `;
+
+  }catch(error){
+
+    details.innerHTML = `
+      <div class="empty">
+        ${escapeHtml(error.message)}
+      </div>
+    `;
+
+  }
+
+}
+
+
+function closeOrderModal(){
+
+  document
+    .getElementById("orderModal")
+    .classList.remove("show");
 
 }
 
@@ -3439,302 +2991,54 @@ async function handlePaystackCallback(){
       window.location.search
     );
 
-
-  const payment =
-    params.get("payment");
+  if(
+    params.get("payment") !== "paystack"
+  ){
+    return;
+  }
 
   const reference =
     params.get("reference");
 
-
-  if(
-    payment !== "paystack" ||
-    !reference
-  ){
-
+  if(!reference){
     return;
+  }
+
+  try{
+
+    toast("Verifying Paystack payment...");
+
+    const data =
+      await api(
+        `/api/paystack/verify/${encodeURIComponent(reference)}`
+      );
+
+    if(data.paid){
+
+      toast("Payment confirmed successfully.");
+
+    }else{
+
+      toast(
+        "Payment is not confirmed yet.",
+        true
+      );
+
+    }
+
+  }catch(error){
+
+    toast(error.message,true);
 
   }
 
-
-  document
-    .getElementById(
-      "paymentResultModal"
-    )
-    .classList.add("show");
-
-
-  document.getElementById(
-    "paymentResult"
-  ).innerHTML = `
-    <span class="loader"></span>
-    Verifying your Paystack payment...
-  `;
-
-
-  const data =
-    await api(
-      "/api/paystack/verify/" +
-      encodeURIComponent(reference)
-    );
-
-
-  if(data.success && data.paid){
-
-    document.getElementById(
-      "paymentResult"
-    ).innerHTML = `
-      <strong style="color:var(--green)">
-        PAYMENT CONFIRMED
-      </strong>
-
-      <br><br>
-
-      Order:
-      ${escapeHtml(reference)}
-
-      <br><br>
-
-      Your payment has been verified by
-      the server. Your order is now awaiting
-      delivery processing.
-    `;
-
-  }else{
-
-    document.getElementById(
-      "paymentResult"
-    ).innerHTML = `
-      <strong style="color:var(--warning)">
-        PAYMENT NOT CONFIRMED
-      </strong>
-
-      <br><br>
-
-      ${
-        escapeHtml(
-          data.message ||
-          "Payment has not been verified yet."
-        )
-      }
-
-      <br><br>
-
-      You can check the order again later.
-    `;
-
-  }
-
-
-  history.replaceState(
+  window.history.replaceState(
     {},
     document.title,
     window.location.pathname
   );
 
-}
-
-
-/* =========================================================
-   BINANCE PAY
-========================================================= */
-
-async function startBinance(orderNumber){
-
-  currentBinanceOrderNumber =
-    orderNumber;
-
-  currentBinanceCheckoutUrl =
-    "";
-
-
-  document
-    .getElementById("binanceModal")
-    .classList.add("show");
-
-
-  document.getElementById(
-    "binancePaymentContent"
-  ).innerHTML = `
-    <span class="loader"></span>
-    Creating Binance Pay checkout...
-  `;
-
-
-  document.getElementById(
-    "binanceCheckoutBtn"
-  ).style.display =
-    "none";
-
-
-  const data =
-    await api(
-      "/api/binance/create",
-      {
-        method:"POST",
-        body:JSON.stringify({
-          orderNumber
-        })
-      }
-    );
-
-
-  if(!data.success){
-
-    document.getElementById(
-      "binancePaymentContent"
-    ).innerHTML = `
-      <strong>
-        Binance payment could not be created.
-      </strong>
-
-      <br><br>
-
-      ${escapeHtml(
-        data.message ||
-        "Unable to create Binance payment."
-      )}
-    `;
-
-    return;
-
-  }
-
-
-  currentBinanceCheckoutUrl =
-    data.checkoutUrl || "";
-
-
-  document.getElementById(
-    "binancePaymentContent"
-  ).innerHTML = `
-
-    <strong>
-      Binance payment ready
-    </strong>
-
-    <br><br>
-
-    Order:
-    ${escapeHtml(orderNumber)}
-
-    <br><br>
-
-    ${
-      data.expireTime
-        ? "Payment session created successfully."
-        : "Open checkout to continue."
-    }
-
-  `;
-
-
-  if(currentBinanceCheckoutUrl){
-
-    document.getElementById(
-      "binanceCheckoutBtn"
-    ).style.display =
-      "block";
-
-  }
-
-}
-
-
-function openBinanceCheckout(){
-
-  if(!currentBinanceCheckoutUrl){
-
-    alertUser(
-      "Binance checkout URL is unavailable."
-    );
-
-    return;
-
-  }
-
-
-  window.open(
-    currentBinanceCheckoutUrl,
-    "_blank",
-    "noopener"
-  );
-
-}
-
-
-async function checkCurrentBinancePayment(){
-
-  if(!currentBinanceOrderNumber){
-
-    alertUser(
-      "No Binance order is selected."
-    );
-
-    return;
-
-  }
-
-
-  const box =
-    document.getElementById(
-      "binancePaymentContent"
-    );
-
-
-  box.innerHTML = `
-    <span class="loader"></span>
-    Checking Binance payment...
-  `;
-
-
-  const data =
-    await api(
-      "/api/binance/check/" +
-      encodeURIComponent(
-        currentBinanceOrderNumber
-      )
-    );
-
-
-  if(data.success && data.paid){
-
-    box.innerHTML = `
-      <strong style="color:var(--green)">
-        PAYMENT CONFIRMED
-      </strong>
-
-      <br><br>
-
-      Binance has confirmed payment for
-      order ${escapeHtml(
-        currentBinanceOrderNumber
-      )}.
-
-      <br><br>
-
-      You can now view your order status.
-    `;
-
-  }else{
-
-    box.innerHTML = `
-      <strong>
-        PAYMENT NOT CONFIRMED
-      </strong>
-
-      <br><br>
-
-      ${
-        escapeHtml(
-          data.message ||
-          "The Binance payment is not marked paid yet."
-        )
-      }
-    `;
-
-  }
-
+  showPage("orders");
 
 }
 
@@ -3750,655 +3054,109 @@ async function handleBinanceCallback(){
       window.location.search
     );
 
+  if(
+    params.get("payment") !== "binance"
+  ){
+    return;
+  }
 
-  const payment =
-    params.get("payment");
-
-  const order =
+  const orderNumber =
     params.get("order");
 
-
-  if(
-    payment !== "binance" ||
-    !order
-  ){
-
+  if(!orderNumber){
     return;
+  }
+
+  try{
+
+    toast("Checking Binance payment...");
+
+    const data =
+      await api(
+        `/api/binance/check/${encodeURIComponent(orderNumber)}`
+      );
+
+    if(data.paid){
+
+      toast("Binance payment confirmed.");
+
+    }else{
+
+      toast(
+        data.message ||
+        "Binance payment is not confirmed yet.",
+        true
+      );
+
+    }
+
+  }catch(error){
+
+    toast(error.message,true);
 
   }
 
-
-  currentBinanceOrderNumber =
-    order;
-
-
-  document
-    .getElementById(
-      "binanceModal"
-    )
-    .classList.add("show");
-
-
-  await checkCurrentBinancePayment();
-
-
-  history.replaceState(
+  window.history.replaceState(
     {},
     document.title,
     window.location.pathname
   );
 
-}
-
-
-/* =========================================================
-   ORDERS
-========================================================= */
-
-async function loadOrders(){
-
-  if(!currentUser){
-
-    return;
-
-  }
-
-
-  const list =
-    document.getElementById(
-      "ordersList"
-    );
-
-
-  list.innerHTML = `
-    <div class="empty">
-      <span class="loader"></span>
-      Loading your orders...
-    </div>
-  `;
-
-
-  const data =
-    await api(
-      "/api/orders"
-    );
-
-
-  if(!data.success){
-
-    list.innerHTML = `
-      <div class="empty">
-        ${escapeHtml(
-          data.message ||
-          "Unable to load orders."
-        )}
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  const orders =
-    data.orders || [];
-
-
-  if(!orders.length){
-
-    list.innerHTML = `
-      <div class="empty">
-
-        You have no orders yet.
-
-        <br><br>
-
-        <button
-          class="btn btn-primary btn-small"
-          onclick="showPage('store')">
-
-          SHOP NOW
-
-        </button>
-
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    orders.map(
-      order => renderOrderCard(order)
-    ).join("");
-
-}
-
-
-function renderOrderCard(order){
-
-  const paymentBadge =
-    statusBadge(
-      order.payment_status,
-      "payment"
-    );
-
-
-  const deliveryBadge =
-    statusBadge(
-      order.delivery_status,
-      "delivery"
-    );
-
-
-  let payButton = "";
-
-
-  if(
-    order.payment_status !== "paid"
-  ){
-
-    if(
-      order.payment_method === "paystack"
-    ){
-
-      payButton = `
-        <button
-          class="btn btn-primary btn-small"
-          onclick="payExistingOrder('${escapeJs(order.order_number)}')">
-
-          PAY NOW
-
-        </button>
-      `;
-
-    }
-
-    if(
-      order.payment_method === "binance"
-    ){
-
-      payButton = `
-        <button
-          class="btn btn-primary btn-small"
-          onclick="payExistingOrder('${escapeJs(order.order_number)}')">
-
-          OPEN BINANCE
-
-        </button>
-      `;
-
-    }
-
-  }
-
-
-  const checkButton =
-    order.payment_status !== "paid"
-      ? `
-        <button
-          class="btn btn-secondary btn-small"
-          onclick="checkOrderPayment('${escapeJs(order.order_number)}')">
-
-          CHECK PAYMENT
-
-        </button>
-      `
-      : "";
-
-
-  return `
-    <article class="order-card">
-
-      <div class="order-top">
-
-        <div>
-
-          <div class="order-number">
-            ${escapeHtml(order.order_number)}
-          </div>
-
-          <div class="order-date">
-            ${formatDate(order.created_at)}
-          </div>
-
-        </div>
-
-        <div>
-          ${paymentBadge}
-        </div>
-
-      </div>
-
-
-      <div class="order-product">
-
-        ${escapeHtml(
-          order.product_name ||
-          "Digital Product"
-        )}
-
-      </div>
-
-
-      <div class="order-meta">
-
-        <div class="meta-box">
-
-          <span>
-            Amount
-          </span>
-
-          <strong>
-            KSh ${formatNumber(order.amount_kes)}
-          </strong>
-
-        </div>
-
-
-        <div class="meta-box">
-
-          <span>
-            Payment
-          </span>
-
-          <strong>
-            ${escapeHtml(
-              String(
-                order.payment_method || ""
-              ).toUpperCase()
-            )}
-          </strong>
-
-        </div>
-
-
-        <div class="meta-box">
-
-          <span>
-            Delivery
-          </span>
-
-          <strong>
-            ${escapeHtml(
-              order.delivery_method || ""
-            )}
-          </strong>
-
-        </div>
-
-
-        <div class="meta-box">
-
-          <span>
-            Status
-          </span>
-
-          <strong>
-            ${deliveryBadge}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="order-actions">
-
-        ${payButton}
-
-        ${checkButton}
-
-
-        <button
-          class="btn btn-secondary btn-small"
-          onclick="viewOrder('${escapeJs(order.order_number)}')">
-
-          VIEW
-
-        </button>
-
-
-        <a
-          class="btn btn-secondary btn-small"
-          target="_blank"
-          rel="noopener"
-          href="${whatsappOrderLink(order)}">
-
-          HELP
-
-        </a>
-
-      </div>
-
-    </article>
-  `;
+  showPage("orders");
 
 }
 
 
 /* =========================================================
-   EXISTING ORDER PAYMENT
+   ADMIN TABS
 ========================================================= */
 
-async function payExistingOrder(orderNumber){
-
-  const data =
-    await api(
-      "/api/orders/" +
-      encodeURIComponent(orderNumber)
-    );
-
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Unable to load order."
-    );
-
-    return;
-
-  }
-
-
-  currentOrder =
-    data.order;
-
-
-  if(
-    currentOrder.payment_status === "paid"
-  ){
-
-    alertUser(
-      "This order is already paid."
-    );
-
-    loadOrders();
-
-    return;
-
-  }
-
-
-  if(
-    currentOrder.payment_method === "paystack"
-  ){
-
-    await startPaystack(
-      orderNumber
-    );
-
-  }else{
-
-    await startBinance(
-      orderNumber
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   CHECK ORDER PAYMENT
-========================================================= */
-
-async function checkOrderPayment(orderNumber){
-
-  const data =
-    await api(
-      "/api/orders/" +
-      encodeURIComponent(orderNumber)
-    );
-
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Unable to load order."
-    );
-
-    return;
-
-  }
-
-
-  const order =
-    data.order;
-
-
-  if(
-    order.payment_status === "paid"
-  ){
-
-    alertUser(
-      "Payment is confirmed."
-    );
-
-    loadOrders();
-
-    return;
-
-  }
-
-
-  if(
-    order.payment_method === "paystack"
-  ){
-
-    if(order.paystack_reference){
-
-      const result =
-        await api(
-          "/api/paystack/verify/" +
-          encodeURIComponent(
-            order.paystack_reference
-          )
-        );
-
-
-      alertUser(
-        result.message ||
-        (
-          result.paid
-            ? "Payment confirmed."
-            : "Payment not confirmed yet."
-        )
-      );
-
-    }else{
-
-      alertUser(
-        "Paystack payment has not been started."
-      );
-
-    }
-
-  }else{
-
-    const result =
-      await api(
-        "/api/binance/check/" +
-        encodeURIComponent(orderNumber)
-      );
-
-
-    alertUser(
-      result.message ||
-      (
-        result.paid
-          ? "Payment confirmed."
-          : "Payment not confirmed yet."
-      )
-    );
-
-  }
-
-
-  loadOrders();
-
-}
-
-
-/* =========================================================
-   VIEW ORDER
-========================================================= */
-
-async function viewOrder(orderNumber){
-
-  const data =
-    await api(
-      "/api/orders/" +
-      encodeURIComponent(orderNumber)
-    );
-
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Unable to load order."
-    );
-
-    return;
-
-  }
-
-
-  const order =
-    data.order;
-
-
-  const paid =
-    order.payment_status === "paid";
-
-  const delivered =
-    order.delivery_status === "delivered";
-
-
-  document.getElementById(
-    "orderDetails"
-  ).innerHTML = `
-
-    <div class="order-meta">
-
-      <div class="meta-box">
-        <span>Order</span>
-        <strong>
-          ${escapeHtml(order.order_number)}
-        </strong>
-      </div>
-
-      <div class="meta-box">
-        <span>Product</span>
-        <strong>
-          ${escapeHtml(order.product_name)}
-        </strong>
-      </div>
-
-      <div class="meta-box">
-        <span>Payment</span>
-        <strong>
-          ${statusBadge(
-            order.payment_status,
-            "payment"
-          )}
-        </strong>
-      </div>
-
-      <div class="meta-box">
-        <span>Delivery</span>
-        <strong>
-          ${statusBadge(
-            order.delivery_status,
-            "delivery"
-          )}
-        </strong>
-      </div>
-
-    </div>
-
-
-    <div class="delivery-note">
-
-      <strong>
-        Delivery contact
-      </strong>
-
-      <br><br>
-
-      ${escapeHtml(
-        order.delivery_method
-      )}
-
-      :
-
-      ${escapeHtml(
-        order.delivery_target
-      )}
-
-    </div>
-
-
-    ${
-      paid && delivered && order.delivery_content
-        ? `
-          <div class="crypto-box">
-
-            <strong>
-              YOUR DIGITAL DELIVERY
-            </strong>
-
-            <br><br>
-
-            <div style="white-space:pre-wrap;line-height:1.6;font-size:12px">
-
-              ${escapeHtml(
-                order.delivery_content
-              )}
-
-            </div>
-
-          </div>
-        `
-        : `
-          <div class="delivery-note">
-
-            ${
-              !paid
-                ? "Complete payment before delivery can be processed."
-                : "Payment is confirmed. Your order is awaiting delivery."
-            }
-
-          </div>
-        `
-    }
-
-
-    <div style="margin-top:12px">
-
-      <a
-        class="btn btn-secondary"
-        target="_blank"
-        rel="noopener"
-        href="${whatsappOrderLink(order)}">
-
-        CONTACT SUPPORT ON WHATSAPP
-
-      </a>
-
-    </div>
-
-  `;
-
+function showAdminTab(tab){
 
   document
-    .getElementById("deliveryModal")
-    .classList.add("show");
+    .querySelectorAll(".admin-section")
+    .forEach(section=>{
+      section.classList.remove("active");
+    });
+
+  document
+    .querySelectorAll(".admin-tab")
+    .forEach(button=>{
+      button.classList.remove("active");
+    });
+
+  const section =
+    document.getElementById(tab+"Tab");
+
+  if(section){
+    section.classList.add("active");
+  }
+
+  const button =
+    document.querySelector(
+      `.admin-tab[data-tab="${tab}"]`
+    );
+
+  if(button){
+    button.classList.add("active");
+  }
+
+
+  if(tab === "overview"){
+    loadAdminStats();
+  }
+
+  if(tab === "users"){
+    loadAdminUsers();
+  }
+
+  if(tab === "adminOrders"){
+    loadAdminOrders();
+  }
+
+  if(tab === "productsAdmin"){
+    loadAdminProducts();
+  }
 
 }
 
@@ -4407,128 +3165,57 @@ async function viewOrder(orderNumber){
    ADMIN DASHBOARD
 ========================================================= */
 
-function showAdminSection(section, button){
+function loadAdminDashboard(){
 
-  document
-    .querySelectorAll(".admin-section")
-    .forEach(
-      s=>s.classList.remove("active")
-    );
+  showAdminTab("overview");
+
+}
 
 
-  document
-    .querySelectorAll(".admin-tabs button")
-    .forEach(
-      b=>b.classList.remove("active")
-    );
+/* =========================================================
+   ADMIN STATS
+========================================================= */
 
+async function loadAdminStats(){
 
-  const element =
+  try{
+
+    const data =
+      await api("/api/admin/stats");
+
     document.getElementById(
-      "admin" +
-      capitalize(section)
-    );
+      "statUsers"
+    ).textContent =
+      data.users ??
+      data.totalUsers ??
+      0;
 
+    document.getElementById(
+      "statProducts"
+    ).textContent =
+      data.products ??
+      data.totalProducts ??
+      0;
 
-  if(element){
-    element.classList.add("active");
-  }
+    document.getElementById(
+      "statOrders"
+    ).textContent =
+      data.orders ??
+      data.totalOrders ??
+      0;
 
+    document.getElementById(
+      "statPaid"
+    ).textContent =
+      data.paid ??
+      data.paidOrders ??
+      0;
 
-  if(button){
-    button.classList.add("active");
-  }
+  }catch(error){
 
-
-  if(section === "overview"){
-    loadAdminDashboard();
-  }
-
-  if(section === "users"){
-    loadAdminUsers();
-  }
-
-  if(section === "adminOrders"){
-    loadAdminOrders();
-  }
-
-  if(section === "products"){
-    loadAdminProducts();
-  }
-
-}
-
-
-function capitalize(text){
-
-  return text.charAt(0).toUpperCase() +
-         text.slice(1);
-
-}
-
-
-async function loadAdminDashboard(){
-
-  if(
-    !currentUser ||
-    Number(currentUser.is_admin) !== 1
-  ){
-
-    return;
+    toast(error.message,true);
 
   }
-
-
-  const users =
-    await api("/api/admin/users");
-
-  const orders =
-    await api("/api/admin/orders");
-
-  const products =
-    await api("/api/admin/products");
-
-
-  const usersList =
-    users.success
-      ? users.users || []
-      : [];
-
-  const ordersList =
-    orders.success
-      ? orders.orders || []
-      : [];
-
-  const productsList =
-    products.success
-      ? products.products || []
-      : [];
-
-
-  document.getElementById(
-    "statUsers"
-  ).textContent =
-    usersList.length;
-
-
-  document.getElementById(
-    "statOrders"
-  ).textContent =
-    ordersList.length;
-
-
-  document.getElementById(
-    "statProducts"
-  ).textContent =
-    productsList.length;
-
-
-  document.getElementById(
-    "statPaid"
-  ).textContent =
-    ordersList.filter(
-      o=>o.payment_status === "paid"
-    ).length;
 
 }
 
@@ -4539,531 +3226,87 @@ async function loadAdminDashboard(){
 
 async function loadAdminUsers(){
 
-  const list =
+  const tbody =
     document.getElementById(
-      "usersList"
+      "usersTable"
     );
 
-
-  list.innerHTML = `
-    <div class="empty">
-      <span class="loader"></span>
-      Loading users...
-    </div>
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="5">
+        Loading...
+      </td>
+    </tr>
   `;
 
-
-  const data =
-    await api(
-      "/api/admin/users"
-    );
-
-
-  if(!data.success){
-
-    list.innerHTML = `
-      <div class="empty">
-        ${escapeHtml(
-          data.message ||
-          "Unable to load users."
-        )}
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  const users =
-    data.users || [];
-
-
-  if(!users.length){
-
-    list.innerHTML = `
-      <div class="empty">
-        No users found.
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    users.map(
-      user=>`
-
-        <div class="user-row">
-
-          <div>
-
-            <div class="row-title">
-              ${escapeHtml(user.name)}
-            </div>
-
-            <div class="row-sub">
-
-              ${escapeHtml(user.email)}
-
-              <br>
-
-              Joined:
-              ${formatDate(user.created_at)}
-
-            </div>
-
-          </div>
-
-
-          <div style="text-align:right">
-
-            <span class="badge badge-processing">
-
-              ${
-                Number(user.is_admin) === 1
-                  ? "ADMIN"
-                  : "CUSTOMER"
-              }
-
-            </span>
-
-            <div class="row-sub">
-
-              Orders:
-              ${Number(user.order_count || 0)}
-
-            </div>
-
-          </div>
-
-        </div>
-
-      `
-    ).join("");
-
-}
-
-
-/* =========================================================
-   ADMIN ORDERS
-========================================================= */
-
-async function loadAdminOrders(){
-
-  const list =
-    document.getElementById(
-      "adminOrdersList"
-    );
-
-
-  list.innerHTML = `
-    <div class="empty">
-      <span class="loader"></span>
-      Loading orders...
-    </div>
-  `;
-
-
-  const data =
-    await api(
-      "/api/admin/orders"
-    );
-
-
-  if(!data.success){
-
-    list.innerHTML = `
-      <div class="empty">
-        ${escapeHtml(
-          data.message ||
-          "Unable to load orders."
-        )}
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  const orders =
-    data.orders || [];
-
-
-  if(!orders.length){
-
-    list.innerHTML = `
-      <div class="empty">
-        No orders found.
-      </div>
-    `;
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    orders.map(
-      order=>`
-
-        <div class="admin-order-row">
-
-          <div class="admin-order-head">
-
-            <div>
-
-              <div class="row-title">
-
-                ${escapeHtml(
-                  order.order_number
-                )}
-
-              </div>
-
-              <div class="row-sub">
-
-                ${escapeHtml(
-                  order.product_name
-                )}
-
-                •
-
-                ${formatDate(
-                  order.created_at
-                )}
-
-              </div>
-
-            </div>
-
-            <div>
-
-              ${statusBadge(
-                order.payment_status,
-                "payment"
-              )}
-
-              ${statusBadge(
-                order.delivery_status,
-                "delivery"
-              )}
-
-            </div>
-
-          </div>
-
-
-          <div class="admin-order-info">
-
-            <div class="meta-box">
-
-              <span>
-                Buyer
-              </span>
-
-              <strong>
-                ${escapeHtml(
-                  order.user_name
-                )}
-              </strong>
-
-            </div>
-
-
-            <div class="meta-box">
-
-              <span>
-                Email
-              </span>
-
-              <strong>
-                ${escapeHtml(
-                  order.user_email
-                )}
-              </strong>
-
-            </div>
-
-
-            <div class="meta-box">
-
-              <span>
-                Amount
-              </span>
-
-              <strong>
-                KSh ${formatNumber(
-                  order.amount_kes
-                )}
-              </strong>
-
-            </div>
-
-
-            <div class="meta-box">
-
-              <span>
-                Payment
-              </span>
-
-              <strong>
-                ${escapeHtml(
-                  String(
-                    order.payment_method || ""
-                  ).toUpperCase()
-                )}
-              </strong>
-
-            </div>
-
-
-            <div class="meta-box">
-
-              <span>
-                Delivery
-              </span>
-
-              <strong>
-                ${escapeHtml(
-                  order.delivery_method
-                )}
-                :
-                ${escapeHtml(
-                  order.delivery_target
-                )}
-              </strong>
-
-            </div>
-
-          </div>
-
-
-          <div class="admin-actions">
-
-            ${
-              order.payment_status !== "paid"
-                ? `
-                  <button
-                    class="btn btn-blue btn-small"
-                    onclick="adminCheckPayment('${escapeJs(order.order_number)}')">
-
-                    VERIFY PAYMENT
-
-                  </button>
-                `
-                : ""
-            }
-
-
-            <button
-              class="btn btn-secondary btn-small"
-              onclick="openAdminDelivery('${escapeJs(order.order_number)}','${escapeJs(order.delivery_status || "pending")}','${escapeJs(order.delivery_notes || "")}')">
-
-              DELIVERY
-
-            </button>
-
-
-            <a
-              class="btn btn-secondary btn-small"
-              target="_blank"
-              rel="noopener"
-              href="${whatsappBuyerLink(order)}">
-
-              WHATSAPP BUYER
-
-            </a>
-
-          </div>
-
-        </div>
-
-      `
-    ).join("");
-
-}
-
-
-/* =========================================================
-   ADMIN VERIFY PAYMENT
-========================================================= */
-
-async function adminCheckPayment(orderNumber){
-
-  const orderData =
-    await api(
-      "/api/orders/" +
-      encodeURIComponent(orderNumber)
-    );
-
-
-  if(!orderData.success){
-
-    alertUser(
-      orderData.message ||
-      "Unable to load order."
-    );
-
-    return;
-
-  }
-
-
-  const order =
-    orderData.order;
-
-
-  let result;
-
-
-  if(
-    order.payment_method === "paystack"
-  ){
-
-    if(!order.paystack_reference){
-
-      alertUser(
-        "No Paystack reference exists yet."
-      );
+  try{
+
+    const data =
+      await api("/api/admin/users");
+
+    const users =
+      Array.isArray(data)
+        ? data
+        : data.users || [];
+
+    if(!users.length){
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5">
+            No users found.
+          </td>
+        </tr>
+      `;
 
       return;
-
     }
 
+    tbody.innerHTML =
+      users.map(user=>`
 
-    result =
-      await api(
-        "/api/paystack/verify/" +
-        encodeURIComponent(
-          order.paystack_reference
-        )
-      );
+        <tr>
 
-  }else{
+          <td>
+            ${escapeHtml(String(user.id || ""))}
+          </td>
 
-    result =
-      await api(
-        "/api/binance/check/" +
-        encodeURIComponent(orderNumber)
-      );
+          <td>
+            ${escapeHtml(user.name || "")}
+          </td>
 
-  }
+          <td>
+            ${escapeHtml(user.email || "")}
+          </td>
 
+          <td>
+            ${user.is_admin ? "YES" : "NO"}
+          </td>
 
-  alertUser(
-    result.message ||
-    (
-      result.paid
-        ? "Payment verified."
-        : "Payment not confirmed."
-    )
-  );
+          <td>
+            ${escapeHtml(
+              formatDate(
+                user.created_at ||
+                user.createdAt
+              )
+            )}
+          </td>
 
+        </tr>
 
-  loadAdminOrders();
-  loadAdminDashboard();
+      `).join("");
 
-}
+  }catch(error){
 
-
-/* =========================================================
-   ADMIN DELIVERY
-========================================================= */
-
-function openAdminDelivery(
-  orderNumber,
-  status,
-  notes
-){
-
-  document.getElementById(
-    "deliveryOrderNumber"
-  ).value =
-    orderNumber;
-
-
-  document.getElementById(
-    "adminDeliveryStatus"
-  ).value =
-    status || "pending";
-
-
-  document.getElementById(
-    "adminDeliveryNotes"
-  ).value =
-    notes || "";
-
-
-  document
-    .getElementById(
-      "adminDeliveryModal"
-    )
-    .classList.add("show");
-
-}
-
-
-async function saveDeliveryUpdate(){
-
-  const orderNumber =
-    document.getElementById(
-      "deliveryOrderNumber"
-    ).value;
-
-  const deliveryStatus =
-    document.getElementById(
-      "adminDeliveryStatus"
-    ).value;
-
-  const notes =
-    document.getElementById(
-      "adminDeliveryNotes"
-    ).value;
-
-
-  const data =
-    await api(
-      "/api/admin/orders/" +
-      encodeURIComponent(orderNumber) +
-      "/delivery",
-      {
-        method:"POST",
-        body:JSON.stringify({
-          deliveryStatus,
-          deliveryNotes:notes
-        })
-      }
-    );
-
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Unable to update delivery."
-    );
-
-    return;
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5">
+          ${escapeHtml(error.message)}
+        </td>
+      </tr>
+    `;
 
   }
-
-
-  closeModal(
-    "adminDeliveryModal"
-  );
-
-
-  alertUser(
-    "Delivery updated."
-  );
-
-
-  loadAdminOrders();
-  loadAdminDashboard();
 
 }
 
@@ -5074,163 +3317,143 @@ async function saveDeliveryUpdate(){
 
 async function loadAdminProducts(){
 
-  const list =
+  const tbody =
     document.getElementById(
-      "adminProductsList"
+      "adminProductsTable"
     );
 
-
-  list.innerHTML = `
-    <div class="empty">
-      <span class="loader"></span>
-      Loading products...
-    </div>
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="5">
+        Loading...
+      </td>
+    </tr>
   `;
 
+  try{
 
-  const data =
-    await api(
-      "/api/admin/products"
-    );
+    const data =
+      await api("/api/admin/products");
 
+    const products =
+      Array.isArray(data)
+        ? data
+        : data.products || [];
 
-  if(!data.success){
+    if(!products.length){
 
-    list.innerHTML = `
-      <div class="empty">
-        ${escapeHtml(
-          data.message ||
-          "Unable to load products."
-        )}
-      </div>
-    `;
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5">
+            No products found.
+          </td>
+        </tr>
+      `;
 
-    return;
+      return;
+    }
 
-  }
+    tbody.innerHTML =
+      products.map(product=>{
 
+        const priceKes =
+          Number(
+            product.price_kes ??
+            product.priceKes ??
+            0
+          );
 
-  const products =
-    data.products || [];
+        const binance =
+          Number(
+            product.binance_price ??
+            product.binancePrice ??
+            0
+          );
 
+        const active =
+          Number(product.active) === 1 ||
+          product.active === true;
 
-  if(!products.length){
+        return `
 
-    list.innerHTML = `
-      <div class="empty">
-        No products found.
-      </div>
-    `;
+          <tr>
 
-    return;
-
-  }
-
-
-  list.innerHTML =
-    products.map(
-      product=>`
-
-        <div class="admin-product-row">
-
-          ${
-            product.image_url
-              ? `
-                <img
-                  class="admin-product-thumb"
-                  src="${escapeHtml(product.image_url)}"
-                  alt="">
-              `
-              : `
-                <div
-                  class="admin-product-thumb"
-                  style="
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    color:#51655a;
-                    font-size:10px;
-                  ">
-
-                  DW
-
-                </div>
-              `
-          }
-
-
-          <div class="admin-product-info">
-
-            <div class="row-title">
-
+            <td>
               ${escapeHtml(
-                product.name
+                product.name || ""
               )}
+            </td>
 
-            </div>
+            <td>
+              KSh ${formatMoney(priceKes)}
+            </td>
 
-            <div class="row-sub">
+            <td>
+              ${formatMoney(binance)} USDT
+            </td>
 
-              KSh
-              ${formatNumber(
-                product.price_kes
-              )}
+            <td>
 
-              ${
-                Number(product.binance_price) > 0
-                  ? `
-                    •
-                    ${formatNumber(
-                      product.binance_price
-                    )}
-                    USDT
-                  `
-                  : ""
-              }
+              <span class="status ${
+                active ? "paid" : "failed"
+              }">
 
-              <br>
+                ${active ? "ACTIVE" : "DISABLED"}
 
-              Status:
-              ${
-                Number(product.active) === 1
-                  ? "ACTIVE"
-                  : "DISABLED"
-              }
+              </span>
 
-            </div>
+            </td>
 
-          </div>
+            <td>
 
+              <div
+                style="
+                  display:flex;
+                  gap:6px;
+                  flex-wrap:wrap;
+                ">
 
-          <div class="admin-actions">
+                <button
+                  class="btn ${
+                    active
+                      ? "btn-warning"
+                      : "btn-primary"
+                  }"
+                  onclick="toggleProduct('${escapeAttr(String(product.id))}')">
 
-            <button
-              class="btn btn-secondary btn-small"
-              onclick="toggleProduct(${Number(product.id)})">
+                  ${active ? "DISABLE" : "ENABLE"}
 
-              ${
-                Number(product.active) === 1
-                  ? "DISABLE"
-                  : "ENABLE"
-              }
+                </button>
 
-            </button>
+                <button
+                  class="btn btn-danger"
+                  onclick="deleteProduct('${escapeAttr(String(product.id))}')">
 
+                  DELETE
 
-            <button
-              class="btn btn-danger btn-small"
-              onclick="deleteProduct(${Number(product.id)})">
+                </button>
 
-              DELETE
+              </div>
 
-            </button>
+            </td>
 
-          </div>
+          </tr>
 
-        </div>
+        `;
 
-      `
-    ).join("");
+      }).join("");
+
+  }catch(error){
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5">
+          ${escapeHtml(error.message)}
+        </td>
+      </tr>
+    `;
+
+  }
 
 }
 
@@ -5239,81 +3462,136 @@ async function loadAdminProducts(){
    ADD PRODUCT
 ========================================================= */
 
-function previewProductImage(event){
-
-  const file =
-    event.target.files?.[0];
-
-  const box =
-    document.getElementById(
-      "imagePreviewBox"
-    );
-
-  const image =
-    document.getElementById(
-      "imagePreview"
-    );
-
-
-  if(!file){
-
-    box.style.display =
-      "none";
-
-    return;
-
-  }
-
-
-  image.src =
-    URL.createObjectURL(file);
-
-  box.style.display =
-    "block";
-
-}
-
-
 async function addProduct(event){
 
   event.preventDefault();
 
-
   const name =
-    document.getElementById(
-      "productName"
-    ).value.trim();
+    document
+      .getElementById("productName")
+      .value
+      .trim();
 
   const description =
-    document.getElementById(
-      "productDescription"
-    ).value.trim();
+    document
+      .getElementById("productDescription")
+      .value
+      .trim();
 
-  const priceKes =
-    document.getElementById(
-      "productPriceKes"
-    ).value;
+  const priceKesRaw =
+    document
+      .getElementById("productPriceKes")
+      .value
+      .trim();
 
-  const binancePrice =
-    document.getElementById(
-      "productBinancePrice"
-    ).value;
+  const binancePriceRaw =
+    document
+      .getElementById("productBinancePrice")
+      .value
+      .trim();
 
   const deliveryContent =
-    document.getElementById(
-      "productDelivery"
-    ).value;
-
+    document
+      .getElementById("productDelivery")
+      .value
+      .trim();
 
   const image =
-    document.getElementById(
-      "productImage"
-    ).files?.[0];
+    document
+      .getElementById("productImage")
+      .files[0];
+
+
+  const priceKes =
+    Number(priceKesRaw);
+
+  const binancePrice =
+    Number(binancePriceRaw);
+
+
+  /*
+   * IMPORTANT:
+   * Send BOTH naming styles so this frontend
+   * works with either server implementation.
+   */
+
+  if(
+    !Number.isFinite(priceKes) ||
+    priceKes < 0
+  ){
+
+    toast(
+      "Enter a valid KSh price.",
+      true
+    );
+
+    return;
+  }
+
+
+  if(
+    !Number.isFinite(binancePrice) ||
+    binancePrice < 0
+  ){
+
+    toast(
+      "Enter a valid Binance price.",
+      true
+    );
+
+    return;
+  }
+
+
+  if(
+    priceKes <= 0 &&
+    binancePrice <= 0
+  ){
+
+    toast(
+      "Enter a valid KSh or Binance price.",
+      true
+    );
+
+    return;
+  }
+
+
+  if(!name){
+
+    toast(
+      "Product name is required.",
+      true
+    );
+
+    return;
+  }
+
+
+  if(!description){
+
+    toast(
+      "Product description is required.",
+      true
+    );
+
+    return;
+  }
+
+
+  if(!deliveryContent){
+
+    toast(
+      "Delivery content is required.",
+      true
+    );
+
+    return;
+  }
 
 
   const form =
     new FormData();
-
 
   form.append(
     "name",
@@ -5325,14 +3603,38 @@ async function addProduct(event){
     description
   );
 
+  /*
+   * Canonical server fields
+   */
+  form.append(
+    "price_kes",
+    String(priceKes)
+  );
+
+  form.append(
+    "binance_price",
+    String(binancePrice)
+  );
+
+  form.append(
+    "delivery_content",
+    deliveryContent
+  );
+
+
+  /*
+   * Compatibility aliases.
+   * The server can safely ignore these if it uses
+   * snake_case.
+   */
   form.append(
     "priceKes",
-    priceKes
+    String(priceKes)
   );
 
   form.append(
     "binancePrice",
-    binancePrice
+    String(binancePrice)
   );
 
   form.append(
@@ -5351,64 +3653,129 @@ async function addProduct(event){
   }
 
 
-  const btn =
+  const button =
     document.getElementById(
       "addProductBtn"
     );
 
-  btn.disabled = true;
-  btn.textContent =
+  button.disabled = true;
+  button.textContent =
     "ADDING PRODUCT...";
 
 
-  const data =
-    await api(
-      "/api/admin/products",
-      {
-        method:"POST",
-        body:form
-      }
-    );
+  try{
 
+    const data =
+      await api(
+        "/api/admin/products",
+        {
+          method:"POST",
+          body:form
+        }
+      );
 
-  btn.disabled = false;
-  btn.textContent =
-    "ADD PRODUCT";
-
-
-  if(!data.success){
-
-    alertUser(
+    toast(
       data.message ||
-      "Unable to add product."
+      "Product added successfully."
     );
 
-    return;
+
+    document
+      .getElementById("productForm")
+      .reset();
+
+
+    document
+      .getElementById("imagePreview")
+      .style.display = "none";
+
+
+    document
+      .getElementById("imagePreview")
+      .src = "";
+
+
+    await refreshProductsCache();
+
+    await loadAdminProducts();
+
+    await loadProducts();
+
+    showAdminTab("productsAdmin");
+
+
+  }catch(error){
+
+    toast(
+      error.message ||
+      "Failed to add product.",
+      true
+    );
+
+  }finally{
+
+    button.disabled = false;
+
+    button.textContent =
+      "ADD PRODUCT";
 
   }
 
-
-  document
-    .getElementById(
-      "productForm"
-    )
-    .reset();
+}
 
 
-  document.getElementById(
-    "imagePreviewBox"
-  ).style.display =
-    "none";
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+function previewProductImage(event){
+
+  const file =
+    event.target.files[0];
+
+  const preview =
+    document.getElementById(
+      "imagePreview"
+    );
+
+  if(!file){
+
+    preview.style.display = "none";
+    preview.src = "";
+
+    return;
+  }
 
 
-  alertUser(
-    "Product added successfully."
-  );
+  if(!file.type.startsWith("image/")){
+
+    toast(
+      "Please select an image file.",
+      true
+    );
+
+    event.target.value = "";
+
+    preview.style.display = "none";
+
+    return;
+  }
 
 
-  loadAdminProducts();
-  loadAdminDashboard();
-  loadProducts();
+  const reader =
+    new FileReader();
+
+  reader.onload = function(e){
+
+    preview.src =
+      e.target.result;
+
+    preview.style.display =
+      "block";
+
+  };
+
+  reader.readAsDataURL(file);
 
 }
 
@@ -5419,37 +3786,41 @@ async function addProduct(event){
 
 async function toggleProduct(id){
 
-  const data =
-    await api(
-      "/api/admin/products/" +
-      id +
-      "/toggle",
-      {
-        method:"POST"
-      }
-    );
-
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Unable to update product."
-    );
-
+  if(!confirm(
+    "Change this product's active status?"
+  )){
     return;
-
   }
 
+  try{
 
-  alertUser(
-    "Product status updated."
-  );
+    const data =
+      await api(
+        `/api/admin/products/${encodeURIComponent(id)}/toggle`,
+        {
+          method:"POST"
+        }
+      );
 
+    toast(
+      data.message ||
+      "Product status updated."
+    );
 
-  loadAdminProducts();
-  loadAdminDashboard();
-  loadProducts();
+    await loadAdminProducts();
+
+    await refreshProductsCache();
+
+    await loadProducts();
+
+  }catch(error){
+
+    toast(
+      error.message,
+      true
+    );
+
+  }
 
 }
 
@@ -5460,226 +3831,366 @@ async function toggleProduct(id){
 
 async function deleteProduct(id){
 
-  if(
-    !confirm(
-      "Delete this product?"
-    )
-  ){
-
+  if(!confirm(
+    "Delete this product permanently?"
+  )){
     return;
-
   }
 
+  try{
 
-  const data =
-    await api(
-      "/api/admin/products/" +
-      id,
-      {
-        method:"DELETE"
-      }
-    );
-
-
-  if(!data.success){
-
-    alertUser(
-      data.message ||
-      "Unable to delete product."
-    );
-
-    return;
-
-  }
-
-
-  alertUser(
-    "Product deleted."
-  );
-
-
-  loadAdminProducts();
-  loadAdminDashboard();
-  loadProducts();
-
-}
-
-
-/* =========================================================
-   STATUS BADGES
-========================================================= */
-
-function statusBadge(status, type){
-
-  const value =
-    String(
-      status ||
-      "pending"
-    ).toLowerCase();
-
-
-  let cls =
-    "badge-pending";
-
-
-  if(value === "paid"){
-    cls = "badge-paid";
-  }
-
-  if(value === "failed"){
-    cls = "badge-failed";
-  }
-
-  if(value === "delivered"){
-    cls = "badge-delivered";
-  }
-
-  if(
-    value === "processing"
-  ){
-    cls = "badge-processing";
-  }
-
-
-  return `
-    <span class="badge ${cls}">
-      ${escapeHtml(value)}
-    </span>
-  `;
-
-}
-
-
-/* =========================================================
-   WHATSAPP
-========================================================= */
-
-function whatsappOrderLink(order){
-
-  const text =
-    "Hello DARK WEB Support. " +
-    "I need help with order " +
-    (order.order_number || "") +
-    ". Product: " +
-    (order.product_name || "") +
-    ".";
-
-
-  return (
-    "https://wa.me/254781601410?text=" +
-    encodeURIComponent(text)
-  );
-
-}
-
-
-function whatsappBuyerLink(order){
-
-  let phone =
-    String(
-      order.phone ||
-      order.delivery_target ||
-      ""
-    ).replace(
-      /[^0-9]/g,
-      ""
-    );
-
-
-  if(
-    phone.startsWith("0")
-  ){
-
-    phone =
-      "254" +
-      phone.slice(1);
-
-  }
-
-
-  if(
-    !phone
-  ){
-
-    phone =
-      "254781601410";
-
-  }
-
-
-  const text =
-    "Hello " +
-    (order.user_name || "customer") +
-    ", this is DARK WEB regarding your order " +
-    (order.order_number || "") +
-    ".";
-
-
-  return (
-    "https://wa.me/" +
-    phone +
-    "?text=" +
-    encodeURIComponent(text)
-  );
-
-}
-
-
-/* =========================================================
-   MODALS
-========================================================= */
-
-function closeModal(id){
-
-  document
-    .getElementById(id)
-    ?.classList.remove("show");
-
-}
-
-
-document
-  .querySelectorAll(".modal")
-  .forEach(
-    modal=>{
-
-      modal.addEventListener(
-        "click",
-        event=>{
-
-          if(
-            event.target === modal
-          ){
-
-            modal.classList.remove(
-              "show"
-            );
-
-          }
-
+    const data =
+      await api(
+        `/api/admin/products/${encodeURIComponent(id)}`,
+        {
+          method:"DELETE"
         }
       );
 
-    }
-  );
+    toast(
+      data.message ||
+      "Product deleted."
+    );
+
+    await loadAdminProducts();
+
+    await refreshProductsCache();
+
+    await loadProducts();
+
+  }catch(error){
+
+    toast(
+      error.message,
+      true
+    );
+
+  }
+
+}
 
 
 /* =========================================================
-   FORMATTERS
+   ADMIN ORDERS
 ========================================================= */
 
-function formatNumber(value){
+async function loadAdminOrders(){
+
+  const tbody =
+    document.getElementById(
+      "adminOrdersTable"
+    );
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="7">
+        Loading...
+      </td>
+    </tr>
+  `;
+
+  try{
+
+    const data =
+      await api("/api/admin/orders");
+
+    const orders =
+      Array.isArray(data)
+        ? data
+        : data.orders || [];
+
+    if(!orders.length){
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7">
+            No orders found.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+
+    tbody.innerHTML =
+      orders.map(order=>{
+
+        const orderNumber =
+          order.order_number ||
+          order.orderNumber ||
+          "";
+
+        const product =
+          order.product_name ||
+          order.productName ||
+          "";
+
+        const buyer =
+          order.user_email ||
+          order.email ||
+          order.delivery_target ||
+          order.deliveryTarget ||
+          "";
+
+        const amount =
+          Number(
+            order.amount_kes ??
+            order.amountKes ??
+            0
+          );
+
+        const payment =
+          String(
+            order.payment_method ||
+            order.paymentMethod ||
+            ""
+          ).toUpperCase();
+
+        const status =
+          String(
+            order.payment_status ||
+            order.paymentStatus ||
+            "PENDING"
+          ).toUpperCase();
+
+
+        let statusClass =
+          status === "PAID"
+            ? "paid"
+            : status === "FAILED"
+              ? "failed"
+              : "pending";
+
+
+        return `
+
+          <tr>
+
+            <td>
+              <strong style="color:#19e56d">
+                ${escapeHtml(orderNumber)}
+              </strong>
+            </td>
+
+            <td>
+              ${escapeHtml(product)}
+            </td>
+
+            <td>
+              ${escapeHtml(buyer)}
+            </td>
+
+            <td>
+              KSh ${formatMoney(amount)}
+            </td>
+
+            <td>
+              ${escapeHtml(payment)}
+            </td>
+
+            <td>
+
+              <span class="status ${statusClass}">
+                ${escapeHtml(status)}
+              </span>
+
+            </td>
+
+            <td>
+
+              <div
+                style="
+                  display:flex;
+                  gap:6px;
+                  flex-wrap:wrap;
+                ">
+
+                <button
+                  class="btn btn-warning"
+                  onclick="adminCheckPayment('${escapeAttr(orderNumber)}')">
+                  VERIFY PAYMENT
+                </button>
+
+                ${
+                  status === "PAID"
+                  ?
+                  `
+                  <button
+                    class="btn btn-blue"
+                    onclick="adminDelivery('${escapeAttr(orderNumber)}')">
+                    DELIVERY
+                  </button>
+                  `
+                  :
+                  ""
+                }
+
+                <a
+                  class="btn btn-secondary"
+                  target="_blank"
+                  href="https://wa.me/${escapeAttr(
+                    normalizePhone(
+                      order.phone ||
+                      order.delivery_target ||
+                      order.deliveryTarget ||
+                      ""
+                    )
+                  )}">
+
+                  WHATSAPP
+
+                </a>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }).join("");
+
+  }catch(error){
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7">
+          ${escapeHtml(error.message)}
+        </td>
+      </tr>
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN VERIFY PAYMENT
+========================================================= */
+
+async function adminCheckPayment(orderNumber){
+
+  try{
+
+    const data =
+      await api(
+        `/api/admin/orders/${encodeURIComponent(orderNumber)}/check-payment`,
+        {
+          method:"POST"
+        }
+      );
+
+    toast(
+      data.message ||
+      (
+        data.paid
+          ? "Payment confirmed."
+          : "Payment not confirmed."
+      ),
+      !data.paid
+    );
+
+    loadAdminOrders();
+
+  }catch(error){
+
+    toast(
+      error.message,
+      true
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN DELIVERY
+========================================================= */
+
+async function adminDelivery(orderNumber){
+
+  const notes =
+    prompt(
+      "Enter delivery details / notes:"
+    );
+
+  if(notes === null){
+    return;
+  }
+
+  try{
+
+    const data =
+      await api(
+        `/api/admin/orders/${encodeURIComponent(orderNumber)}/delivery`,
+        {
+          method:"POST",
+          body:JSON.stringify({
+            deliveryNotes:notes,
+            delivery_notes:notes
+          })
+        }
+      );
+
+    toast(
+      data.message ||
+      "Delivery updated."
+    );
+
+    loadAdminOrders();
+
+  }catch(error){
+
+    toast(
+      error.message,
+      true
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ESCAPE HELPERS
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttr(value){
+
+  return escapeHtml(value);
+
+}
+
+
+function formatMoney(value){
 
   const number =
-    Number(value || 0);
+    Number(value);
+
+  if(!Number.isFinite(number)){
+    return "0.00";
+  }
 
   return number.toLocaleString(
     "en-KE",
     {
-      minimumFractionDigits:
-        number % 1 === 0
-          ? 0
-          : 2,
+      minimumFractionDigits:2,
       maximumFractionDigits:2
     }
   );
@@ -5690,72 +4201,40 @@ function formatNumber(value){
 function formatDate(value){
 
   if(!value){
-    return "—";
+    return "-";
   }
-
 
   const date =
     new Date(value);
 
-
-  if(
-    Number.isNaN(
-      date.getTime()
-    )
-  ){
-
-    return escapeHtml(
-      String(value)
-    );
-
+  if(Number.isNaN(date.getTime())){
+    return String(value);
   }
 
-
   return date.toLocaleString(
-    "en-KE",
-    {
-      dateStyle:"medium",
-      timeStyle:"short"
-    }
+    "en-KE"
   );
 
 }
 
 
-function escapeJs(value){
+function normalizePhone(value){
 
-  return String(
-    value || ""
-  )
-  .replaceAll("\\","\\\\")
-  .replaceAll("'","\\'")
-  .replaceAll('"','\\"')
-  .replaceAll("\n","\\n")
-  .replaceAll("\r","\\r");
+  let phone =
+    String(value || "")
+      .replace(/[^\d+]/g,"");
 
-}
+  if(phone.startsWith("+")){
+    phone = phone.substring(1);
+  }
 
+  if(phone.startsWith("0")){
+    phone =
+      "254" +
+      phone.substring(1);
+  }
 
-/* =========================================================
-   SCROLL
-========================================================= */
-
-function scrollToProducts(){
-
-  showPage("store");
-
-  setTimeout(
-    ()=>{
-      document
-        .getElementById(
-          "productsGrid"
-        )
-        ?.scrollIntoView({
-          behavior:"smooth"
-        });
-    },
-    100
-  );
+  return phone;
 
 }
 
@@ -5766,35 +4245,11 @@ function scrollToProducts(){
 
 async function init(){
 
-  const me =
-    await api(
-      "/api/me"
-    );
-
-
-  if(
-    me.success &&
-    me.user
-  ){
-
-    currentUser =
-      me.user;
-
-  }else{
-
-    currentUser =
-      null;
-
-  }
-
-
-  updateNav();
-
+  await checkSession();
 
   await refreshProductsCache();
 
   await loadProducts();
-
 
   await handlePaystackCallback();
 
@@ -5803,9 +4258,42 @@ async function init(){
 }
 
 
-init();
+/* =========================================================
+   CLOSE MODALS ON BACKDROP
+========================================================= */
+
+document
+  .getElementById("checkoutModal")
+  .addEventListener("click",function(event){
+
+    if(event.target === this){
+      closeCheckout();
+    }
+
+  });
+
+
+document
+  .getElementById("orderModal")
+  .addEventListener("click",function(event){
+
+    if(event.target === this){
+      closeOrderModal();
+    }
+
+  });
+
+
+/* =========================================================
+   START
+========================================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  init
+);
 
 </script>
 
 </body>
-            </html>
+      </html>
